@@ -1,0 +1,949 @@
+// Dashboard Container
+.dashboard-container {
+  padding: 2rem;
+  // background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+// Header Styles
+.dashboard-header {
+  .logo-circle {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+
+    i {
+      font-size: 1.5rem;
+      color: white;
+    }
+  }
+
+  .nav-links {
+    .nav-link {
+      color: #6c757d !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #28a745 !important;
+      }
+    }
+  }
+
+  .user-avatar {
+    img {
+      border: 2px solid #e9ecef;
+      transition: border-color 0.3s ease;
+
+      &:hover {
+        border-color: #28a745;
+      }
+    }
+  }
+}
+
+// Welcome Section
+.welcome-section {
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+  }
+
+  p {
+    font-size: 1.25rem;
+    color: #6c757d;
+  }
+}
+
+// Section Titles
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 1.5rem;
+}
+
+// Key Metrics Cards
+.key-metrics-section {
+  .metric-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+
+    // Green line effect
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      width: 100%;
+      height: 4px;
+      background-color: #28a745; // green line
+      transition: left 0.4s ease;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+
+      &::after {
+        left: 0; // slide in from left
+      }
+    }
+  }
+}
+
+
+.metric-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 1.25rem;
+
+
+    .metric-content {
+      .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #212529;
+      }
+
+      .metric-title {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+      }
+
+      .metric-trend {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+
+        i {
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    // Color variants
+    &.metric-success {
+      .metric-icon {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+      }
+    }
+
+    &.metric-danger {
+      .metric-icon {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+      }
+    }
+
+    &.metric-primary {
+      .metric-icon {
+        background: rgba(0, 123, 255, 0.1);
+        color: #007bff;
+      }
+    }
+
+    &.metric-warning {
+      .metric-icon {
+        background: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+      }
+    }
+  }
+}
+
+// Equipment Cards
+.equipment-section {
+  .equipment-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+
+    // underline effect
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      width: 100%;
+      height: 4px;
+      background-color: #6c757d;
+      transition: left 0.4s ease, background-color 0.3s ease;
+    }
+
+    /* ---- Dynamic underline color based on status ---- */
+    &:has(.status-dot.status-active)::before {
+      background-color: #28a745; // green
+    }
+
+    &:has(.status-dot.status-idle)::before {
+      background-color: #6c757d; // gray
+    }
+
+    &:has(.status-dot.status-maintenance)::before {
+      background-color: #ffc107; // yellow
+    }
+
+    &:has(.status-dot.status-error)::before {
+      background-color: #dc3545; // red
+    }
+
+    /* ------------------------------------------------ */
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+
+      &::before {
+        left: 0; // slide in on hover
+      }
+    }
+
+    .equipment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .equipment-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #212529;
+        margin: 0;
+      }
+
+      .equipment-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+
+          &.status-active {
+            background-color: #28a745;
+          }
+
+          &.status-idle {
+            background-color: #6c757d;
+          }
+
+          &.status-maintenance {
+            background-color: #ffc107;
+          }
+
+          &.status-error {
+            background-color: #dc3545;
+          }
+        }
+
+        .status-text {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #6c757d;
+        }
+      }
+    }
+
+    .equipment-details {
+      .detail-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+
+        .detail-label {
+          font-size: 0.875rem;
+          color: #6c757d;
+        }
+
+        .detail-value {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #212529;
+        }
+      }
+
+      .maintenance-alert {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-top: 0.75rem;
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+
+// Weather Section
+.weather-section {
+  .current-weather-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+
+    .weather-icon-large {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .temperature {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      transition: text-shadow 0.3s ease;
+    }
+
+    .condition {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    .weather-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+    }
+
+    &:hover {
+      box-shadow: 0 0 20px rgba(118, 75, 162, 0.6);
+
+      .temperature {
+        text-shadow: 0 0 8px #764ba2, 0 0 12px #667eea;
+      }
+    }
+  }
+
+  .forecast-container {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+
+    .forecast-day {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      min-width: 80px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+
+      // bottom line effect
+      &::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -100%;
+        width: 100%;
+        height: 3px;
+        background-color: #6c757d;
+        transition: left 0.4s ease;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+
+        &::before {
+          left: 0;
+        }
+
+
+      }
+
+      .forecast-day-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+      }
+
+      .forecast-icon {
+        font-size: 1.5rem;
+        color: #ffc107;
+        margin-bottom: 0.5rem;
+      }
+
+      .forecast-temp {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #212529;
+        transition: text-shadow 0.3s ease;
+      }
+    }
+  }
+}
+
+
+// Live Status Section
+.live-status-section {
+  .field-status-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+
+    // underline effect
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      width: 100%;
+      height: 4px;
+      background-color: #6c757d; // default gray
+      transition: left 0.4s ease, background-color 0.3s ease;
+    }
+
+    /* Dynamic underline color based on status */
+    &:has(.status-dot.status-healthy)::before {
+      background-color: #28a745; // green
+    }
+
+    &:has(.status-dot.status-warning)::before {
+      background-color: #ffc107; // yellow
+    }
+
+    &:has(.status-dot.status-critical)::before {
+      background-color: #dc3545; // red
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+
+      &::before {
+        left: 0; // slide in on hover
+      }
+    }
+
+    .field-info {
+      flex: 1;
+
+      .field-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 0.5rem;
+      }
+
+      .field-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+
+        .status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+
+          &.status-healthy {
+            background-color: #28a745;
+          }
+
+          &.status-warning {
+            background-color: #ffc107;
+          }
+
+          &.status-critical {
+            background-color: #dc3545;
+          }
+        }
+      }
+
+      .last-updated {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin: 0;
+      }
+    }
+
+    .field-image {
+      width: 120px;
+      height: 80px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+
+// Alerts Section
+.alerts-section {
+  .alert-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+
+    // bottom line effect
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      width: 100%;
+      height: 4px;
+      background-color: red; // default
+      transition: left 0.4s ease;
+    }
+
+    &:hover {
+      &::before {
+        left: 0; // slide in from left to right
+      }
+    }
+
+    // set line color based on severity
+    &.alert-medium::before {
+      background-color: #ffc107; // yellow
+    }
+
+    &.alert-low::before,
+    &.alert-high::before {
+      background-color: #dc3545; // red
+    }
+
+    .alert-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(220, 53, 69, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #dc3545;
+    }
+
+    .alert-content {
+      .alert-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 0.5rem;
+      }
+
+      .alert-description {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+      }
+
+      .alert-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+
+        .alert-field {
+          font-size: 0.875rem;
+          color: #6c757d;
+        }
+
+        .alert-severity {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+        }
+      }
+
+      .alert-time {
+        color: #6c757d;
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+
+// Responsive Design
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .welcome-section h2 {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .forecast-container {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .forecast-day {
+      min-width: auto;
+    }
+  }
+
+  .field-status-card {
+    flex-direction: column;
+    text-align: center;
+
+    .field-image {
+      width: 100%;
+      height: 150px;
+    }
+  }
+}
+
+// Utility Classes
+.text-success {
+  color: #28a745 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.text-info {
+  color: #17a2b8 !important;
+}
+
+.text-secondary {
+  color: #6c757d !important;
+}
+
+
+/* General Layout */
+.dashboard-container {
+  padding: 20px;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.section-title {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  color: #2d3436;
+  position: relative;
+}
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 3px;
+  margin-left: 10px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #28a745, #6cc070);
+}
+
+/* Metric Cards */
+.metric-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.metric-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+.metric-icon {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: var(--bs-success);
+}
+.metric-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+.metric-trend {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Equipment Cards */
+.equipment-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-left: 6px solid var(--bs-success);
+}
+.equipment-card:hover {
+  transform: scale(1.03);
+}
+.equipment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.status-active { background: #28a745; }
+.status-inactive { background: #6c757d; }
+.status-maintenance { background: #ffc107; }
+
+/* Weather Section */
+.current-weather-card {
+  background: linear-gradient(135deg, #28a745, #6cc070);
+  border-radius: 20px;
+  color: white;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+}
+.weather-icon-large i {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+.forecast-container {
+  display: flex;
+  justify-content: space-around;
+  background: #f9f9f9;
+  border-radius: 16px;
+  padding: 15px;
+}
+.forecast-day {
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+.forecast-day:hover {
+  transform: translateY(-5px);
+}
+
+/* Live Field Status */
+.field-status-card {
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.field-status-card:hover {
+  transform: translateY(-5px);
+}
+.field-image img {
+  border-radius: 12px;
+  max-height: 120px;
+  object-fit: cover;
+}
+
+/* Alerts */
+.alert-card {
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  gap: 15px;
+  transition: all 0.3s ease;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  cursor: pointer;
+}
+.alert-card:hover {
+  transform: translateX(6px);
+}
+.alert-icon {
+  font-size: 2rem;
+  color: #28a745;
+}
+.alert-severity {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+.badge-low { background: #d4edda; color: #155724; }
+.badge-medium { background: #fff3cd; color: #856404; }
+.badge-high { background: #f8d7da; color: #721c24; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+/* FORECAST (carousel) */
+.forecast-list {
+  display: flex;
+  gap: .6rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1rem;
+  align-items: stretch;
+}
+
+.forecast-item {
+  flex: 0 0 auto;
+  min-width: 86px;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: .6rem;
+  text-align: center;
+  box-shadow: none;
+  scroll-snap-align: center;
+  border: 1px solid rgba(2, 6, 23, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.forecast-item .day {
+  font-weight: 700;
+}
+
+.forecast-item .temp {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+@media (max-width: 575.98px) {
+  .temp-big {
+    font-size: 1.6rem;
+  }
+
+  .forecast-item {
+    min-width: 78%;
+    max-width: 82%;
+    padding: .9rem;
+  }
+
+}
+
+/* small (sm) devices show ~2 cards */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .forecast-item {
+    min-width: 46%;
+    max-width: 48%;
+    padding: .7rem;
+  }
+
+}
+
+/* medium devices show ~3 cards */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .forecast-item {
+    min-width: 30%;
+    max-width: 32%;
+    padding: .7rem;
+  }
+}
+
+/* large and up: use grid to show all 7 cards at once (no horizontal scroll) */
+@media (min-width: 992px) {
+  .forecast-list {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: .6rem;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-top: 0;
+    align-items: stretch;
+  }
+
+  .forecast-item {
+    min-width: 0;
+    scroll-snap-align: none;
+  }
+
+  /* hide controls and dots on lg+ */
+  .forecast-controls {
+    display: none !important;
+  }
+}
+
+

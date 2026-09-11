@@ -1,0 +1,258 @@
+.metric-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .metric-icon {
+    opacity: 0.3;
+  }
+}
+
+.health-stats {
+  .stat-item {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #e9ecef;
+    }
+
+    .progress {
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+
+    .progress-bar {
+      border-radius: 5px;
+    }
+  }
+
+  .avg-health-display {
+    .circular-progress {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      position: relative;
+      border: 6px solid #e9ecef;
+
+      &.health-success {
+        border-color: #28a745;
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      }
+
+      &.health-warning {
+        border-color: #ffc107;
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      }
+
+      &.health-danger {
+        border-color: #dc3545;
+        background: linear-gradient(135deg, #f8d7da, #f1b0b7);
+      }
+
+      .percentage {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.activity-breakdown {
+  .breakdown-item {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #e9ecef;
+      transform: translateY(-1px);
+    }
+
+    .progress {
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+    }
+
+    .progress-bar {
+      border-radius: 6px;
+    }
+  }
+
+  .efficiency-score {
+    border: 2px solid #ffc107;
+
+    .score-display {
+      .display-4 {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+.growth-analysis {
+  .stage-analysis {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #e9ecef;
+      transform: translateX(5px);
+    }
+
+    .progress {
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+    }
+
+    .progress-bar {
+      border-radius: 4px;
+    }
+  }
+}
+
+.performance-metrics {
+  .metric {
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #e9ecef;
+    }
+  }
+
+  .performance-rating {
+    padding: 20px;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border-radius: 8px;
+    border: 2px solid #2196f3;
+
+    .rating-stars {
+      i {
+        margin: 0 2px;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+  }
+}
+
+.recommendation-card {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  border-left: 4px solid #17a2b8;
+
+  &:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .metric-card {
+    margin-bottom: 15px;
+
+    .card-body {
+      padding: 15px;
+    }
+
+    .metric-icon {
+      display: none;
+    }
+  }
+
+  .circular-progress {
+    width: 100px !important;
+    height: 100px !important;
+
+    .percentage {
+      font-size: 1.2rem !important;
+    }
+  }
+
+  .stage-analysis {
+    .d-flex {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+
+      .text-end {
+        text-align: left !important;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .recommendation-card {
+    .d-flex {
+      flex-direction: column;
+      align-items: flex-start !important;
+
+      i {
+        margin-bottom: 10px;
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
+
+// Animation keyframes
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+// Print styles
+@media print {
+  .metric-card {
+    -webkit-print-color-adjust: exact;
+    break-inside: avoid;
+  }
+
+  .recommendation-card {
+    break-inside: avoid;
+  }
+
+  .progress-bar {
+    -webkit-print-color-adjust: exact;
+  }
+
+  .badge {
+    -webkit-print-color-adjust: exact;
+  }
+}

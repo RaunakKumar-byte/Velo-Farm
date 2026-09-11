@@ -1,0 +1,119 @@
+<div class="container py-3" style="min-height: 86vh;overflow:hidden;">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+    <h4 class="m-0">🌾 Fields</h4>
+    <button class="btn btn-primary mt-2 mt-md-0" (click)="openCreateField()">
+      <i class="bi bi-plus-circle me-1"></i> Add Field
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Loading fields...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Field Cards -->
+  <div class="row g-5" *ngIf="!isLoading && fields.length > 0">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center" *ngFor="let f of fields">
+      <div class="card themed-card cursor-pointer" (click)="viewFieldDetail(f)">
+        <div class="content d-flex flex-column h-100">
+          <!-- Field Name -->
+          <p class="heading">{{ f.name }}</p>
+
+          <!-- Field Details -->
+          <p class="para mb-1"><strong>Crop:</strong> {{ f.crop }}</p>
+          <p class="para mb-1"><strong>Location:</strong> {{ f.location }}</p>
+          <p class="para mb-1"><strong>Area:</strong> {{ f.area }} acres</p>
+          <p class="para mb-1"><strong>Notes:</strong> {{ f.notes }}</p>
+          <p class="para mb-2"><strong>Created:</strong> {{ f.createdAt | date:'d MMMM' }}</p>
+
+          <!-- Action Buttons -->
+          <div class="mt-auto d-flex gap-2 flex-wrap">
+            <!-- <button class="btn btn-sm btn-outline-primary flex-grow-1" (click)="openEditField(f)">
+              <i class="bi bi-pencil-square"></i> Edit
+            </button>                                          -->
+            <button class="animated-button edit-crop" (click)="openEditField(f); $event.stopPropagation()">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+              <span class="text">Edit</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+            </button>
+
+
+            <!-- <button class="btn btn-sm btn-outline-danger flex-grow-1" (click)="removeField(f)">
+              <i class="bi bi-trash"></i> Delete
+            </button> -->
+
+
+            <button class="animated-button edit-crop" (click)="removeField(f); $event.stopPropagation()">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+              <span class="text">Remove</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && fields.length === 0" class="text-center text-muted my-5">
+    <i class="bi bi-emoji-frown fs-1 d-block mb-2"></i>
+    <p>No fields found</p>
+  </div>
+
+  <!-- Field Modal -->
+  <div class="modal fade" id="fieldModal" tabindex="-1" aria-labelledby="fieldModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Wrap everything inside the "model" class -->
+        <div class="model">
+          <!-- Custom Container for styling -->
+          <div class="container">
+            <!-- Modal Heading -->
+            <div class="heading">
+              <i class="bi bi-map me-2"></i>
+              {{ isEditing ? 'Edit Field' : 'Create Field' }}
+            </div>
+
+            <!-- Custom Styled Form -->
+            <form class="form">
+              <input required class="input" type="text" [(ngModel)]="form.name" name="name" placeholder="Field name">
+              <input required class="input" type="text" [(ngModel)]="form.crop" name="crop" placeholder="Crop e.g. Wheat">
+              <input required class="input" type="text" [(ngModel)]="form.location" name="location" placeholder="Location">
+              <input required class="input" type="number" step="0.1" [(ngModel)]="form.area" name="area" placeholder="Area (acres)">
+              <textarea required class="input" [(ngModel)]="form.notes" name="notes" placeholder="Notes"></textarea>
+              <input class="login-button" type="button" value="Save" (click)="saveField()" data-bs-dismiss="modal">
+            </form>
+
+          </div> <!-- container end -->
+        </div> <!-- model end -->
+
+      </div>
+    </div>
+  </div>
+</div>

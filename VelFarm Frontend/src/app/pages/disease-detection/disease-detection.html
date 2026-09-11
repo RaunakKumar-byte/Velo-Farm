@@ -1,0 +1,514 @@
+<!-- <app-header></app-header> -->
+<div class="body">
+  <div class="container">
+  <div class="animated-container">
+  <!-- Floating Background Particles -->
+  <div class="floating-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container-fluid px-4 py-5 min-vh-100"
+    style="background: linear-gradient(135deg, #F0FFF0 0%, #E8F5E8 50%, #F5FFFA 100%);">
+
+    <!-- Header Section -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="text-center animated-header">
+          <h1 class="display-3 fw-bold mb-3 text-success animated-title">
+            <span class="plant-icon me-3">🌱</span>
+            Plant Disease Detection System
+            <span class="plant-icon ms-3">🍃</span>
+          </h1>
+          <p class="lead text-muted mb-4 subtitle-text">Advanced AI-powered plant health analysis using state-of-the-art
+            computer vision</p>
+
+          <!-- Statistics Cards -->
+          <div class="row justify-content-center mb-4">
+            <div class="col-md-3 col-6 mb-3">
+              <div class="stat-card card border-success shadow-sm h-100">
+                <div class="card-body text-center p-3">
+                  <div class="stat-icon mb-2">🔬</div>
+                  <h3 class="h4 text-success fw-bold mb-1">94.7%</h3>
+                  <p class="small text-muted mb-0">Accuracy Rate</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+              <div class="stat-card card border-success shadow-sm h-100">
+                <div class="card-body text-center p-3">
+                  <div class="stat-icon mb-2">📊</div>
+                  <h3 class="h4 text-success fw-bold mb-1">12,847</h3>
+                  <p class="small text-muted mb-0">Analyses Done</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+              <div class="stat-card card border-success shadow-sm h-100">
+                <div class="card-body text-center p-3">
+                  <div class="stat-icon mb-2">🦠</div>
+                  <h3 class="h4 text-success fw-bold mb-1">23</h3>
+                  <p class="small text-muted mb-0">Disease Types</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+              <div class="stat-card card border-success shadow-sm h-100">
+                <div class="card-body text-center p-3">
+                  <div class="stat-icon mb-2">🌿</div>
+                  <h3 class="h4 text-success fw-bold mb-1">8</h3>
+                  <p class="small text-muted mb-0">Plant Species</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow Visualization -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="workflow-section">
+          <h2 class="text-center mb-4 text-success fw-bold">AI Detection Workflow</h2>
+          <div class="workflow-container d-flex justify-content-center align-items-center flex-wrap gap-4">
+
+            <!-- Step 1: Input -->
+            <div class="workflow-step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+              <div class="step-circle">
+                <div class="step-icon">📤</div>
+                <div class="step-pulse"></div>
+              </div>
+              <div class="step-content">
+                <h5 class="fw-bold text-success mb-1">Input</h5>
+                <p class="small text-muted mb-0">Upload Image</p>
+              </div>
+            </div>
+
+            <!-- Connection Line 1 -->
+            <div class="workflow-connector">
+              <div class="flow-line" [class.flowing]="currentStep >= 2"></div>
+              <div class="flow-particles" *ngIf="currentStep >= 2">
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+              </div>
+            </div>
+
+            <!-- Step 2: Processing -->
+            <div class="workflow-step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+              <div class="step-circle">
+                <div class="step-icon" [class.spinning]="currentStep === 2 && loading">🧠</div>
+                <div class="step-pulse"></div>
+              </div>
+              <div class="step-content">
+                <h5 class="fw-bold text-success mb-1">AI Processing</h5>
+                <p class="small text-muted mb-0">Deep Learning Analysis</p>
+              </div>
+            </div>
+
+            <!-- Connection Line 2 -->
+            <div class="workflow-connector">
+              <div class="flow-line" [class.flowing]="currentStep >= 3"></div>
+              <div class="flow-particles" *ngIf="currentStep >= 3">
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+              </div>
+            </div>
+
+            <!-- Step 3: Results -->
+            <div class="workflow-step" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
+              <div class="step-circle">
+                <div class="step-icon">📊</div>
+                <div class="step-pulse"></div>
+              </div>
+              <div class="step-content">
+                <h5 class="fw-bold text-success mb-1">Results</h5>
+                <p class="small text-muted mb-0">Disease Analysis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row">
+      <!-- Upload Section -->
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow-lg border-success upload-card">
+          <div class="card-header bg-success text-white text-center py-3">
+            <h4 class="mb-0 fw-bold">🔬 Upload Plant Image</h4>
+          </div>
+          <div class="card-body p-4">
+
+            <!-- File Upload Area -->
+            <div class="upload-zone mb-4" [class.dragover]="isDragOver" (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+              <div class="upload-content text-center">
+                <div class="upload-icon mb-3">
+                  <i class="fas fa-cloud-upload-alt fa-3x text-success"></i>
+                </div>
+                <h5 class="text-success mb-2">Drag & Drop or Click to Upload</h5>
+                <p class="text-muted mb-3">Support: JPG, PNG, JPEG files (Max 5MB)</p>
+                <button class="btn btn-outline-success btn-lg">
+                  <i class="fas fa-folder-open me-2"></i>Choose File
+                </button>
+              </div>
+              <input #fileInput type="file" class="d-none" accept="image/*" (change)="onFileSelected($event)">
+            </div>
+
+            <!-- Progress Bar -->
+            <div *ngIf="uploadProgress > 0 && uploadProgress < 100" class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <small class="text-muted">Uploading...</small>
+                <small class="text-muted">{{uploadProgress}}%</small>
+              </div>
+              <div class="progress">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                  [style.width.%]="uploadProgress"></div>
+              </div>
+            </div>
+
+            <!-- Sample Images -->
+            <div class="sample-images-section">
+              <h6 class="text-success fw-bold mb-3">📁 Or Try Sample Images</h6>
+              <div class="row g-3">
+                <div class="col-6 col-md-3" *ngFor="let sample of sampleImages">
+                  <div class="sample-card card border-success" (click)="useSampleImage(sample)">
+                    <div class="sample-image-wrapper">
+                      <img [src]="sample.url" [alt]="sample.name" class="card-img-top sample-image">
+                      <div class="sample-overlay">
+                        <div class="sample-info">
+                          <small class="text-white fw-bold">{{sample.name}}</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview & Analysis Section -->
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow-lg border-success analysis-card">
+          <div class="card-header bg-success text-white text-center py-3">
+            <h4 class="mb-0 fw-bold">🔍 Analysis & Results</h4>
+          </div>
+          <div class="card-body p-4">
+
+            <!-- Image Preview -->
+            <div *ngIf="imagePreview" class="image-preview-section mb-4">
+              <div class="preview-wrapper">
+                <img [src]="imagePreview" alt="Preview"
+                  class="preview-image img-fluid rounded border border-success shadow">
+                <div class="preview-overlay" *ngIf="loading">
+                  <div class="scanning-line"></div>
+                  <div class="scanning-grid"></div>
+                </div>
+              </div>
+
+              <!-- Analysis Button -->
+              <div class="text-center mt-3">
+                <button class="btn btn-success btn-lg px-5 py-3 fw-bold analyze-btn" (click)="detectDisease()"
+                  [disabled]="!selectedFile || loading">
+                  <span *ngIf="!loading">
+                    <i class="fas fa-microscope me-2"></i>Start AI Analysis
+                  </span>
+                  <span *ngIf="loading" class="d-flex align-items-center justify-content-center">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
+                    Analyzing... {{analysisProgress}}%
+                  </span>
+                </button>
+              </div>
+
+              <!-- Analysis Progress -->
+              <div *ngIf="loading" class="mt-3">
+                <div class="progress mb-2">
+                  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                    [style.width.%]="analysisProgress"></div>
+                </div>
+                <div class="analysis-steps">
+                  <small class="text-muted">
+                    <i class="fas fa-cog fa-spin me-1 text-success"></i>
+                    {{getCurrentAnalysisStep()}}
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Image State -->
+            <div *ngIf="!imagePreview" class="no-image-state text-center py-5">
+              <div class="empty-state-icon mb-3">
+                <i class="fas fa-image fa-4x text-muted opacity-50"></i>
+              </div>
+              <h5 class="text-muted mb-2">No Image Selected</h5>
+              <p class="text-muted">Upload an image or select a sample to begin analysis</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="row" *ngIf="predictions && predictions.length > 0">
+      <div class="col-12">
+        <div class="results-section">
+          <h2 class="text-center mb-4 text-success fw-bold results-title">
+            <i class="fas fa-chart-line me-2"></i>Detection Results
+          </h2>
+
+
+          <!-- Results Grid -->
+
+          <div *ngIf="predictions && predictions.length > 0">
+            <div class="row g-4">
+              <div class="col-md-6" *ngFor="let pred of predictions">
+                <div class="card border-success shadow-lg p-4 h-100">
+                  <!-- Prediction Class -->
+                  <h4 class="card-title text-success fw-bold mb-3 text-center">{{ pred.class }}</h4>
+
+                  <!-- Summary Info -->
+                  <div class="card-text mb-3 fs-5">
+                    <p><strong>Width:</strong> <span class="text-primary">{{ pred.width }} px</span></p>
+                    <p><strong>Height:</strong> <span class="text-primary">{{ pred.height }} px</span></p>
+                    <p><strong>X:</strong> <span class="text-primary">{{ pred.x }}</span></p>
+                    <p><strong>Y:</strong> <span class="text-primary">{{ pred.y }}</span></p>
+                    <p><strong>Confidence:</strong>
+                      <span class="badge bg-success">{{ (pred.confidence * 100) | number:'1.2-2' }}%</span>
+                    </p>
+                  </div>
+
+                  <!-- Static Advice Section -->
+                  <div class="alert alert-info rounded-3 fs-6">
+                    <strong>Advice:</strong> Regularly monitor your crops and follow recommended treatment measures to
+                    prevent spread.
+                  </div>
+
+                  <!-- Optional Action Buttons -->
+                  <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-outline-success btn-sm">
+                      <i class="fas fa-medkit me-1"></i> Treatment
+                    </button>
+                    <button class="btn btn-outline-info btn-sm">
+                      <i class="fas fa-shield-alt me-1"></i> Prevention
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Overall Analysis Summary -->
+          <div class="row mt-4" *ngIf="imageInfo">
+            <div class="col-12">
+              <div class="card border-info shadow">
+                <div class="card-header bg-info text-white text-center py-3">
+                  <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-info-circle me-2"></i>Analysis Summary
+                  </h5>
+                </div>
+                <div class="card-body p-4">
+                  <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                      <div class="summary-item">
+                        <div class="summary-icon mb-2">🖼️</div>
+                        <h6 class="fw-bold text-dark mb-1">Image Size</h6>
+                        <p class="text-muted mb-0">{{imageInfo.width}} × {{imageInfo.height}} px</p>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <div class="summary-item">
+                        <div class="summary-icon mb-2">🔍</div>
+                        <h6 class="fw-bold text-dark mb-1">Detections</h6>
+                        <p class="text-muted mb-0">{{predictions.length}} Found</p>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <div class="summary-item">
+                        <div class="summary-icon mb-2">⏱️</div>
+                        <h6 class="fw-bold text-dark mb-1">Analysis Time</h6>
+                        <p class="text-muted mb-0">{{analysisTime}}ms</p>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <div class="summary-item">
+                        <div class="summary-icon mb-2">🎯</div>
+                        <h6 class="fw-bold text-dark mb-1">Avg Confidence</h6>
+                        <p class="text-muted mb-0">{{getAverageConfidence()}}%</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="row" *ngIf="!loading && predictions.length === 0 && selectedFile">
+      <div class="col-12">
+        <div class="no-results-section text-center py-5">
+          <div class="card border-success shadow-sm">
+            <div class="card-body p-5">
+              <div class="no-results-icon mb-3">
+                <i class="fas fa-check-circle fa-4x text-success"></i>
+              </div>
+              <h4 class="text-success fw-bold mb-2">Great News!</h4>
+              <p class="text-muted mb-3">No diseases detected in this plant leaf. The plant appears to be healthy!</p>
+              <div class="healthy-tips">
+                <h6 class="text-success fw-bold mb-2">🌿 Keep Your Plants Healthy:</h6>
+                <ul class="list-unstyled text-start">
+                  <li><i class="fas fa-droplet text-info me-2"></i>Maintain proper watering schedule</li>
+                  <li><i class="fas fa-sun text-warning me-2"></i>Ensure adequate sunlight exposure</li>
+                  <li><i class="fas fa-wind text-success me-2"></i>Provide good air circulation</li>
+                  <li><i class="fas fa-seedling text-success me-2"></i>Regular monitoring and care</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Information Section -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="info-section">
+          <div class="row g-4">
+            <!-- How It Works -->
+            <div class="col-lg-4">
+              <div class="info-card card border-success shadow h-100">
+                <div class="card-header bg-success text-white text-center py-3">
+                  <h5 class="mb-0 fw-bold">🤖 How It Works</h5>
+                </div>
+                <div class="card-body p-4">
+                  <div class="step-list">
+                    <div class="step-item mb-3">
+                      <div class="step-number">1</div>
+                      <div class="step-text">
+                        <strong>Upload Image:</strong> Select a clear photo of plant leaf showing symptoms
+                      </div>
+                    </div>
+                    <div class="step-item mb-3">
+                      <div class="step-number">2</div>
+                      <div class="step-text">
+                        <strong>AI Analysis:</strong> Deep learning model analyzes leaf patterns and symptoms
+                      </div>
+                    </div>
+                    <div class="step-item mb-3">
+                      <div class="step-number">3</div>
+                      <div class="step-text">
+                        <strong>Get Results:</strong> Receive detailed disease identification and recommendations
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tips for Better Results -->
+            <div class="col-lg-4">
+              <div class="info-card card border-warning shadow h-100">
+                <div class="card-header bg-warning text-dark text-center py-3">
+                  <h5 class="mb-0 fw-bold">💡 Tips for Better Results</h5>
+                </div>
+                <div class="card-body p-4">
+                  <ul class="tips-list list-unstyled">
+                    <li class="mb-3">
+                      <i class="fas fa-camera text-warning me-2"></i>
+                      <strong>Good Lighting:</strong> Take photos in natural light
+                    </li>
+                    <li class="mb-3">
+                      <i class="fas fa-expand text-warning me-2"></i>
+                      <strong>Close-up View:</strong> Focus on affected leaf areas
+                    </li>
+                    <li class="mb-3">
+                      <i class="fas fa-hand-paper text-warning me-2"></i>
+                      <strong>Steady Shot:</strong> Avoid blurry or shaky images
+                    </li>
+                    <li class="mb-3">
+                      <i class="fas fa-leaf text-warning me-2"></i>
+                      <strong>Clear Symptoms:</strong> Include visible disease signs
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supported Diseases -->
+            <div class="col-lg-4">
+              <div class="info-card card border-info shadow h-100">
+                <div class="card-header bg-info text-white text-center py-3">
+                  <h5 class="mb-0 fw-bold">🦠 Detected Diseases</h5>
+                </div>
+                <div class="card-body p-4">
+                  <div class="disease-list">
+                    <div class="disease-item mb-2">
+                      <span class="disease-dot bg-danger"></span>
+                      <span class="disease-name">Early Blight</span>
+                    </div>
+                    <div class="disease-item mb-2">
+                      <span class="disease-dot bg-warning"></span>
+                      <span class="disease-name">Late Blight</span>
+                    </div>
+                    <div class="disease-item mb-2">
+                      <span class="disease-dot bg-info"></span>
+                      <span class="disease-name">Bacterial Spot</span>
+                    </div>
+                    <div class="disease-item mb-2">
+                      <span class="disease-dot bg-secondary"></span>
+                      <span class="disease-name">Mosaic Virus</span>
+                    </div>
+                    <div class="disease-item mb-2">
+                      <span class="disease-dot bg-success"></span>
+                      <span class="disease-name">Healthy Leaves</span>
+                    </div>
+                    <p class="text-muted small mt-3">And many more plant diseases across different species</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for Treatment/Prevention Details -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title fw-bold" id="detailModalLabel">
+          <i class="fas fa-info-circle me-2"></i>{{modalTitle}}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="detail-content">
+          <p class="lead">{{modalContent}}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<!-- <app-footer></app-footer> -->

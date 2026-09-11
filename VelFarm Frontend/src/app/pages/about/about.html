@@ -1,0 +1,69 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-12">
+      <div class="about-card">
+        <h2>About Us</h2>
+        <hr className="text-gray-400 my-5" />
+        <div class="about-content">
+          <div class="about-image-wrapper">
+            <img [src]="aboutUsImage" alt="About Us" class="about-image">
+          </div>
+
+          <div class="about-text">
+            <p>{{ aboutUsText }}</p>
+            <h3>{{ missionTitle }}</h3>
+            <p>{{ missionText }}</p>
+          </div>
+        </div>
+
+        <h3>{{ whatWeOfferTitle }}</h3>
+        <div class="features-row">
+          <div class="feature-item" *ngFor="let feature of features">
+            <h4>{{ feature.title }}</h4>
+            <p>{{ feature.description }}</p>
+          </div>
+        </div>
+        <h3>{{ ourCommitmentTitle }}</h3>
+        <p>{{ ourCommitmentText }}</p>
+        <hr>
+        <h3>{{ ourVisionTitle }}</h3>
+        <p>{{ ourVisionText }}</p>
+        <hr>
+
+        <h3>Meet Our Team</h3>
+        <div class="team-row">
+          <div class="ui-card" *ngFor="let member of teamMembers">
+            <div class="top-section">
+              <img [src]="member.avatar_url" alt="{{member.name}}" class="avatar">
+              <div class="social-media">
+                <a [href]="member.html_url" target="_blank"><i class="fab fa-github"></i></a>
+              </div>
+            </div>
+            <div class="bottom-section">
+              <span class="title">{{ member.name }}</span>
+              <div class="row">
+                <div class="item">
+                  <span class="big-text">{{ member.public_repos }}</span>
+                  <span class="regular-text">&nbsp; Repositories</span>
+                </div>
+                <div class="item">
+                  <span class="big-text">{{ member.followers }}</span>
+                  <span class="regular-text">&nbsp; Followers</span>
+                </div>
+                <div class="item">
+                  <span class="big-text">{{ member.following }}</span>
+                  <span class="regular-text">&nbsp; Following</span>
+                </div>
+              </div>
+              <div class="details">
+                <p><i class="fas fa-map-marker-alt"></i> {{ member.location }}</p>
+                <p><a [href]="member.blog" target="_blank"><i class="fas fa-link"></i> Website</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,471 @@
+
+
+/* Table Styling */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  thead {
+    background: #2f855a; // green accent
+    color: #fff;
+
+    th {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 12px;
+    }
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f1f9f4;
+    }
+  }
+
+  td {
+    vertical-align: middle;
+    padding: 12px;
+  }
+}
+
+/* Empty state */
+.text-muted {
+  font-size: 1.05rem;
+  color: #6c757d !important;
+
+  i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 5px;
+    color: #a0aec0;
+  }
+}
+
+/* Card form */
+.card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+  .card-title {
+    font-weight: 600;
+    color: #2d3748;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+}
+
+/* Buttons */
+button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  }
+
+  i {
+    font-size: 1rem;
+    vertical-align: middle;
+  }
+}
+
+/* Spinner */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Crop Card Hover Effect */
+.crop-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 0.75rem;
+}
+
+.crop-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Titles */
+.card-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Buttons on very small devices */
+@media (max-width: 576px) {
+  .crop-card .btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+
+
+
+/* From Uiverse.io by gharsh11032000 */
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+  padding: 2px;
+  border-radius: 24px;
+  overflow: hidden;
+  line-height: 1.6;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  // gap: 24px;
+  padding: 15px;
+  border-radius: 22px;
+  color: #1b1c1d;
+  overflow: hidden;
+  background: #ffffff;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.content .heading {
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.3;
+  z-index: 1;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.content .para {
+  z-index: 1;
+  opacity: 0.8;
+  font-size: 18px;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  height: 160%;
+  width: 160%;
+  border-radius: inherit;
+  background: #8fef82;
+  background: linear-gradient(to right, #afe7a8, #8de79c);
+  transform-origin: center;
+  animation: moving 4.8s linear infinite paused;
+  transition: all 0.88s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.card:hover::before {
+  animation-play-state: running;
+  z-index: -1;
+  width: 20%;
+}
+
+.card:hover .content .heading,
+.card:hover .content .para {
+  color: #35793c;
+}
+
+.card:hover {
+  box-shadow: 0rem 6px 13px rgba(10, 60, 255, 0.1),
+    0rem 24px 24px rgba(10, 60, 255, 0.09),
+    0rem 55px 33px rgba(10, 60, 255, 0.05),
+    0rem 97px 39px rgba(10, 60, 255, 0.01), 0rem 152px 43px rgba(10, 60, 255, 0);
+  scale: 1.05;
+  color: #000000;
+}
+
+@keyframes moving {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+
+
+.model .container {
+  max-width: 350px;
+  background: #f8fdf8;
+  background: linear-gradient(0deg, rgb(255, 255, 255) 0%, rgb(244, 251, 244) 100%);
+  border-radius: 40px;
+  padding: 25px 35px;
+  border: 5px solid rgb(255, 255, 255);
+  box-shadow: rgba(140, 215, 133, 0.878) 0px 30px 30px -20px;
+  margin: 20px;
+}
+
+.model .heading {
+  text-align: center;
+  font-weight: 900;
+  font-size: 30px;
+  color: rgb(61, 211, 16);
+}
+
+.model .form {
+  margin-top: 20px;
+}
+
+.model .form .input {
+  width: 100%;
+  background: white;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 20px;
+  margin-top: 15px;
+  box-shadow: #d1ffcf 0px 10px 10px -5px;
+  border-inline: 2px solid transparent;
+}
+
+.model .form .input::-moz-placeholder {
+  color: rgb(170, 170, 170);
+}
+
+.model .form .input::placeholder {
+  color: rgb(170, 170, 170);
+}
+
+.model .form .input:focus {
+  outline: none;
+  border-inline: 2px solid #18d112;
+}
+
+.model .form .forgot-password {
+  display: block;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.model .form .forgot-password a {
+  font-size: 11px;
+  color: #09ff00;
+  text-decoration: none;
+}
+
+.model .form .login-button {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  background: linear-gradient(45deg, rgb(16, 211, 16) 0%, rgb(18, 209, 43) 100%);
+  color: white;
+  padding-block: 15px;
+  margin: 20px auto;
+  border-radius: 20px;
+  box-shadow: rgba(129, 230, 126, 0.878) 0px 20px 10px -15px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.model .form .login-button:hover {
+  transform: scale(1.03);
+  box-shadow: rgba(102, 221, 91, 0.878) 0px 23px 10px -20px;
+}
+
+.model .form .login-button:active {
+  transform: scale(0.95);
+  box-shadow: rgba(80, 228, 75, 0.878) 0px 15px 10px -10px;
+}
+
+.model .social-account-container {
+  margin-top: 25px;
+}
+
+.model .social-account-container .title {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  color: rgb(170, 170, 170);
+}
+
+.model .social-account-container .social-accounts {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.model .social-account-container .social-accounts .social-button {
+  background: linear-gradient(45deg, rgb(0, 0, 0) 0%, rgb(112, 112, 112) 100%);
+  border: 5px solid white;
+  padding: 5px;
+  border-radius: 50%;
+  width: 40px;
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  box-shadow: rgba(133, 215, 137, 0.878) 0px 12px 10px -8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.model .social-account-container .social-accounts .social-button .svg {
+  fill: white;
+  margin: auto;
+}
+
+.model .social-account-container .social-accounts .social-button:hover {
+  transform: scale(1.2);
+}
+
+.model .social-account-container .social-accounts .social-button:active {
+  transform: scale(0.9);
+}
+
+.model .agreement {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.model .agreement a {
+  text-decoration: none;
+  color: #66ff00;
+  font-size: 9px;
+}
+
+/* Responsive Modal */
+@media (max-width: 480px) {
+  .model .container {
+    max-width: 90vw;
+    padding: 25px 20px;
+    margin: 10px;
+  }
+}
+
+/* Remove modal background */
+#fieldModal .modal-content {
+  background: transparent;
+  box-shadow: none;        
+  border: none;   
+  width: fit-content;       
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//button
+.animated-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 36px;
+  border: 4px solid;
+  border-color: transparent;
+  font-size: 16px;
+  background-color: inherit;
+  border-radius: 100px;
+  font-weight: 600;
+
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button svg {
+  position: absolute;
+  width: 20px;
+  
+  z-index: 9;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .arr-1 {
+  right: 16px;
+}
+
+.animated-button .arr-2 {
+  left: -25%;
+}
+
+.animated-button .circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .text {
+  position: relative;
+  z-index: 1;
+  transform: translateX(-12px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button:hover {
+  box-shadow: 0 0 0 12px transparent;
+  color: #212121;
+  border-radius: 12px;
+}
+
+.animated-button:hover .arr-1 {
+  right: -25%;
+}
+
+.animated-button:hover .arr-2 {
+  left: 16px;
+}
+
+.animated-button:hover .text {
+  transform: translateX(12px);
+}
+
+.animated-button:hover svg {
+  fill: #212121;
+}
+
+.animated-button:active {
+  scale: 0.95;
+  box-shadow: 0 0 
+}
+
+.animated-button:hover .circle {
+  width: 220px;
+  height: 220px;
+  opacity: 1;
+}
+
+
+.delete-crop :hover{
+  color: rgb(255, 0, 0)
+}
+
+.edit-crop:hover{
+  color: #10d310;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

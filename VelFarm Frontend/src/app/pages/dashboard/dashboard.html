@@ -1,0 +1,163 @@
+<div class="body">
+  <div class="container">
+  <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+    <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="dashboard-container">
+    <div class="dashboard-header">
+
+
+      <!-- Welcome Section -->
+      <div class="welcome-section mb-4">
+        <h2 class="fw-bold text-dark mb-2">{{ welcomeMessage }}</h2>
+        <p class="text-muted fs-5 mb-0">{{ farmInfo }}</p>
+        <!-- Toast Test Button (remove in production) -->
+
+      </div>
+    </div>
+
+    <!-- Key Metrics Section -->
+    <div class="key-metrics-section mb-5">
+      <div class="row g-4">
+        <div *ngFor="let metric of keyMetrics" class="col-6 col-lg-3">
+          <div class="metric-card" [ngClass]="'metric-' + metric.color">
+            <div class="metric-icon">
+              <i [class]="metric.icon"></i>
+            </div>
+            <div class="metric-content">
+              <h3 class="metric-value" style="font-size: 1.20rem;">{{ metric.value | number }} {{ metric.unit }}</h3>
+              <p class="metric-title">{{ metric.title }}</p>
+              <div class="metric-trend" [ngClass]="getTrendColor(metric.trendDirection, metric.id)">
+                <i [class]="getTrendIcon(metric.trendDirection)"></i>
+                <span>{{ metric.trend > 0 ? '+' : '' }}{{ metric.trend }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipment Monitoring Section -->
+    <div class="equipment-section mb-5">
+      <h3 class="section-title mb-4">Equipment Monitoring</h3>
+      <div class="row g-4">
+        <div *ngFor="let equipment of equipment" class="col-12 col-md-6 col-lg-4">
+          <div class="equipment-card" (click)="onEquipmentClick(equipment)">
+            <div class="equipment-header">
+              <h5 class="equipment-name">{{ equipment.name }}</h5>
+              <div class="equipment-status">
+                <span class="status-dot" [ngClass]="'status-' + equipment.status"></span>
+                <span class="status-text">{{ equipment.status | titlecase }}</span>
+              </div>
+            </div>
+            <div class="equipment-details">
+              <div class="detail-item">
+                <span class="detail-label">Last Maintenance:</span>
+                <span class="detail-value">{{ formatDate(equipment.lastMaintenance) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Next Maintenance:</span>
+                <span class="detail-value">{{ formatDate(equipment.nextMaintenance) }}</span>
+              </div>
+              <div *ngIf="equipment.maintenanceOverdue" class="maintenance-alert">
+                <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>
+                <span class="text-danger">Maintenance overdue by {{ equipment.maintenanceOverdue }} days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weather Forecast Section -->
+    <div class="weather-section mb-5" *ngIf="weatherData">
+      <h3 class="section-title mb-4">Weather Forecast</h3>
+      <div class="row g-4">
+        <!-- Current Weather -->
+        <div class="col-12 col-lg-4 h-100">
+          <div class="current-weather-card d-flex justify-content-center">
+            <div class="weather-icon-large">
+              <i [class]="getWeatherIcon(weatherData.current.condition)"></i>
+            </div>
+            <div>
+              <h2 class="temperature">{{ weatherData.current.temperature }}°F</h2>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 7-Day Forecast -->
+        <div class="col-12 col-lg-8 h-100">
+          <div id="forecastContainer" class="forecast-list" tabindex="0" aria-label="7 day forecast">
+        <div *ngFor="let f of forecastData" class="forecast-item trans-style">
+          <div class="day">{{ f.day }}</div>
+          <div style="font-size:1.25rem;"><i class="fa {{ f.icon }}"></i></div>
+          <div class="temp">{{ f.temp }}°</div>
+          <div class="muted-small">{{ f.rain }}%</div>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Status Section -->
+    <div class="live-status-section mb-5">
+      <h3 class="section-title mb-4">Live Status</h3>
+      <div class="row g-4">
+        <div *ngFor="let field of fieldStatus" class="col-12 col-md-6">
+          <div class="field-status-card" (click)="onFieldClick(field)">
+            <div class="field-info">
+              <h5 class="field-name">{{ field.name }} - {{ field.crop }}</h5>
+              <div class="field-status">
+                <span class="status-dot" [ngClass]="'status-' + field.status"></span>
+                <span class="status-text" [ngClass]="'text-' + getStatusColor(field.status)">
+                  Status: {{ field.status | titlecase }}
+                </span>
+              </div>
+              <p class="last-updated">Last Updated: {{ formatTimeAgo(field.lastUpdated) }}</p>
+            </div>
+            <div class="field-image">
+              <img [src]="field.imageUrl" [alt]="field.name" class="img-fluid rounded">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Alerts Section -->
+    <div class="alerts-section mb-5">
+      <h3 class="section-title mb-4">Recent Alerts</h3>
+      <div class="row g-4">
+        <div *ngFor="let alert of alerts" class="col-12 col-md-6">
+          <div class="alert-card" [ngClass]="{
+       'alert-unread': !alert.isRead,
+       'alert-low': alert.severity === 'low',
+       'alert-medium': alert.severity === 'medium',
+       'alert-high': alert.severity === 'high'
+     }" (click)="onAlertClick(alert)">
+
+            <div class="alert-icon">
+              <i [class]="getAlertIcon(alert.type)"></i>
+            </div>
+            <div class="alert-content">
+              <h6 class="alert-title">{{ alert.title }}</h6>
+              <p class="alert-description">{{ alert.description }}</p>
+              <div class="alert-meta">
+                <span class="alert-field">{{ alert.field }}</span>
+                <span class="alert-severity" [ngClass]="getSeverityBadgeClass(alert.severity)">
+                  {{ alert.severity | titlecase }}
+                </span>
+              </div>
+              <small class="alert-time">{{ formatTimeAgo(alert.timestamp) }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+ 

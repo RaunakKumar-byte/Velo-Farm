@@ -1,0 +1,66 @@
+@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css';
+@import 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css';
+
+:root {
+  --farm-green-dark: #1e5631;
+  --farm-green:       #28a745;
+  --farm-leaf:        #6fb98f;
+  --farm-sky:         #a8e6cf;
+  --farm-white:       #f8fdf8;
+  --farm-brown:       #8b5e3c;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(180deg, var(--farm-green-dark) 0%, var(--farm-green) 35%, var(--farm-leaf) 70%, var(--farm-sky) 100%);
+  background-attachment: fixed;
+  line-height: 1.6;
+  overflow-x: hidden;
+  color: #212529;
+}
+
+.phone-header { position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); }
+.bot-status-header { background: linear-gradient(135deg, #1e5631, #28a745 ) !important; color: #fff !important; }
+
+.status-item {
+  display: flex; align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  backdrop-filter: blur(10px);
+  margin-right: 0.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.status-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+.btn-success { font-size: 1.1rem; border-radius: 8px; transition: all 0.3s ease; }
+.btn-success:hover { transform: scale(1.05); }
+
+.offcanvas { width: 320px !important; border: none; background: #ade1ad; animation: scaleIn 0.3s ease-out; }
+.offcanvas-header { background: linear-gradient(135deg, var(--farm-green-dark), var(--farm-green)); }
+
+/* Section headers greenery */
+.greenery-header { padding: 0.8rem 1.2rem; font-weight: bold; color: #211f1f; background: linear-gradient(90deg, var(--farm-green-dark), var(--farm-green)); }
+
+/* Nav Links */
+.navigation-menu .nav-link {
+  display: flex; align-items: center;
+  padding: 1.2rem 1.5rem;
+  color: #495057; text-decoration: none;
+  font-size: 1.05rem;
+  transition: all 0.3s ease;
+}
+.navigation-menu .nav-link:hover { background: rgba(40,167,69,0.15); color: var(--farm-green-dark); transform: translateX(5px); }
+.navigation-menu .nav-link.active { background: linear-gradient(135deg, var(--farm-green), var(--farm-leaf)); color: #fff; }
+
+/* Make nav buttons large & clear */
+.big-nav { font-size: 1.1rem; font-weight: 500; }
+
+/* Animations */
+.fade-in { animation: pageFade 0.4s ease-in; }
+@keyframes pageFade { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+@keyframes scaleIn { from {transform: scale(0.95);} to {transform: scale(1);} }
+.bi-circle-fill.text-warning { animation: pulse 1.5s infinite ease-in-out; }
+@keyframes pulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.15);} }
+.bi-battery.text-danger { animation: wiggle 1s infinite; }
+@keyframes wiggle { 0%,100% { transform: rotate(0);} 25% { transform: rotate(-5deg);} 75% { transform: rotate(5deg);} }

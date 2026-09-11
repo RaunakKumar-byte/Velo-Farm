@@ -1,0 +1,329 @@
+
+<div class="container">
+<div class="row">
+      <div class="col-12">
+        <h2 class="mb-4">
+          <i class="bi bi-graph-up text-primary"></i>
+          Farm Analytics Dashboard
+        </h2>
+      </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="metric-card bg-primary text-white p-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h6 class="card-title">Total Actions</h6>
+                <h2 class="mb-0">{{analytics.totalActions}}</h2>
+                <small class="opacity-75">All time activities</small>
+              </div>
+              <div class="metric-icon">
+                <i class="bi bi-activity fs-1"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="metric-card bg-info text-white p-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h6 class="card-title">Movements</h6>
+                <h2 class="mb-0">{{analytics.movements}}</h2>
+                <small class="opacity-75">Bot movements</small>
+              </div>
+              <div class="metric-icon">
+                <i class="bi bi-arrow-right-circle fs-1"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="metric-card bg-success text-white p-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h6 class="card-title">Fertilizations</h6>
+                <h2 class="mb-0">{{analytics.fertilizations}}</h2>
+                <small class="opacity-75">Total applications</small>
+              </div>
+              <div class="metric-icon">
+                <i class="bi bi-droplet-fill fs-1"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="metric-card bg-warning text-dark p-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h6 class="card-title">Efficiency</h6>
+                <h2 class="mb-0">{{analytics.efficiency}}%</h2>
+                <small class="opacity-75">Operation efficiency</small>
+              </div>
+              <div class="metric-icon">
+                <i class="bi bi-speedometer2 fs-1"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plant Health Overview -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-heart-pulse text-success"></i>
+              Plant Health Overview
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="health-stats">
+              <div class="stat-item mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="fw-bold text-success">
+                    <i class="bi bi-check-circle"></i>
+                    Healthy Plants (80-100%)
+                  </span>
+                  <span class="badge bg-success fs-6">{{analytics.healthyPlants}}</span>
+                </div>
+                <div class="progress mb-1" style="height: 10px;">
+                  <div class="progress-bar bg-success"
+                       [style.width.%]="(analytics.healthyPlants / analytics.totalPlants) * 100">
+                  </div>
+                </div>
+                <small class="text-muted">{{getPercentage(analytics.healthyPlants, analytics.totalPlants)}}% of total plants</small>
+              </div>
+
+              <div class="stat-item mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="fw-bold text-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Plants Needing Care
+                  </span>
+                  <span class="badge bg-warning fs-6">{{analytics.plantsNeedingCare}}</span>
+                </div>
+                <div class="progress mb-1" style="height: 10px;">
+                  <div class="progress-bar bg-warning"
+                       [style.width.%]="(analytics.plantsNeedingCare / analytics.totalPlants) * 100">
+                  </div>
+                </div>
+                <small class="text-muted">{{getPercentage(analytics.plantsNeedingCare, analytics.totalPlants)}}% need attention</small>
+              </div>
+
+              <div class="text-center mt-4">
+                <div class="avg-health-display">
+                  <div class="circular-progress" [ngClass]="getHealthGradeClass(analytics.avgPlantHealth)">
+                    <span class="percentage">{{analytics.avgPlantHealth}}%</span>
+                  </div>
+                  <h6 class="mt-2">Average Field Health</h6>
+                  <span class="badge" [ngClass]="'bg-' + getHealthColor(analytics.avgPlantHealth)">
+                    {{getHealthGrade(analytics.avgPlantHealth)}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-pie-chart text-info"></i>
+              Activity Distribution
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="activity-breakdown">
+              <div class="breakdown-item mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="fw-bold text-primary">
+                    <i class="bi bi-arrow-right-circle"></i>
+                    Bot Movements
+                  </span>
+                  <div>
+                    <span class="fs-5 fw-bold">{{analytics.movements}}</span>
+                    <span class="text-muted ms-2">({{getPercentage(analytics.movements, analytics.totalActions)}}%)</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 12px;">
+                  <div class="progress-bar bg-primary"
+                       [style.width.%]="getPercentage(analytics.movements, analytics.totalActions)">
+                  </div>
+                </div>
+              </div>
+
+              <div class="breakdown-item mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="fw-bold text-success">
+                    <i class="bi bi-droplet-fill"></i>
+                    Fertilizations
+                  </span>
+                  <div>
+                    <span class="fs-5 fw-bold">{{analytics.fertilizations}}</span>
+                    <span class="text-muted ms-2">({{getPercentage(analytics.fertilizations, analytics.totalActions)}}%)</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 12px;">
+                  <div class="progress-bar bg-success"
+                       [style.width.%]="getPercentage(analytics.fertilizations, analytics.totalActions)">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Efficiency Score -->
+              <div class="efficiency-score mt-4 p-3 bg-light rounded">
+                <div class="text-center">
+                  <h4 class="text-warning mb-2">
+                    <i class="bi bi-trophy"></i>
+                    Efficiency Score
+                  </h4>
+                  <div class="score-display">
+                    <span class="display-4 fw-bold text-warning">{{analytics.efficiency}}%</span>
+                    <p class="text-muted mt-2">
+                      {{getEfficiencyDescription(analytics.efficiency)}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth Stage Analysis -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-bar-chart text-success"></i>
+              Growth Stage Distribution
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="growth-analysis">
+              <div *ngFor="let stage of getGrowthStageStats()" class="stage-analysis mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div class="d-flex align-items-center">
+                    <i [class]="getStageIcon(stage.name) + ' fs-4 me-3 ' + getStageColor(stage.name)"></i>
+                    <div>
+                      <h6 class="mb-0">{{stage.name | titlecase}}</h6>
+                      <small class="text-muted">{{stage.description}}</small>
+                    </div>
+                  </div>
+                  <div class="text-end">
+                    <span class="fs-5 fw-bold">{{stage.count}}</span>
+                    <small class="text-muted d-block">{{getPercentage(stage.count, plants.length)}}%</small>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar"
+                       [ngClass]="getStageProgressClass(stage.name)"
+                       [style.width.%]="getPercentage(stage.count, plants.length)">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-calendar-event text-primary"></i>
+              Recent Performance
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="performance-metrics">
+              <div class="metric mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted">Actions Today</span>
+                  <span class="fw-bold fs-5">{{getTodayActions()}}</span>
+                </div>
+              </div>
+
+              <div class="metric mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted">Fertilizations Today</span>
+                  <span class="fw-bold fs-5 text-success">{{getTodayFertilizations()}}</span>
+                </div>
+              </div>
+
+              <div class="metric mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted">Movements Today</span>
+                  <span class="fw-bold fs-5 text-primary">{{getTodayMovements()}}</span>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="performance-rating text-center">
+                <h6 class="text-muted mb-2">Overall Performance</h6>
+                <div class="rating-stars mb-2">
+                  <i *ngFor="let star of getPerformanceStars()"
+                     [class]="star"
+                     style="font-size: 1.5rem;"></i>
+                </div>
+                <span class="badge" [ngClass]="getPerformanceBadgeClass()">
+                  {{getPerformanceRating()}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card border-info">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-lightbulb"></i>
+              Smart Recommendations
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4" *ngFor="let recommendation of getRecommendations()">
+                <div class="recommendation-card">
+                  <div class="d-flex align-items-start">
+                    <i [class]="recommendation.icon + ' fs-3 me-3 ' + recommendation.color"></i>
+                    <div>
+                      <h6 class="fw-bold">{{recommendation.title}}</h6>
+                      <p class="text-muted mb-2">{{recommendation.description}}</p>
+                      <span class="badge" [ngClass]="recommendation.badgeClass">
+                        {{recommendation.priority}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

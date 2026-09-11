@@ -1,0 +1,776 @@
+
+.financial-overview-container {
+  padding: 2.5rem 2rem;
+  background: linear-gradient(180deg, rgba(248,249,250,1) 0%, rgba(243,244,246,1) 100%);
+  min-height: 100vh;
+
+  .header-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .page-title {
+      font-size: 2.75rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+
+    .page-subtitle {
+      font-size: 1.15rem;
+      color: #6c757d;
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+
+      .period-selector {
+        .form-select {
+          border: 1px solid #dee2e6;
+          border-radius: 10px;
+          padding: 0.5rem 1.2rem;
+          font-size: 0.95rem;
+          min-width: 160px;
+          background: #ffffff;
+          transition: all 0.3s ease;
+
+          &:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+          }
+        }
+      }
+
+      .btn {
+        font-weight: 500;
+        padding: 0.55rem 1.2rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #22c55e, #14b8a6);
+        color: #ffffff;
+        border: none;
+        transition: all 0.3s ease, filter 0.2s ease;
+        backdrop-filter: saturate(140%) blur(2px);
+
+        &:hover {
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
+          filter: brightness(1.05);
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+        }
+      }
+    }
+  }
+
+  .overview-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+
+  .metrics-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+
+  .metric-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -30%;
+      width: 150%;
+      height: 150%;
+      background: rgba(0, 0, 0, 0.02);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .card-content {
+      flex: 1;
+
+      .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem 0;
+        color: #2c3e50;
+      }
+
+      .metric-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin: 0;
+        font-weight: 500;
+      }
+    }
+
+    &.revenue-card {
+      .card-icon {
+        background: linear-gradient(135deg, #22c55e, #14b8a6);
+      }
+    }
+
+    &.expense-card {
+      .card-icon {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+      }
+    }
+
+    &.profit-card {
+      .card-icon {
+        background: linear-gradient(135deg, #6366f1, #22d3ee);
+      }
+    }
+  }
+}
+
+// Extra tiles styling
+.ratio-tile {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .ratio-label {
+    color: #495057;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .ratio-value {
+    color: #1f2937;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+}
+
+.insights-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: #2c3e50;
+    line-height: 1.5;
+
+    &::before {
+      content: "\f058";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      color: #28a745;
+      font-size: 1rem;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+// Crazy animations: subtle wobble on chart cards and bounce on icons
+
+.chart-section .card:hover {
+  animation: wobble 0.6s ease-in-out;
+}
+
+@keyframes bouncey {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.metric-card .card-icon:hover {
+  animation: bouncey 0.6s ease-in-out;
+}
+
+
+  .chart-section {
+  .card {
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, rgba(248,249,250,0.9), rgba(233,236,239,0.8));
+      border-bottom: 1px solid #dee2e6;
+      border-radius: 16px 16px 0 0;
+      padding: 1.5rem 2rem;
+
+      .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 1.25rem;
+        margin: 0;
+        letter-spacing: 0.5px;
+      }
+
+      .card-subtitle {
+        font-weight: 400;
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+      }
+    }
+
+    .card-body {
+      padding: 2rem;
+
+      .chart-container {
+        height: 400px;
+        position: relative;
+
+        canvas {
+          border-radius: 12px;
+          background: transparent;
+        }
+      }
+
+      .chart-details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+
+        .detail-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .label {
+            font-size: 0.85rem;
+            color: #6c757d;
+          }
+
+          .value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #2c3e50;
+          }
+        }
+      }
+
+      .chart-legend {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+          }
+
+          .legend-text {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+  .expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .expense-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .expense-info {
+      flex: 1;
+      min-width: 0;
+
+      .expense-name {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2c3e50; // unchanged
+        margin-bottom: 0.2rem;
+      }
+
+      .expense-amount {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #495057; // unchanged original color
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .expense-bar {
+      flex: 2;
+      height: 10px;
+      background-color: #f1f3f4; // unchanged
+      border-radius: 20px;
+      margin: 0 1rem;
+      overflow: hidden;
+      position: relative;
+
+      .expense-progress {
+        height: 100%;
+        border-radius: 20px;
+        transition: width 0.5s ease;
+        background-color: #e74c3c; // original red color
+        box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+      }
+    }
+
+    .expense-percentage {
+      min-width: 50px;
+      text-align: right;
+      font-weight: 600;
+      color: #6c757d; // unchanged
+      font-size: 0.9rem;
+    }
+  }
+}
+
+
+  .profitability-chart {
+  .chart-container {
+    height: 320px; // thoda bada
+    position: relative;
+    margin-bottom: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .profitability-legend {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-radius: 8px;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: rgba(76, 175, 80, 0.05); // subtle hover
+      }
+
+      .legend-color {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%; // circular instead of rounded square
+        flex-shrink: 0;
+        border: 1px solid #ddd;
+      }
+
+      .legend-text {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex: 1;
+
+        .crop-name {
+          font-weight: 600;
+          color: #2c3e50;
+          font-size: 0.95rem;
+        }
+
+        .crop-profit {
+          font-weight: 700;
+          color: #27ae60;
+          font-size: 0.95rem;
+        }
+
+        .crop-pct {
+          margin-left: 0.75rem;
+          background: rgba(34, 197, 94, 0.12);
+          color: #16a34a;
+          font-weight: 700;
+          padding: 0.1rem 0.4rem;
+          border-radius: 6px;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}
+}
+
+// Modal Styles
+.modal {
+  .modal-dialog {
+    .modal-content {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      background-color: #f8f9fa;
+
+      .modal-header {
+        background: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        border-radius: 16px 16px 0 0;
+        padding: 1.25rem 1.5rem;
+
+        .modal-title {
+          font-weight: 600;
+          color: #1f2937;
+        }
+
+        .btn-close {
+          &:hover {
+            color: #e74c3c;
+          }
+        }
+      }
+
+      .modal-body {
+        padding: 2rem 1.5rem;
+
+        .form-label {
+          font-weight: 600;
+          color: #495057;
+        }
+
+        .form-select {
+          border-radius: 10px;
+          padding: 0.6rem 1rem;
+          border: 1px solid #ced4da;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+          &:focus {
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 0.25rem rgba(20, 184, 166, 0.2);
+          }
+        }
+      }
+
+      .modal-footer {
+        background-color: #ffffff;
+        border-top: 1px solid #e9ecef;
+        border-radius: 0 0 16px 16px;
+        padding: 1rem 1.5rem;
+
+        .btn-secondary {
+          background-color: #6c757d;
+          border: none;
+          &:hover {
+            background-color: #5a6268;
+          }
+        }
+
+        .btn-primary {
+          background-color: #14b8a6;
+          border: none;
+          &:hover {
+            background-color: #11a092;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Loading state
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #28a745;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .financial-overview-container {
+    padding: 1rem 0;
+
+    .header-section {
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .header-actions {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+
+        .period-selector {
+          .form-select {
+            min-width: auto;
+          }
+        }
+      }
+    }
+
+    .metrics-section {
+      .metric-card {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+
+        .card-icon {
+          width: 50px;
+          height: 50px;
+          font-size: 1.25rem;
+        }
+
+        .card-content {
+          .metric-value {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+
+    .chart-section {
+      .card {
+        .card-body {
+          padding: 1rem;
+
+          .chart-container {
+            height: 300px;
+          }
+        }
+      }
+    }
+
+    .expense-list {
+      .expense-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+
+        .expense-bar {
+          margin: 0.5rem 0;
+        }
+
+        .expense-percentage {
+          text-align: left;
+        }
+      }
+    }
+
+    .profitability-chart {
+      .chart-container {
+        height: 250px;
+      }
+    }
+  }
+}
+
+// Animation for cards
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.metric-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.metric-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.metric-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+// Chart hover effects
+.chart-container {
+  canvas {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+// Shimmer loading
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(229,231,235,0.6) 25%, rgba(243,244,246,0.6) 37%, rgba(229,231,235,0.6) 63%);
+  background-size: 400% 100%;
+  animation: shimmerMove 1.4s ease-in-out infinite;
+  border-radius: 12px;
+  height: 400px;
+}
+
+@keyframes shimmerMove {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+// Dark mode theme overrides
+.financial-overview-container.dark-mode {
+  background: radial-gradient(1200px 800px at 20% 0%, #111827 0%, #0b0f14 60%, #070a0d 100%);
+  color: #e5e7eb;
+
+  .header-section {
+    .page-title { color: #f3f4f6; }
+    .page-subtitle { color: #9ca3af; }
+    .btn {
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+      box-shadow: 0 10px 22px rgba(6,182,212,0.25);
+      &:hover { box-shadow: 0 16px 34px rgba(124,58,237,0.35); }
+    }
+    .form-select {
+      background-color: #0b1220;
+      color: #e5e7eb;
+      border-color: rgba(148,163,184,0.2);
+    }
+  }
+
+  .metrics-section {
+    .metric-card {
+      background: linear-gradient(135deg, rgba(17,24,39,0.85), rgba(31,41,55,0.65));
+      border: 1px solid rgba(148,163,184,0.08);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      .card-content {
+        .metric-value { color: #f3f4f6; }
+        .metric-label { color: #a1a1aa; }
+      }
+    }
+  }
+
+  .chart-section {
+    .card {
+      background: linear-gradient(135deg, rgba(17,24,39,0.85), rgba(31,41,55,0.6));
+      border: 1px solid rgba(148,163,184,0.12);
+      .card-header {
+        background: linear-gradient(135deg, rgba(31,41,55,0.75), rgba(17,24,39,0.6));
+        border-color: rgba(148,163,184,0.12);
+        .card-title { color: #f9fafb; }
+        .card-subtitle { color: #94a3b8; }
+      }
+      .card-body {
+        .chart-details .detail-item {
+          .label { color: #94a3b8; }
+          .value { color: #e5e7eb; }
+        }
+        .chart-legend .legend-text { color: #e5e7eb; }
+      }
+    }
+  }
+
+  .expense-list {
+    .expense-item {
+      background: linear-gradient(135deg, rgba(17,24,39,0.85), rgba(31,41,55,0.6));
+      border: 1px solid rgba(148,163,184,0.08);
+      .expense-name { color: #e5e7eb; }
+      .expense-amount { color: #cbd5e1; }
+      .expense-bar { background-color: rgba(148,163,184,0.15); }
+      .expense-percentage { color: #94a3b8; }
+    }
+  }
+
+  .profitability-chart {
+    .chart-container { background: transparent; }
+    .legend-text { color: #e5e7eb; }
+  }
+
+  .ratio-tile {
+    background: linear-gradient(135deg, rgba(17,24,39,0.85), rgba(31,41,55,0.6));
+    border: 1px solid rgba(148,163,184,0.08);
+    .ratio-label { color: #94a3b8; }
+    .ratio-value { color: #f3f4f6; }
+  }
+}

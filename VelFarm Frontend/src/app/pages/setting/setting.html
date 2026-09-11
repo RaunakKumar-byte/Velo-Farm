@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Settings — Styled Responsive</title>
+
+  <!-- Bootstrap Icons (used in original template) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Optional Bootstrap classes (if your project already includes bootstrap you can remove this) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Your custom CSS -->
+  <link rel="stylesheet" href="setting.scss">
+</head>
+
+<body>
+
+  <div class="mobile-shell py-3" id="theme-container">
+    <div class="settings-screen">
+
+      <!-- Header -->
+      <div class="settings-header d-flex align-items-center gap-2">
+        <button class="btn btn-link p-0" (click)="goBack()" aria-label="Go back">
+          <i class="bi bi-chevron-left me-1"></i>
+        </button>
+        <h5 class="mb-0">Settings</h5>
+      </div>
+
+      <!-- Responsive Grid -->
+      <div class="settings-grid">
+
+        <!-- Main Content -->
+        <div class="settings-left">
+
+          <!-- Farmer Profile -->
+          <div class="mt-3">
+            <p class="section-title">Farmer Profile</p>
+            <button class="profile-card d-flex align-items-center w-100 border-0 bg-transparent" (click)="editProfile()"
+              aria-label="Edit profile">
+              <img class="avatar"
+                src="https://img.freepik.com/premium-vector/farmer-logo-template-design-vector-emblem-design-concept-creative-symbol-icon_316488-978.jpg"
+                alt="Farmer" />
+              <div class="ms-3">
+                <h6 class="mb-0 fw-semibold">{{ currentUser?.fullName || 'Ethan Carter' }}</h6>
+                <small class="text-success fw-semibold">{{ currentUser?.farmingExperience || 'Farmer' }}</small>
+              </div>
+              <i class="bi bi-chevron-right ms-auto text-muted"></i>
+            </button>
+          </div>
+
+          <!-- Account Settings -->
+          <div class="mt-4">
+            <p class="section-title">Account Settings</p>
+            <div class="section-card">
+              <a href="#" class="list-item" (click)="changePassword(); $event.preventDefault()">
+                <span class="icon-pill"><i class="bi bi-shield-lock"></i></span>
+                <span class="label">Change Password</span>
+                <i class="bi bi-chevron-right chevron"></i>
+              </a>
+              <a href="#" class="list-item" (click)="updateEmail(); $event.preventDefault()">
+                <span class="icon-pill"><i class="bi bi-envelope"></i></span>
+                <span class="label">Update Email</span>
+                <i class="bi bi-chevron-right chevron"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- App Preferences -->
+          <div class="mt-4">
+            <p class="section-title">App Preferences</p>
+            <div class="section-card">
+              <div class="list-item">
+                <span class="icon-pill"><i class="bi bi-bell"></i></span>
+                <span class="label">Push Notifications</span>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="push-notifications" [checked]="settings.notifications.push"
+                    (change)="toggleNotification('push')">
+                  <label for="push-notifications" class="toggle-label" aria-label="Toggle push notifications"></label>
+                </div>
+              </div>
+              <div class="list-item">
+                <span class="icon-pill"><i class="bi bi-envelope"></i></span>
+                <span class="label">Email Notifications</span>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="email-notifications" [checked]="settings.notifications.email"
+                    (change)="toggleNotification('email')">
+                  <label for="email-notifications" class="toggle-label" aria-label="Toggle email notifications"></label>
+                </div>
+              </div>
+              <div class="list-item">
+                <span class="icon-pill"><i class="bi bi-cloud-rain"></i></span>
+                <span class="label">Weather Alerts</span>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="weather-notifications" [checked]="settings.notifications.weather"
+                    (change)="toggleNotification('weather')">
+                  <label for="weather-notifications" class="toggle-label"
+                    aria-label="Toggle weather notifications"></label>
+                </div>
+              </div>
+              <div class="list-item">
+                <span class="icon-pill"><i class="bi bi-globe2"></i></span>
+                <span class="label">Language</span>
+                <select class="language-select" (change)="changeLanguage($event)">
+                  <option value="English" [selected]="settings.language === 'English'">English</option>
+                  <option value="Hindi" [selected]="settings.language === 'Hindi'">हिंदी</option>
+                  <option value="Spanish" [selected]="settings.language === 'Spanish'">Español</option>
+                  <option value="French" [selected]="settings.language === 'French'">Français</option>
+                </select>
+              </div>
+              <div class="list-item">
+                <span class="icon-pill"><i class="bi bi-moon"></i></span>
+                <span class="label">Dark Mode</span>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="dark-mode" [checked]="settings.theme === 'dark'" (change)="toggleTheme()">
+                  <label for="dark-mode" class="toggle-label" aria-label="Toggle dark mode"></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Setup -->
+          <div class="mt-4">
+            <p class="section-title">System Setup</p>
+            <div class="section-card">
+              <a href="#" class="list-item" (click)="openSprayerCalibration()">
+                <span class="icon-pill"><i class="fa-solid fa-spray-can-sparkles"></i></span>
+                <span class="label">Sprayer Calibration</span>
+                <i class="bi bi-chevron-right chevron"></i>
+              </a>
+              <a href="#" class="list-item" (click)="openFarmDetails()">
+                <span class="icon-pill"><i class="bi bi-geo-alt"></i></span>
+                <span class="label">Farm Details</span>
+                <i class="bi bi-chevron-right chevron"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Additional Settings -->
+          <div class="mt-4">
+            <p class="section-title">Additional Settings</p>
+            <div class="section-card">
+              <button class="list-item w-100 border-0 bg-transparent" (click)="openSecuritySettings()"
+                (keydown.enter)="openSecuritySettings()" aria-label="Open security settings">
+                <span class="icon-pill"><i class="bi bi-shield-check"></i></span>
+                <span class="label">Security Settings</span>
+                <i class="bi bi-chevron-right chevron"></i>
+              </button>
+              <button class="list-item w-100 border-0 bg-transparent" (click)="exportData()"
+                (keydown.enter)="exportData()" aria-label="Export data">
+                <span class="icon-pill"><i class="bi bi-download"></i></span>
+                <span class="label">Export Data</span>
+                <i class="bi bi-chevron-right chevron"></i>
+              </button>
+              <button class="list-item w-100 border-0 bg-transparent" (click)="openSystemHealth()"
+                (keydown.enter)="openSystemHealth()" aria-label="Open system health">
+                <span class="icon-pill"><i class="bi bi-heart-pulse"></i></span>
+                <span class="label">System Health</span>
+                <i class="bi bi-chevron-right chevron"></i>
+              </button>
+            </div>
+          </div>
+
+        </div> <!-- .settings-left -->
+
+
+        <!-- RIGHT: Farm Info panel (sticky on desktop) -->
+        <aside class="settings-side">
+          <div class="farm-info-block" *ngIf="currentUser">
+            <p class="section-title">Farm Information</p>
+            <div class="section-card farm-info-card">
+              <div class="farm-info">
+                <div class="info-item">
+                  <span class="info-label">Farm Name:</span>
+                  <span class="info-value">{{ currentUser.farmName || 'Not set' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Location:</span>
+                  <span class="info-value">{{ currentUser.farmLocation || 'Not set' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Size:</span>
+                  <span class="info-value">{{ currentUser.farmSize || 0 }} acres</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Primary Crops:</span>
+                  <span class="info-value">{{ (currentUser.primaryCrops || []).join(', ') || 'Not set' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+
+      </div> <!-- .settings-grid -->
+
+    </div> <!-- .settings-screen -->
+
+    <!-- Bottom Tab Bar -->
+    <nav class="bottom-tabs">
+      <a routerLink="/dashboard" class="tab">
+        <i class="bi bi-house"></i>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/health" class="tab">
+        <i class="bi bi-activity"></i>
+        <span>Plant Health</span>
+      </a>
+      <a routerLink="/sprayer" class="tab">
+        <i class="fa-solid fa-spray-can-sparkles"></i>
+        <span>Sprayer</span>
+      </a>
+      <a routerLink="/analytics" class="tab">
+        <i class="bi bi-bar-chart"></i>
+        <span>Analytics</span>
+      </a>
+      <a routerLink="/setting" class="tab">
+        <i class="bi bi-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Modals (unchanged, kept below) -->
+  <!-- Password Change Modal -->
+  <div class="modal fade" [class.show]="showPasswordModal" [style.display]="showPasswordModal ? 'block' : 'none'"
+    tabindex="-1" *ngIf="showPasswordModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Change Password</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="onPasswordSubmit()">
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword"
+                [(ngModel)]="passwordData.currentPassword" required>
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPassword" [(ngModel)]="passwordData.newPassword"
+                required minlength="6">
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmPassword"
+                [(ngModel)]="passwordData.confirmPassword" required>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Change Password</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Update Modal -->
+  <div class="modal fade" [class.show]="showEmailModal" [style.display]="showEmailModal ? 'block' : 'none'"
+    tabindex="-1" *ngIf="showEmailModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Update Email</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="onEmailSubmit()">
+            <div class="mb-3">
+              <label for="newEmail" class="form-label">New Email Address</label>
+              <input type="email" class="form-control" id="newEmail" [(ngModel)]="emailData.newEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="emailPassword" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="emailPassword" [(ngModel)]="emailData.currentPassword"
+                required>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update Email</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sprayer Calibration Modal -->
+  <div class="modal fade" [class.show]="showSprayerModal" [style.display]="showSprayerModal ? 'block' : 'none'"
+    tabindex="-1" *ngIf="showSprayerModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Sprayer Calibration</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="onSprayerSubmit()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="pressure" class="form-label">Pressure (PSI)</label>
+                <input type="number" class="form-control" id="pressure" [(ngModel)]="sprayerData.pressure"
+                  (input)="calculateCoverage()" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="flowRate" class="form-label">Flow Rate (GPM)</label>
+                <input type="number" step="0.1" class="form-control" id="flowRate" [(ngModel)]="sprayerData.flowRate"
+                  (input)="calculateCoverage()" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="nozzleSize" class="form-label">Nozzle Size (inches)</label>
+                <input type="number" step="0.1" class="form-control" id="nozzleSize"
+                  [(ngModel)]="sprayerData.nozzleSize" (input)="calculateCoverage()" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="speed" class="form-label">Speed (MPH)</label>
+                <input type="number" step="0.1" class="form-control" id="speed" [(ngModel)]="sprayerData.speed"
+                  (input)="calculateCoverage()" required>
+              </div>
+            </div>
+            <div class="alert alert-info">
+              <strong>Calculated Coverage:</strong> {{ sprayerData.calculatedCoverage | number:'1.2-2' }} acres per hour
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Calibration</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Farm Details Modal -->
+  <div class="modal fade" [class.show]="showFarmModal" [style.display]="showFarmModal ? 'block' : 'none'" tabindex="-1"
+    *ngIf="showFarmModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Farm Details</h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="onFarmSubmit()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="farmName" class="form-label">Farm Name</label>
+                <input type="text" class="form-control" id="farmName" [(ngModel)]="farmData.name" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="farmLocation" class="form-label">Location</label>
+                <input type="text" class="form-control" id="farmLocation" [(ngModel)]="farmData.location" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="farmSize" class="form-label">Size (acres)</label>
+                <input type="number" class="form-control" id="farmSize" [(ngModel)]="farmData.size" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="soilType" class="form-label">Soil Type</label>
+                <select class="form-select" id="soilType" [(ngModel)]="farmData.soilType">
+                  <option value="Loam">Loam</option>
+                  <option value="Clay">Clay</option>
+                  <option value="Sandy">Sandy</option>
+                  <option value="Silt">Silt</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="cropInput" class="form-label">Primary Crops</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" #cropInput placeholder="Add a crop">
+                <button type="button" class="btn btn-outline-primary"
+                  (click)="addCrop(cropInput.value); cropInput.value=''">Add</button>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <span *ngFor="let crop of farmData.primaryCrops; let i = index"
+                  class="badge bg-primary d-flex align-items-center gap-1">
+                  {{ crop }}
+                  <button type="button" class="btn-close btn-close-white" (click)="removeCrop(i)"
+                    style="font-size: 0.7em;"></button>
+                </span>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Details</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Backdrop -->
+  <button class="modal-backdrop fade"
+    [class.show]="showPasswordModal || showEmailModal || showSprayerModal || showFarmModal"
+    [style.display]="(showPasswordModal || showEmailModal || showSprayerModal || showFarmModal) ? 'block' : 'none'"
+    (click)="closeModals()" (keydown.enter)="closeModals()" aria-label="Close modal"></button>
+
+  <!-- If you want to support theme preference via JS (optional), your Angular toggle function can add/remove `.dark-mode` on document.body or #theme-container -->
+</body>
+
+</html>

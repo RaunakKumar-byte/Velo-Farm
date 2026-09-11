@@ -1,0 +1,248 @@
+/* About Page */
+.about-page {
+  animation: fadeInScale 1s ease-in-out;
+  padding: 1rem;
+}
+
+.about-title {
+  color: #0d6efd;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.about-card {
+  border-radius: 15px;
+  background: linear-gradient(135deg, #eafbea, #ffffff);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
+  border: none;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.about-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.about-card:hover .card-img-top {
+  transform: scale(1.1);
+}
+
+/* Slide-up animation */
+.slide-up {
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideUp 0.8s forwards;
+}
+
+.slide-up.delay-1 { animation-delay: 0.3s; }
+.slide-up.delay-2 { animation-delay: 0.6s; }
+
+@keyframes slideUp {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Timeline styling */
+.timeline {
+  list-style: none;
+  padding: 0;
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.timeline li {
+  margin: 20px 0;
+  padding-left: 30px;
+  position: relative;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.timeline li::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: #198754;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 8px;
+  box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.2);
+}
+
+.timeline li span {
+  font-weight: bold;
+  color: #198754;
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+/* List group styling */
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: #f8f9fa;
+  }
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0.6rem 1.2rem;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .about-page {
+    padding: 0.5rem;
+  }
+  
+  .about-title {
+    font-size: 2rem;
+  }
+  
+  .about-card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .timeline li {
+    font-size: 1rem;
+    padding-left: 25px;
+  }
+  
+  .timeline li::before {
+    width: 10px;
+    height: 10px;
+    left: -5px;
+  }
+  
+  .list-group-item {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .about-page {
+    padding: 0.25rem;
+  }
+  
+  .about-title {
+    font-size: 1.5rem;
+  }
+  
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  .timeline li {
+    font-size: 0.9rem;
+    padding-left: 20px;
+  }
+  
+  .timeline li::before {
+    width: 8px;
+    height: 8px;
+    left: -4px;
+  }
+  
+  .list-group-item {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .about-card {
+    background: linear-gradient(135deg, #2d3748, #4a5568);
+    color: #fff;
+  }
+  
+  .timeline li::before {
+    background: #68d391;
+    box-shadow: 0 0 0 3px rgba(104, 211, 145, 0.2);
+  }
+  
+  .timeline li span {
+    color: #68d391;
+  }
+  
+  .list-group-item {
+    background-color: #2d3748;
+    color: #fff;
+    border-bottom-color: #4a5568;
+    
+    &:hover {
+      background-color: #4a5568;
+    }
+  }
+}
+
+/* Print styles */
+@media print {
+  .btn {
+    display: none !important;
+  }
+  
+  .about-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+    background: #fff !important;
+    color: #000 !important;
+  }
+  
+  .timeline li::before {
+    background: #000 !important;
+  }
+  
+  .timeline li span {
+    color: #000 !important;
+  }
+}

@@ -1,0 +1,391 @@
+/* Main Container */
+.sprayer-screen {
+  background: #f5f8f7;
+  border-radius: 16px;
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.05);
+  padding: 25px;
+}
+
+/* Icon Circle */
+.sprayer-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading */
+.sprayer-screen h5 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px !important;
+}
+
+/* Sprayer Cards */
+.sprayer-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.sprayer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Sprayer Title */
+.sprayer-card h6 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: #222;
+}
+
+/* Tank Info */
+.sprayer-card p {
+  margin: 5px 0;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Switch */
+.form-check-input {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Progress Bar */
+.progress {
+  height: 12px;
+  border-radius: 8px;
+  background: #e9ecef;
+  overflow: hidden;
+}
+
+.progress-bar {
+  border-radius: 8px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+/* Dynamic Colors */
+.progress-bar.red {
+  background: linear-gradient(90deg, #e53935, #ef5350);
+}
+.progress-bar.yellow {
+  background: linear-gradient(90deg, #fdd835, #fbc02d);
+}
+.progress-bar.green {
+  background: linear-gradient(90deg, #43a047, #66bb6a);
+}
+
+/* Maintenance Text */
+.sprayer-card small {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Button */
+.sprayer-screen .btn-success {
+  background: linear-gradient(135deg, #28a745, #34d058);
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0px 4px 12px rgba(40, 167, 69, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sprayer-screen .btn-success:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 6px 18px rgba(40, 167, 69, 0.6);
+}
+
+/* Alerts */
+.alert {
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 15px;
+  box-shadow: 0px 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.alert-warning {
+  background: #fff8e1;
+  color: #d9822b;
+  border: 1px solid #ffd45c;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Extra Cards */
+.extra-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.4s ease-out;
+
+  h6 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  p {
+    font-size: 14px;
+    color: #555;
+    margin: 4px 0;
+  }
+
+  ul {
+    padding-left: 18px;
+    margin: 0;
+
+    li {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #444;
+
+      .text-danger {
+        font-weight: 600;
+      }
+    }
+  }
+}
+/* Maintenance Section */
+.maintenance-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+
+  h6 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d2d2d;
+  }
+
+  .maintenance-table {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+
+    thead {
+      background: #f5f8f7;
+      th {
+        font-weight: 600;
+        font-size: 14px;
+        color: #444;
+        padding: 10px;
+      }
+    }
+
+    tbody td {
+      padding: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .bg-success { background: #d4edda; color: #155724; }
+    .bg-warning { background: #fff3cd; color: #856404; }
+    .bg-danger { background: #f8d7da; color: #721c24; }
+  }
+}
+
+/* Performance Stats */
+.performance-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+
+  h6 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d2d2d;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #e3fcef, #d0f0da);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+
+    h4 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #28a745;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+}
+.extra-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+}
+
+.battery-section {
+  .battery-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 12px;
+    height: 100px;
+
+    .battery-label {
+      width: 80px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .battery {
+      position: relative;
+      flex: 1;
+      height: 35px;
+      border-radius: 5px;
+      background: #f1f1f1;
+      overflow: hidden;
+      cursor: pointer;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        right: -8px;
+        width: 6px;
+        height: 12px;
+        background: #555;
+        border-radius: 2px;
+      }
+
+      .battery-level {
+        height: 100%;
+        transition: width 0.4s ease;
+        position: relative;
+
+        .bolt {
+          position: absolute;
+          right: 5px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 18px;
+          animation: boltAnim 1s infinite alternate;
+        }
+
+        .pulse {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 100%;
+          height: 100%;
+          background: rgba(239,83,80,0.4);
+          border-radius: 5px;
+          transform: translate(-50%, -50%);
+          animation: pulse 1s infinite;
+        }
+      }
+
+      &.charging {
+        .battery-level {
+          background-size: 30px 30px;
+          background-image: repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.4) 0,
+            rgba(255, 255, 255, 0.4) 10px,
+            transparent 10px,
+            transparent 20px
+          );
+          animation: chargeMove 1.5s linear infinite;
+        }
+
+        &.green .battery-level { animation: chargeMove 1.5s linear infinite, glowGreen 1.5s ease-in-out infinite; }
+        &.yellow .battery-level { animation: chargeMove 1.5s linear infinite, glowYellow 1.5s ease-in-out infinite; }
+        &.red .battery-level { animation: chargeMove 1.5s linear infinite, glowRed 1.5s ease-in-out infinite; }
+      }
+
+      .green { background-color: #43a047; }
+      .yellow { background-color: #fbc02d; }
+      .red { background-color: #ef5350; }
+    }
+
+    .battery-text {
+      font-weight: 600;
+      min-width: 60px;
+      text-align: right;
+      font-size: 14px;
+    }
+  }
+}
+
+@keyframes chargeMove { from { background-position:0 0; } to { background-position:30px 0; } }
+@keyframes glowGreen { 0%,100%{box-shadow:0 0 6px rgba(67,160,71,0.6);}50%{box-shadow:0 0 16px rgba(67,160,71,1);} }
+@keyframes glowYellow { 0%,100%{box-shadow:0 0 6px rgba(251,192,45,0.6);}50%{box-shadow:0 0 16px rgba(251,192,45,1);} }
+@keyframes glowRed { 0%,100%{box-shadow:0 0 6px rgba(239,83,80,0.6);}50%{box-shadow:0 0 16px rgba(239,83,80,1);} }
+@keyframes pulse { 0%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.1);}100%{transform:translate(-50%,-50%) scale(1);} }
+@keyframes boltAnim { 0%{opacity:0.3;}50%{opacity:1;}100%{opacity:0.3;} }
+
+
+/* Usage Analytics */
+.usage-card {
+  background: linear-gradient(135deg, #e3fcef, #d0f0da);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+
+  h5 {
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #28a745;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #444;
+  }
+}

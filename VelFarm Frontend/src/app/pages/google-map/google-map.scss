@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.map-header {
+  text-align: center;
+  padding: 1rem;
+  background-color: #1a73e8;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.map-container {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+#map {
+  width: 80vw;
+  height: 80vh;
+  border-radius: 10px;
+}

@@ -1,0 +1,384 @@
+
+$bg-top: #f6fffa;
+$bg-bottom: #eefaf0;
+$card-bg: rgba(255,255,255,0.94);
+$glass-border: rgba(40,167,69,0.12);
+$green-600: #28a745;
+$green-400: #3ddc84;
+$danger-500: #dc3545;
+$muted: #6c757d;
+$shadow-sm: 0 6px 20px rgba(15, 40, 20, 0.06);
+$shadow-lg: 0 14px 40px rgba(12, 35, 16, 0.08);
+
+.field-layout-page {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, $bg-top 0%, $bg-bottom 100%);
+  padding: 36px 16px;
+  color: #111827;
+  min-height: 100vh;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h3.text-center {
+    font-weight: 700;
+    color: darken($green-600, 10%);
+    margin-bottom: 18px;
+    letter-spacing: -0.2px;
+  }
+
+  .map-row {
+    .card {
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(247,255,247,0.96));
+      border: 1px solid $glass-border;
+      box-shadow: $shadow-sm;
+      transition: transform 0.32s ease, box-shadow 0.32s ease;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        background: transparent;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+
+        h5 {
+          margin: 0;
+          font-size: 1.05rem;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: darken($green-600, 10%);
+          font-weight: 700;
+        }
+
+        .map-header-extra {
+          .map-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba($green-600, 0.08);
+            color: $green-600;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(40,167,69,0.06);
+            font-size: 0.88rem;
+          }
+        }
+      }
+
+      .card-body {
+        padding: 0;
+        height: 460px;
+        position: relative;
+
+        @media (max-width: 768px) {
+          height: 320px;
+        }
+
+        :global(.leaflet-container) {
+          width: 100% !important;
+          height: 100% !important;
+          border-radius: 0;
+          z-index: 1;
+        }
+        :global(.leaflet-control-zoom) {
+          border: none !important;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
+          border-radius: 8px !important;
+          overflow: hidden;
+          right: 12px !important;
+          top: 12px !important;
+        }
+        :global(.leaflet-control-zoom a) {
+          background-color: #fff !important;
+          color: #495057 !important;
+          font-weight: 600 !important;
+          padding: 6px 10px !important;
+          transition: all 0.18s ease !important;
+        }
+        :global(.leaflet-control-zoom a:hover) {
+          background-color: $green-600 !important;
+          color: #fff !important;
+        }
+        :global(.leaflet-control-attribution) {
+          background-color: rgba(255,255,255,0.92) !important;
+          border-radius: 6px !important;
+          font-size: 11px !important;
+          padding: 4px 8px !important;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+        }
+        :global(.leaflet-popup-content-wrapper) {
+          border-radius: 10px !important;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
+        }
+        :global(.leaflet-popup-content) {
+          margin: 12px !important;
+          line-height: 1.4 !important;
+        }
+      }
+
+      &:hover {
+        transform: translateY(-6px);
+        box-shadow: $shadow-lg;
+      }
+    }
+  }
+
+  .field-grid {
+    padding: 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #f7fff7 100%);
+    border-radius: 14px;
+    margin: 22px 0;
+    border: 1px solid #e6f4ea;
+    box-shadow: 0 8px 30px rgba(16, 40, 16, 0.03);
+    position: relative;
+    z-index: 2;
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: 18px;
+      top: -28px;
+      background: radial-gradient(circle at 30% 30%, rgba($green-600,0.12), transparent 40%);
+      filter: blur(12px);
+      pointer-events: none;
+      opacity: 0.9;
+      transform: rotate(8deg);
+    }
+
+    .row {
+      margin: 0 -8px;
+    }
+
+    .plant-cell {
+      min-height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      position: relative;
+    }
+
+    .plant-card {
+      width: 100%;
+      min-height: 90px;
+      border: none;
+      background: transparent;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.28s cubic-bezier(.2,.9,.3,1), box-shadow 0.28s ease;
+      outline: none;
+      will-change: transform, box-shadow;
+      animation: cardIn 0.6s ease both;
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 88px;
+        height: 64px;
+        border-radius: 48% 52% 60% 40% / 60% 60% 40% 40%;
+        transform: rotate(-12deg) translateY(-2px);
+        top: 10px;
+        z-index: 1;
+        box-shadow: 0 8px 20px rgba(13, 48, 18, 0.10);
+        transition: all 0.32s ease;
+        filter: drop-shadow(0 6px 10px rgba(0,0,0,0.06));
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 22px;
+        background: linear-gradient(to bottom, darken($green-600, 8%), #16390c);
+        bottom: 8px;
+        border-radius: 3px;
+        z-index: 2;
+        left: calc(50% - 3px);
+        transition: transform 0.3s ease, height 0.3s ease;
+      }
+
+      .card-body {
+        position: relative;
+        z-index: 3;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .plant-id {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(0,0,0,0.32);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+        backdrop-filter: blur(2px);
+      }
+
+      .coord {
+        font-size: 0.78rem;
+        color: $muted;
+        margin-top: 6px;
+      }
+
+      &:focus {
+        box-shadow: 0 8px 30px rgba(40,167,69,0.18), 0 0 0 4px rgba(40,167,69,0.06);
+        transform: translateY(-6px) scale(1.02);
+      }
+
+      &:hover {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 14px 36px rgba(6, 40, 16, 0.12);
+      }
+    }
+
+    .plant-healthy {
+      &::before {
+        background: linear-gradient(135deg, $green-600, $green-400 70%);
+        box-shadow: 0 8px 20px rgba(34, 139, 34, 0.16);
+      }
+      &::after {
+        background: linear-gradient(to bottom, #234f1c, #16390c);
+      }
+      animation: healthyPulse 700ms cubic-bezier(.2,.9,.3,1) both;
+    }
+
+    .plant-defected {
+      &::before {
+        background: linear-gradient(135deg, $danger-500, #ff7a59 70%);
+        box-shadow: 0 8px 20px rgba(220,53,69,0.16);
+        border-radius: 55% 45% 65% 35% / 72% 72% 28% 28%;
+      }
+      &::after {
+        background: linear-gradient(to bottom, #7b0000, #550000);
+      }
+      animation: defectWiggle 900ms cubic-bezier(.2,.9,.3,1) both;
+    }
+
+    .empty-cell {
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fbfbfb 0%, #f1f1f1 100%);
+      border: 1px dashed rgba(75,85,99,0.12);
+      color: $muted;
+      font-style: italic;
+      opacity: 0.95;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 8px;
+        background:
+          radial-gradient(circle at 20% 30%, rgba(139,69,19,0.06) 1px, transparent 1px),
+          radial-gradient(circle at 80% 70%, rgba(160,82,45,0.06) 1px, transparent 1px),
+          radial-gradient(circle at 40% 80%, rgba(101,67,33,0.05) 1px, transparent 1px);
+        background-size: 8px 8px, 12px 12px, 6px 6px;
+        border-radius: 8px;
+        pointer-events: none;
+      }
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 26px rgba(14,34,20,0.06);
+      }
+    }
+  }
+
+  .legend-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 12px 8px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba($green-600,0.04), rgba($green-400,0.03));
+    border: 1px solid rgba($green-600,0.06);
+
+    .legend {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-weight: 600;
+        color: #123d26;
+        background: rgba(255,255,255,0.6);
+        box-shadow: 0 6px 14px rgba(17,37,18,0.04);
+
+        &.healthy { border-left: 4px solid $green-600; }
+        &.defected { border-left: 4px solid $danger-500; color: darken($danger-500,8%); }
+        &.empty { border-left: 4px solid rgba(99,99,99,0.18); color: $muted; }
+      }
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+
+      .btn {
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      flex-direction: column;
+      align-items: stretch;
+      .quick-actions { justify-content: center; }
+    }
+  }
+
+  @keyframes cardIn {
+    0% { transform: translateY(8px) scale(0.98); opacity: 0; }
+    60% { transform: translateY(-6px) scale(1.02); opacity: 1; }
+    100% { transform: translateY(0) scale(1); }
+  }
+
+  @keyframes healthyPulse {
+    0% { transform: scale(0.92); opacity: 0; }
+    60% { transform: scale(1.06); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes defectWiggle {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    40% { transform: translateY(-6px) rotate(-2deg); opacity: 1; }
+    70% { transform: translateY(-3px) rotate(2deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  @media (max-width: 1200px) {
+    .field-grid .plant-cell { min-height: 92px; }
+    .field-grid .plant-card { min-height: 78px; }
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px 12px;
+    .map-row .card .card-body { height: 300px; }
+    .field-grid { padding: 14px; }
+  }
+}

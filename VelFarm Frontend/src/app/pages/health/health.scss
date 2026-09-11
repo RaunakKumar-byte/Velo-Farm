@@ -1,0 +1,226 @@
+/* Base Plant Screen */
+.plant-screen {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Plant Cards */
+.plant-card {
+  background: #f9fdf8;
+  border-radius: 14px;
+  padding: 15px 18px;
+  margin-bottom: 15px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.12);
+  }
+}
+.plant-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #28a745;
+}
+.spray-btn {
+  background: linear-gradient(135deg, #28a745, #56d364, #28a745);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 50px;
+  box-shadow: 0px 3px 8px rgba(40, 167, 69, 0.4);
+  transition: all 0.4s ease-in-out;
+
+  &:hover {
+    background: linear-gradient(270deg, #28a745, #4ade80, #22c55e);
+    transform: scale(1.05);
+  }
+}
+
+/* Stats */
+.status-card {
+  background: #f9fdf8;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
+  animation: zoomIn 0.6s ease forwards;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.1);
+  }
+}
+.status-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Alerts */
+.alert {
+  border: none;
+  font-size: 14px;
+  animation: slideIn 0.6s ease-in-out;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* Table */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+  animation: fadeUp 0.6s ease-in-out;
+
+  thead {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  tbody tr {
+    transition: background 0.25s ease;
+
+    &:hover {
+      background: #f1fff3;
+    }
+  }
+}
+
+/* Trend Cards */
+.trend-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 20px;
+  animation: fadeUp 0.7s ease-in-out;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* === Animated Horizontal Bars === */
+.animated-bar {
+  position: relative;
+  background: #f1f1f1;
+  border-radius: 8px;
+  height: 30px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  padding-left: 10px;
+  line-height: 30px;
+
+  span {
+    position: absolute;
+    right: 10px;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 0;
+    border-radius: 8px;
+    animation: growBar 1.6s ease forwards;
+  }
+
+  &.success::before {
+    background: linear-gradient(90deg, #28a745, #56d364);
+    width: var(--percent);
+  }
+  &.warning::before {
+    background: linear-gradient(90deg, #fbc02d, #ffd54f);
+    width: var(--percent);
+  }
+  &.danger::before {
+    background: linear-gradient(90deg, #ef5350, #e57373);
+    width: var(--percent);
+  }
+}
+
+/* Circle Progress */
+.circle-progress {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  margin: auto;
+  background: conic-gradient(#36cfc9 calc(var(--val, 0) * 1%), #e0f7fa 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: fillCircle 2s ease forwards, bounceAnim 3s ease-in-out infinite;  // 👈 added bounce
+  transform-origin: center;
+
+  .circle-text {
+    position: absolute;
+    font-weight: 700;
+    font-size: 20px;
+    color: #00796b;
+  }
+}
+
+/* Bounce animation */
+@keyframes bounceAnim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Weather card */
+.weather-card {
+  background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.08);
+  animation: floatAnim 3s ease-in-out infinite;
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes growBar {
+  from { width: 0; }
+  to { width: var(--percent); }
+}
+@keyframes floatAnim {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes fillCircle {
+  from { --val: 0; }
+  to { --val: 85; }
+}

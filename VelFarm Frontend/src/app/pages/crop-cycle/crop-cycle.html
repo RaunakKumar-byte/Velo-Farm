@@ -1,0 +1,163 @@
+
+<div class="crop-cycle-container">
+ 
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Page Title -->
+    <div class="page-title-section">
+      <h1 class="page-title">Crop Cycle Management</h1>
+      <p class="page-subtitle">Track and manage your crop cycles from planting to harvest.</p>
+    </div>
+
+    <!-- Current Crop Cycles Section -->
+    <div class="crop-cycles-section">
+      <div class="section-header">
+        <h2 class="section-title">Current Crop Cycles</h2>
+        <button class="btn btn-primary new-cycle-btn" (click)="openNewCycleModal()">
+          <span class="btn-icon">+</span>
+          New Cycle
+        </button>
+      </div>
+
+      <div class="crop-table-container">
+        <table class="crop-table">
+          <thead>
+            <tr>
+              <th>CROP</th>
+              <th>PLANTING DATE</th>
+              <th>CURRENT STAGE</th>
+              <th>PROGRESS</th>
+              <th>EST. HARVEST</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let crop of cropCycles" [class.selected]="selectedCrop?.id === crop.id">
+              <td class="crop-info">
+                <div class="crop-details">
+                  <span class="crop-icon">{{ crop.icon }}</span>
+                  <div class="crop-text">
+                    <div class="crop-name">{{ crop.name }} - {{ crop.field }}</div>
+                    <div class="crop-scientific">{{ crop.scientificName }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="planting-date">{{ formatDate(crop.plantingDate) }}</td>
+              <td class="current-stage">
+                <span class="stage-badge" [style.background-color]="getStageColor(crop.currentStage)">
+                  {{ crop.currentStage }}
+                </span>
+              </td>
+              <td class="progress-cell">
+                <div class="progress-container">
+                  <div class="progress-bar">
+                    <div class="progress-fill" 
+                         [style.width.%]="crop.progress"
+                         [class]="getProgressBarClass(crop.progress)">
+                    </div>
+                  </div>
+                  <span class="progress-text">{{ crop.progress }}%</span>
+                </div>
+              </td>
+              <td class="harvest-date">{{ formatDate(crop.estimatedHarvest) }}</td>
+              <td class="actions">
+                <button class="btn-link" (click)="viewDetails(crop)">View Details</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bottom Sections -->
+    <div class="bottom-sections">
+      <!-- Growth Stage Timeline -->
+      <div class="timeline-section">
+        <h2 class="section-title">Growth Stage Timeline: {{ selectedCrop?.name }} - {{ selectedCrop?.field }}</h2>
+        <div class="timeline-container">
+          <div class="timeline" *ngIf="selectedCrop">
+            <div class="timeline-item" 
+                 *ngFor="let stage of selectedCrop.stages" 
+                 [class]="getStageClass(stage)">
+              <div class="timeline-marker">
+                <span class="marker-icon">{{ stage.icon }}</span>
+              </div>
+              <div class="timeline-content">
+                <div class="stage-name">{{ stage.name }}</div>
+                <div class="stage-date">{{ stage.description }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Harvest Prediction -->
+      <div class="harvest-section">
+        <h2 class="section-title">Harvest Prediction</h2>
+        <div class="harvest-container" *ngIf="selectedCrop">
+          <div class="harvest-date-display">
+            <div class="calendar-icon">📅</div>
+            <div class="harvest-date">
+              <div class="date-text">{{ selectedCrop.estimatedHarvest | date:'MMM d' }}</div>
+              <div class="date-label">Estimated Harvest Date</div>
+            </div>
+          </div>
+          <div class="harvest-metrics">
+            <div class="metric">
+              <div class="metric-label">Growing Days</div>
+              <div class="metric-value">{{ selectedCrop.growingDays }} days</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Remaining Days</div>
+              <div class="metric-value">{{ selectedCrop.remainingDays }} days</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Confidence Level</div>
+              <div class="metric-value" [class]="getConfidenceClass(selectedCrop.confidenceLevel)">
+                High ({{ selectedCrop.confidenceLevel }}%)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Cycle Modal -->
+  <div class="modal-overlay" *ngIf="showNewCycleModal" (click)="closeNewCycleModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Create New Crop Cycle</h3>
+        <button class="modal-close" (click)="closeNewCycleModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createNewCycle()">
+          <div class="form-group">
+            <label for="cropName">Crop Name</label>
+            <input type="text" id="cropName" [(ngModel)]="newCycleForm.name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="scientificName">Scientific Name</label>
+            <input type="text" id="scientificName" [(ngModel)]="newCycleForm.scientificName" name="scientificName" required>
+          </div>
+          <div class="form-group">
+            <label for="field">Field</label>
+            <input type="text" id="field" [(ngModel)]="newCycleForm.field" name="field" required>
+          </div>
+          <div class="form-group">
+            <label for="plantingDate">Planting Date</label>
+            <input type="date" id="plantingDate" [(ngModel)]="newCycleForm.plantingDate" name="plantingDate" required>
+          </div>
+          <div class="form-group">
+            <label for="estimatedHarvest">Estimated Harvest Date</label>
+            <input type="date" id="estimatedHarvest" [(ngModel)]="newCycleForm.estimatedHarvest" name="estimatedHarvest" required>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="closeNewCycleModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Cycle</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

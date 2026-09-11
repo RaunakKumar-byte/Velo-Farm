@@ -1,0 +1,457 @@
+<!-- <app-header></app-header> -->
+<div class="main">
+  <div class="container pt-4">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="text-white">Welcome, {{ getCurrentUser()?.fullName || 'Farmer John' }}!</h2>
+      <p class="text-muted">Manage your AI and IoT settings for optimal farm operations.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Connected Devices and System Logs Section -->
+    <div class="col-lg-8">
+      <!-- Connected Devices Card -->
+      <div class="card bg-dark text-white mb-4">
+        <div class="card-body">
+          <h5 class="card-title d-flex justify-content-between align-items-center">
+            Connected Devices
+            <span class="badge bg-primary">{{ devices.length }} devices</span>
+          </h5>
+          <div class="table-responsive">
+            <table class="table table-dark table-borderless text-white">
+              <thead>
+                <tr>
+                  <th>DEVICE</th>
+                  <th>STATUS</th>
+                  <th>AUTO MODE</th>
+                  <th>SPRAY INTENSITY</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let device of devices">
+                  <td class="fw-bold">{{ device.name }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="getDeviceStatusColor(device.status)">
+                      {{ getDeviceStatusLabel(device.status) }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="form-check form-switch">
+                      <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        [id]="device.id + 'AutoMode'"
+                        [checked]="device.autoMode"
+                        (change)="toggleDeviceAutoMode(device.id)">
+                    </div>
+                  </td>
+                  <td>
+                    <select 
+                      class="form-select form-select-sm bg-dark text-white border-secondary" 
+                      [value]="device.sprayIntensity"
+                      (change)="onDeviceSprayIntensityChange(device.id, $event)">
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button 
+                      class="btn btn-sm btn-outline-success"
+                      (click)="viewDeviceSchedule(device.id)">
+                      <i class="bi bi-calendar"></i> View Schedule
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Logs Card -->
+      <div class="card bg-dark text-white mb-4">
+        <div class="card-body">
+          <h5 class="card-title d-flex justify-content-between align-items-center">
+            System Logs
+            <span class="badge bg-warning" *ngIf="unreadLogCount > 0">{{ unreadLogCount }} unread</span>
+          </h5>
+          
+          <!-- Search and Filter Controls -->
+          <form [formGroup]="logFilterForm" class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text bg-secondary border-secondary text-white">
+                <i class="bi bi-search"></i>
+              </span>
+              <input 
+                type="text" 
+                class="form-control bg-dark border-secondary text-white" 
+                placeholder="Search logs..."
+                formControlName="searchTerm">
+              <select 
+                class="form-select bg-dark text-white border-secondary" 
+                formControlName="type">
+                <option value="">All Types</option>
+                <option *ngFor="let type of logTypes" [value]="type">
+                  {{ type.replace('_', ' ').toUpperCase() }}
+                </option>
+              </select>
+              <select 
+                class="form-select bg-dark text-white border-secondary" 
+                formControlName="severity">
+                <option value="">All Severities</option>
+                <option *ngFor="let severity of logSeverities" [value]="severity">
+                  {{ severity.toUpperCase() }}
+                </option>
+              </select>
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary"
+                (click)="markAllLogsAsRead()"
+                [disabled]="unreadLogCount === 0">
+                <i class="bi bi-check-all"></i> Mark All Read
+              </button>
+            </div>
+          </form>
+
+          <!-- Logs List -->
+          <div class="logs-container" style="max-height: 400px; overflow-y: auto;">
+            <button 
+              class="list-group-item bg-dark text-white d-flex align-items-start mb-2 rounded border-0 w-100 text-start"
+              *ngFor="let log of logs; trackBy: trackByLogId"
+              [class.border-warning]="!log.isRead"
+              (click)="markLogAsRead(log.id)"
+              [attr.aria-label]="'Mark log as read: ' + log.title">
+              <i class="bi me-3 mt-1" 
+                 [ngClass]="[getLogIcon(log.type), getLogColor(log.type)]"></i>
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start">
+                  <strong>{{ log.title }}</strong>
+                  <small class="text-muted">{{ getTimeAgo(log.timestamp) }}</small>
+                </div>
+                <div class="mt-1">{{ log.message }}</div>
+                <div class="mt-1">
+                  <span class="badge bg-secondary me-2">{{ log.severity.toUpperCase() }}</span>
+                  <span class="badge bg-info" *ngIf="log.deviceId">Device: {{ log.deviceId }}</span>
+                </div>
+              </div>
+            </button>
+            
+            <div *ngIf="logs.length === 0" class="text-center text-muted py-4">
+              <i class="bi bi-inbox fs-1"></i>
+              <p class="mt-2">No logs found</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Settings and AI Model Management Section -->
+    <div class="col-lg-4">
+      <!-- AI Settings Card -->
+      <div class="card bg-dark text-white mb-4">
+        <div class="card-body">
+          <h5 class="card-title">AI Settings</h5>
+          
+          <!-- AI Spray Threshold -->
+          <div class="mb-4">
+            <label for="aiSprayThreshold" class="form-label">AI Spray Threshold</label>
+            <input 
+              type="range" 
+              class="form-range" 
+              id="aiSprayThreshold" 
+              min="0" 
+              max="100" 
+              [value]="aiSettings?.sprayThreshold || 75"
+              (input)="onSprayThresholdInputChange($event)">
+            <div class="d-flex justify-content-between">
+              <small class="text-muted">0%</small>
+              <span class="fw-bold text-success">{{ aiSettings?.sprayThreshold || 75 }}%</span>
+              <small class="text-muted">100%</small>
+            </div>
+          </div>
+
+          <!-- Additional AI Settings -->
+          <div class="mb-4" *ngIf="aiSettings">
+            <div class="form-check form-switch mb-2">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="weatherIntegration"
+                [checked]="aiSettings.weatherIntegration"
+                (change)="aiSettingsForm.patchValue({weatherIntegration: $event.target.checked})">
+              <label class="form-check-label" for="weatherIntegration">
+                Weather Integration
+              </label>
+            </div>
+            
+            <div class="form-check form-switch mb-2">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="irrigationEnabled"
+                [checked]="aiSettings.irrigationSchedule.enabled"
+                (change)="aiSettingsForm.patchValue({irrigationEnabled: $event.target.checked})">
+              <label class="form-check-label" for="irrigationEnabled">
+                Irrigation Schedule
+              </label>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-grid gap-2 mb-3">
+            <button 
+              class="btn btn-success"
+              routerLink="/bot"
+              routerLinkActive="active">
+              <i class="bi bi-robot"></i>
+              🤖 Bot Control Center
+            </button>
+            <button 
+              class="btn btn-primary"
+              (click)="calibrateAllDevices()"
+              [disabled]="isLoading">
+              <i class="bi bi-gear-fill" *ngIf="!isLoading"></i>
+              <span class="spinner-border spinner-border-sm me-2" *ngIf="isLoading"></span>
+              Calibrate All Devices
+            </button>
+            <button 
+              class="btn btn-primary"
+              (click)="runDiagnostics()"
+              [disabled]="isLoading">
+              <i class="bi bi-tools" *ngIf="!isLoading"></i>
+              <span class="spinner-border spinner-border-sm me-2" *ngIf="isLoading"></span>
+              Run Diagnostics
+            </button>
+          </div>
+
+          <!-- System Status -->
+          <div class="mt-3 p-3 bg-secondary system-status rounded">
+            <h6 class="mb-2">System Status</h6>
+            <div class="d-flex justify-content-between">
+              <span>Overall Accuracy:</span>
+              <span class="fw-bold text-success">{{ overallAccuracy.toFixed(1) }}%</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Active Models:</span>
+              <span class="fw-bold text-primary">{{ getActiveModelCount() }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Last Calibration:</span>
+              <span class="fw-bold text-info">{{ getTimeAgo(getLastCalibrationTime()) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Model Management Card -->
+      <div class="card bg-dark text-white mb-4">
+        <div class="card-body">
+          <h5 class="card-title">AI Model Management</h5>
+          <p class="text-muted">Upload models, view accuracy, and manage updates.</p>
+          
+          <!-- Auto-updates Toggle -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span>Auto-updates:</span>
+            <div class="form-check form-switch">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="autoUpdates"
+                [checked]="aiSettings?.autoUpdates"
+                (change)="onAutoUpdatesToggle()">
+            </div>
+          </div>
+
+          <!-- Model Upload -->
+          <div class="mb-3">
+            <input 
+              type="file" 
+              class="form-control bg-dark text-white border-secondary" 
+              accept=".h5,.pkl,.joblib,.json"
+              (change)="onFileSelected($event)"
+              #fileInput>
+            <small class="text-muted">Supported formats: .h5, .pkl, .joblib, .json</small>
+          </div>
+
+          <div class="d-grid mb-3">
+            <button 
+              class="btn btn-success"
+              (click)="uploadNewModel()"
+              [disabled]="!selectedFile || isLoading">
+              <i class="bi bi-cloud-arrow-up-fill" *ngIf="!isLoading"></i>
+              <span class="spinner-border spinner-border-sm me-2" *ngIf="isLoading"></span>
+              Upload New Model
+            </button>
+          </div>
+
+          <!-- Active Models List -->
+          <div class="mt-3">
+            <h6 class="mb-2">Active Models</h6>
+            <div class="list-group list-group-flush">
+              <div 
+                class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center py-2"
+                *ngFor="let model of aiModels.slice(0, 3)">
+                <div>
+                  <div class="fw-bold">{{ model.name }}</div>
+                  <small class="text-muted">{{ model.accuracy.toFixed(1) }}% accuracy</small>
+                </div>
+                <span class="badge" [ngClass]="model.status === 'active' ? 'bg-success' : 'bg-secondary'">
+                  {{ model.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Calibration Modal -->
+<div class="modal fade" [class.show]="showCalibrationModal" [style.display]="showCalibrationModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">Device Calibration</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeCalibrationModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="!calibrationResult && isLoading" class="text-center">
+          <div class="spinner-border text-primary" aria-label="Calibrating devices">
+            <span class="visually-hidden">Calibrating devices...</span>
+          </div>
+          <output class="mt-2 d-block">Calibrating all devices, please wait...</output>
+        </div>
+        
+        <div *ngIf="calibrationResult">
+          <div class="alert" [ngClass]="calibrationResult.success ? 'alert-success' : 'alert-danger'">
+            <h6>{{ calibrationResult.message }}</h6>
+            <p>Devices calibrated: {{ calibrationResult.devicesCalibrated }}</p>
+            <ul *ngIf="calibrationResult.errors.length > 0" class="mb-0">
+              <li *ngFor="let error of calibrationResult.errors">{{ error }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeCalibrationModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Diagnostics Modal -->
+<div class="modal fade" [class.show]="showDiagnosticsModal" [style.display]="showDiagnosticsModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">System Diagnostics</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeDiagnosticsModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="!diagnosticsResult && isLoading" class="text-center">
+          <div class="spinner-border text-primary" aria-label="Running diagnostics">
+            <span class="visually-hidden">Running diagnostics...</span>
+          </div>
+          <output class="mt-2 d-block">Running system diagnostics, please wait...</output>
+        </div>
+        
+        <div *ngIf="diagnosticsResult">
+          <div class="alert" [ngClass]="diagnosticsResult.success ? 'alert-success' : 'alert-danger'">
+            <h6>{{ diagnosticsResult.message }}</h6>
+            <p>Overall Health: <span class="fw-bold" [ngClass]="getHealthStatusColor(diagnosticsResult.overallHealth)">{{ diagnosticsResult.overallHealth.toUpperCase() }}</span></p>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-4">
+              <div class="card bg-secondary">
+                <div class="card-body text-center">
+                  <h3 class="text-danger">{{ diagnosticsResult.issues.critical }}</h3>
+                  <small>Critical Issues</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card bg-secondary">
+                <div class="card-body text-center">
+                  <h3 class="text-warning">{{ diagnosticsResult.issues.warning }}</h3>
+                  <small>Warnings</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card bg-secondary">
+                <div class="card-body text-center">
+                  <h3 class="text-info">{{ diagnosticsResult.issues.info }}</h3>
+                  <small>Info Items</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="diagnosticsResult.recommendations.length > 0">
+            <h6>Recommendations:</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item bg-dark text-white" *ngFor="let rec of diagnosticsResult.recommendations">
+                <i class="bi bi-arrow-right text-primary me-2"></i>{{ rec }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDiagnosticsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" [class.show]="showUploadModal" [style.display]="showUploadModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">Model Upload</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeUploadModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="!uploadResult && isLoading" class="text-center">
+          <div class="spinner-border text-success" aria-label="Uploading model">
+            <span class="visually-hidden">Uploading model...</span>
+          </div>
+          <output class="mt-2 d-block">Uploading and processing model, please wait...</output>
+        </div>
+        
+        <div *ngIf="uploadResult">
+          <div class="alert" [ngClass]="uploadResult.success ? 'alert-success' : 'alert-danger'">
+            <h6>{{ uploadResult.message }}</h6>
+            <div *ngIf="uploadResult.model">
+              <p><strong>Model Name:</strong> {{ uploadResult.model.name }}</p>
+              <p><strong>File Size:</strong> {{ uploadResult.model.fileSize.toFixed(2) }} MB</p>
+              <p><strong>Status:</strong> {{ uploadResult.model.status }}</p>
+            </div>
+            <ul *ngIf="uploadResult.errors.length > 0" class="mb-0">
+              <li *ngFor="let error of uploadResult.errors">{{ error }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeUploadModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop for modals -->
+<div class="modal-backdrop fade" [class.show]="showCalibrationModal || showDiagnosticsModal || showUploadModal" 
+     [style.display]="(showCalibrationModal || showDiagnosticsModal || showUploadModal) ? 'block' : 'none'"></div>
+
+
+     
+</div>
+<!-- <app-footer></app-footer> -->

@@ -1,0 +1,96 @@
+<div class="container my-5">
+  <!-- Hero Section -->
+  <div class="text-center mb-5">
+    <h1 class="fw-bold display-5 text-success animate-title">Our Amazing Features</h1>
+    <p class="lead text-muted animate-subtitle">
+      Explore the tools and services that help your business grow faster and smarter.
+    </p>
+  </div>
+
+  <!-- Features Section -->
+  <div class="row g-4 py-3">
+    <div class="col-md-6 col-lg-4" *ngFor="let feature of featuresList">
+      <div class="feature-card">
+        <div class="icon-wrapper">
+          <i [class]="feature.icon + ' feature-icon'"></i>
+        </div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call To Action -->
+  <div class="cta-box mt-5 text-center">
+    <h2 class="fw-bold mb-3">Ready to Transform Your Workflow?</h2>
+    <p class="text-muted mb-4">Join thousands of businesses already using our platform.</p>
+    <button class="btn btn-success btn-lg px-5 py-3 shadow-sm hover-grow">
+      Get Started
+    </button>
+  </div>
+</div>
+<!-- Testimonials Section -->
+<div class="container my-5">
+  <div class="text-center mb-5">
+    <h2 class="fw-bold display-6 text-success animate-title">What Our Clients Say</h2>
+    <p class="lead text-muted animate-subtitle">
+      Real stories from businesses that grew with our platform.
+    </p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <p>
+            "This platform completely changed the way we manage our workflow.
+            It's intuitive, fast, and reliable. Highly recommend!"
+          </p>
+        </div>
+        <div class="testimonial-author">
+          <img src="https://media.istockphoto.com/id/1169241965/photo/mature-hispanic-man-wearing-plaid-shirt.jpg?s=612x612&w=0&k=20&c=bpTU-LN4zab0TF1L_Nq-GDC3urWbO8eoRWZY0hxaa7s=" alt="user" class="author-img" />
+          <div>
+            <h6 class="mb-0 fw-bold">Manish Sharma</h6>
+            <small class="text-muted">Jharkhand, India</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <p>
+            "The support team is excellent and the features are exactly what
+            we needed to scale our business faster."
+          </p>
+        </div>
+        <div class="testimonial-author">
+          <img src="https://t3.ftcdn.net/jpg/04/17/05/16/360_F_417051610_dUArKwBPqaUQXCEVIIkK7mraLa7BAOpd.jpg" alt="user" class="author-img" />
+          <div>
+            <h6 class="mb-0 fw-bold">Navnit Kumar</h6>
+            <small class="text-muted">Bihar, India</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <p>
+            "From analytics to customer support, everything is smooth and
+            user-friendly. It’s been a game-changer for us!"
+          </p>
+        </div>
+        <div class="testimonial-author">
+          <img src="https://media.istockphoto.com/id/1181083533/photo/portrait-of-men-looking-at-camera.jpg?s=612x612&w=0&k=20&c=KUM9F0_KgSvBLK_nM_OxjU1OTw1Q2b3pHBSMtJ9Jj4E=" alt="user" class="author-img" />
+          <div>
+            <h6 class="mb-0 fw-bold">Tarandeep Singh</h6>
+            <small class="text-muted">kolkata, India</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

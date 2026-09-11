@@ -1,0 +1,145 @@
+<div class="container help-page">
+  <!-- Header -->
+  <div class="row">
+    <div class="col-12 text-center">
+      <h2 class="help-title">
+        <i class="bi bi-question-circle-fill"></i> Help & Support
+      </h2>
+      <p class="lead">Need help? We’ve got FAQs, troubleshooting, and direct support for you.</p>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <div class="card help-card">
+        <div class="card-header">
+          <h5><i class="bi bi-info-circle"></i> Frequently Asked Questions</h5>
+        </div>
+        <div class="card-body">
+          <div class="accordion" id="faqAccordion">
+            <div class="accordion-item" *ngFor="let faq of faqs; let i = index">
+              <h2 class="accordion-header" id="heading{{i}}">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        [attr.data-bs-target]="'#collapse' + i">
+                  {{faq.question}}
+                </button>
+              </h2>
+              <div [id]="'collapse' + i"
+                   class="accordion-collapse collapse"
+                   data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  {{faq.answer}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Options -->
+    <div class="col-md-4">
+      <div class="card help-card text-center">
+        <div class="card-body">
+          <i class="bi bi-headset fs-1 mb-3 text-success"></i>
+          <h5>Still stuck?</h5>
+          <p class="text-muted">Our team is ready to help you 24/7.</p>
+          <button class="btn btn-success w-100 mb-2" (click)="emailSupport()">
+            <i class="bi bi-envelope"></i> Email Support
+          </button>
+          <button class="btn btn-outline-success w-100" (click)="openLiveChat()">
+            <i class="bi bi-chat-dots"></i> Live Chat
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Troubleshooting -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card help-card">
+        <div class="card-header">
+          <h5><i class="bi bi-tools"></i> Troubleshooting Guide</h5>
+        </div>
+        <div class="card-body">
+          <div *ngFor="let issue of issues" class="mb-3">
+            <h6>{{issue.title}}</h6>
+            <ul>
+              <li *ngFor="let step of issue.steps">{{step}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guides -->
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card help-card text-center">
+        <div class="card-body">
+          <i class="bi bi-journal-bookmark fs-1 text-primary mb-3"></i>
+          <h5>User Guide</h5>
+          <p class="text-muted">Step-by-step instructions to master the farm system.</p>
+          <button class="btn btn-outline-primary" (click)="openUserGuide()">Read Guide</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card help-card text-center">
+        <div class="card-body">
+          <i class="bi bi-play-circle fs-1 text-danger mb-3"></i>
+          <h5>Tutorial Videos</h5>
+          <p class="text-muted">Quick visual tutorials for beginners and pros.</p>
+          <button class="btn btn-outline-danger" (click)="openTutorials()">Watch Tutorials</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card help-card text-center">
+        <div class="card-body">
+          <i class="bi bi-people fs-1 text-warning mb-3"></i>
+          <h5>Community Forum</h5>
+          <p class="text-muted">Ask questions & share tips with other farmers.</p>
+          <button class="btn btn-outline-warning" (click)="openCommunity()">Join Forum</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="row mt-5">
+    <div class="col-md-8 offset-md-2">
+      <div class="card help-card">
+        <div class="card-header">
+          <h5><i class="bi bi-envelope-paper"></i> Contact Us</h5>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="submitContactForm()">
+            <div class="mb-3">
+              <label>Name</label>
+              <input type="text" [(ngModel)]="name" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input type="email" [(ngModel)]="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Message</label>
+              <textarea [(ngModel)]="message" name="message" class="form-control" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-send"></i> Submit Request
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

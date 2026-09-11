@@ -1,0 +1,381 @@
+ <div class="container">
+ <div class="row">
+      <div class="col-12">
+        <h2 class="mb-4">
+          <i class="bi bi-gear text-secondary"></i>
+          System Settings
+        </h2>
+      </div>
+    </div>
+
+    <!-- Bot Configuration -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-robot"></i>
+              Bot Configuration
+            </h5>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="mb-3">
+                <label class="form-label">Polling Interval (seconds)</label>
+                <input type="number"
+                       class="form-control"
+                       [(ngModel)]="settings.pollingInterval"
+                       name="pollingInterval"
+                       min="1" max="10">
+                <small class="form-text text-muted">How often the bot checks for new commands</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Movement Speed (seconds per cell)</label>
+                <input type="number"
+                       class="form-control"
+                       [(ngModel)]="settings.movementSpeed"
+                       name="movementSpeed"
+                       min="0.5" max="5" step="0.5">
+                <small class="form-text text-muted">Time taken to move between adjacent cells</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Battery Warning Level (%)</label>
+                <input type="number"
+                       class="form-control"
+                       [(ngModel)]="settings.batteryWarningLevel"
+                       name="batteryWarningLevel"
+                       min="5" max="50">
+                <small class="form-text text-muted">Show warning when battery drops below this level</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Fertilizer Warning Level (%)</label>
+                <input type="number"
+                       class="form-control"
+                       [(ngModel)]="settings.fertilizerWarningLevel"
+                       name="fertilizerWarningLevel"
+                       min="5" max="50">
+                <small class="form-text text-muted">Show warning when fertilizer drops below this level</small>
+              </div>
+
+              <div class="mb-3">
+                <div class="form-check">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         [(ngModel)]="settings.autoReturn"
+                         name="autoReturn"
+                         id="autoReturn">
+                  <label class="form-check-label" for="autoReturn">
+                    Auto Return to Home
+                  </label>
+                  <small class="form-text text-muted d-block">Automatically return to (0,0) when idle</small>
+                </div>
+              </div>
+
+              <button type="button"
+                      class="btn btn-primary"
+                      (click)="saveBotSettings()">
+                <i class="bi bi-save"></i>
+                Save Bot Settings
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-grid-3x3-gap"></i>
+              Farm Configuration
+            </h5>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="mb-3">
+                <label class="form-label">Field Width</label>
+                <select class="form-select"
+                        [(ngModel)]="settings.fieldWidth"
+                        name="fieldWidth">
+                  <option value="3">3x3 Grid</option>
+                  <option value="4">4x4 Grid</option>
+                  <option value="5">5x5 Grid</option>
+                  <option value="6">6x6 Grid</option>
+                </select>
+                <small class="form-text text-muted">Note: Changing this will reset all plant data</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Field Height</label>
+                <select class="form-select"
+                        [(ngModel)]="settings.fieldHeight"
+                        name="fieldHeight">
+                  <option value="3">3 Rows</option>
+                  <option value="4">4 Rows</option>
+                  <option value="5">5 Rows</option>
+                  <option value="6">6 Rows</option>
+                </select>
+                <small class="form-text text-muted">Currently supports square grids only</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Health Degradation Rate</label>
+                <select class="form-select"
+                        [(ngModel)]="settings.healthDegradation"
+                        name="healthDegradation">
+                  <option value="slow">Slow (1% per hour)</option>
+                  <option value="normal">Normal (2% per hour)</option>
+                  <option value="fast">Fast (5% per hour)</option>
+                </select>
+                <small class="form-text text-muted">How quickly plant health degrades over time</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Initial Plant Health Range</label>
+                <div class="row">
+                  <div class="col-6">
+                    <input type="number"
+                           class="form-control"
+                           [(ngModel)]="settings.initialHealthMin"
+                           name="initialHealthMin"
+                           min="10" max="80"
+                           placeholder="Min">
+                  </div>
+                  <div class="col-6">
+                    <input type="number"
+                           class="form-control"
+                           [(ngModel)]="settings.initialHealthMax"
+                           name="initialHealthMax"
+                           min="50" max="100"
+                           placeholder="Max">
+                  </div>
+                </div>
+                <small class="form-text text-muted">Health range for new plants ({{settings.initialHealthMin}}% - {{settings.initialHealthMax}}%)</small>
+              </div>
+
+              <button type="button"
+                      class="btn btn-success"
+                      (click)="saveFarmSettings()">
+                <i class="bi bi-save"></i>
+                Save Farm Settings
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Control -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">
+              <i class="bi bi-lightning"></i>
+              Quick Actions
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-danger"
+                      (click)="emergencyStop()">
+                <i class="bi bi-stop-circle"></i>
+                Emergency Stop
+              </button>
+
+              <button class="btn btn-outline-warning"
+                      (click)="clearAllCommands()">
+                <i class="bi bi-trash"></i>
+                Clear Command Queue
+              </button>
+
+              <button class="btn btn-outline-success"
+                      (click)="refillAllResources()">
+                <i class="bi bi-arrow-clockwise"></i>
+                Refill All Resources
+              </button>
+
+              <button class="btn btn-outline-primary"
+                      (click)="resetBotPosition()">
+                <i class="bi bi-house"></i>
+                Reset Bot to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-bell"></i>
+              Notifications
+            </h5>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="form-check mb-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       [(ngModel)]="settings.enableBatteryAlerts"
+                       name="enableBatteryAlerts"
+                       id="batteryAlerts">
+                <label class="form-check-label" for="batteryAlerts">
+                  Battery Level Alerts
+                </label>
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       [(ngModel)]="settings.enableHealthAlerts"
+                       name="enableHealthAlerts"
+                       id="healthAlerts">
+                <label class="form-check-label" for="healthAlerts">
+                  Plant Health Alerts
+                </label>
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       [(ngModel)]="settings.enableCompletionAlerts"
+                       name="enableCompletionAlerts"
+                       id="completionAlerts">
+                <label class="form-check-label" for="completionAlerts">
+                  Task Completion Alerts
+                </label>
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       [(ngModel)]="settings.enableSoundAlerts"
+                       name="enableSoundAlerts"
+                       id="soundAlerts">
+                <label class="form-check-label" for="soundAlerts">
+                  Sound Notifications
+                </label>
+              </div>
+
+              <button type="button"
+                      class="btn btn-info"
+                      (click)="saveNotificationSettings()">
+                <i class="bi bi-save"></i>
+                Save Notifications
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-database"></i>
+              Data Management
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-success"
+                      (click)="exportData()">
+                <i class="bi bi-download"></i>
+                Export All Data
+              </button>
+
+              <button class="btn btn-outline-primary"
+                      (click)="exportSettings()">
+                <i class="bi bi-gear"></i>
+                Export Settings
+              </button>
+
+              <button class="btn btn-outline-warning"
+                      (click)="resetPlantData()">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Reset Plant Data
+              </button>
+
+              <button class="btn btn-outline-danger"
+                      (click)="resetAllData()">
+                <i class="bi bi-exclamation-triangle"></i>
+                Reset All Data
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-info-circle"></i>
+              System Information
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <h6 class="text-muted">Bot Status</h6>
+                <p class="mb-0">
+                  Position: ({{botStatus.x}}, {{botStatus.y}})<br>
+                  Battery: {{botStatus.battery}}%<br>
+                  Fertilizer: {{botStatus.fertilizer_level}}%<br>
+                  Status: {{botStatus.isMoving ? 'Moving' : 'Idle'}}
+                </p>
+              </div>
+
+              <div class="col-md-3">
+                <h6 class="text-muted">System Stats</h6>
+                <p class="mb-0">
+                  Total Actions: {{systemStats.totalActions}}<br>
+                  Uptime: {{systemStats.uptime}}<br>
+                  Last Update: {{systemStats.lastUpdate}}<br>
+                  Database Size: {{systemStats.dbSize}}
+                </p>
+              </div>
+
+              <div class="col-md-3">
+                <h6 class="text-muted">Performance</h6>
+                <p class="mb-0">
+                  Response Time: {{systemStats.responseTime}}ms<br>
+                  Success Rate: {{systemStats.successRate}}%<br>
+                  Error Count: {{systemStats.errorCount}}<br>
+                  Memory Usage: {{systemStats.memoryUsage}}%
+                </p>
+              </div>
+
+              <div class="col-md-3">
+                <h6 class="text-muted">Application Info</h6>
+                <p class="mb-0">
+                  Version: 1.0.0<br>
+                  Build: 2025.01.27<br>
+                  Platform: Angular 20<br>
+                  API: Express + SQLite
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Messages -->
+    <div class="row mt-3" *ngIf="statusMessage">
+      <div class="col-12">
+        <div class="alert" [ngClass]="statusMessageClass" role="alert">
+          <i [class]="statusMessageIcon"></i>
+          {{statusMessage}}
+        </div>
+      </div>
+    </div>
+</div>

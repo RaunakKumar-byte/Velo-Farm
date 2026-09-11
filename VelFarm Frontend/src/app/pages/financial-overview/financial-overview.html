@@ -1,0 +1,336 @@
+<div class="financial-overview-container container" [class.dark-mode]="darkMode">
+  <!-- Header Section -->
+  <div class="header-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title mb-1">Financial Overview</h1>
+        <p class="page-subtitle text-muted">Track expenses, revenue, and profitability.</p>
+      </div>
+      <div class="header-actions">
+        <div class="d-flex align-items-center gap-3">
+          <div class="period-selector">
+            <select
+              class="form-select"
+              [(ngModel)]="selectedPeriod"
+              (change)="onPeriodChange()">
+              <option *ngFor="let period of periodOptions" [value]="period">
+                {{ period }}
+              </option>
+            </select>
+          </div>
+          <button
+            class="btn btn-outline-primary"
+            (click)="openExportModal()"
+            title="Export the data">
+            <i class="bi bi-download me-2"></i>
+            Export
+          </button>
+          <button class="btn btn-outline-primary" (click)="toggleDarkMode()" [class.active]="darkMode" [attr.aria-pressed]="darkMode" title="Toggle dark mode">
+            <i class="fa-solid" [ngClass]="darkMode ? 'fa-moon' : 'fa-sun' "></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Financial Metrics Cards -->
+  <div class="metrics-section mb-5">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="metric-card revenue-card">
+          <div class="card-icon">
+            <i class="bi bi-currency-dollar"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="metric-value">{{ formatCurrency(financialData?.metrics?.totalRevenue || 0) }}</h3>
+            <p class="metric-label">Total Revenue</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="metric-card expense-card">
+          <div class="card-icon">
+            <i class="bi bi-clipboard-data"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="metric-value">{{ formatCurrency(financialData?.metrics?.totalExpenses || 0) }}</h3>
+            <p class="metric-label">Total Expenses</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="metric-card profit-card">
+          <div class="card-icon">
+            <i class="bi bi-graph-up"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="metric-value">{{ formatCurrency(financialData?.metrics?.netProfit || 0) }}</h3>
+            <p class="metric-label">Net Profit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue and Expenses Trend Chart -->
+  <div class="chart-section mb-5">
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0">Revenue and Expenses Trend</h5>
+      <p class="card-subtitle mb-0">Track monthly performance and profit margins</p>
+    </div>
+    <div class="card-body">
+      <div class="chart-container shimmer" *ngIf="isLoading"></div>
+      <div class="chart-container" *ngIf="!isLoading">
+        <canvas #trendChart></canvas>
+      </div>
+
+      <!-- Chart Details -->
+      <div class="chart-details">
+        <div class="detail-item">
+          <span class="label">Total Revenue</span>
+          <span class="value">{{ formatCurrency(financialData?.metrics?.totalRevenue || 0) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Total Expenses</span>
+          <span class="value">{{ formatCurrency(financialData?.metrics?.totalExpenses || 0) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Profit</span>
+          <span class="value">{{ formatCurrency(financialData?.metrics?.netProfit || 0) }}</span>
+        </div>
+      </div>
+
+      <!-- Chart Legend -->
+      <div class="chart-legend mt-3">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color:#4caf50;"></span>
+          <span class="legend-text">Revenue</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color:#e74c3c;"></span>
+          <span class="legend-text">Expenses</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Bottom Section -->
+  <div class="row g-4">
+    <!-- Expense Breakdown -->
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Expense Breakdown</h5>
+        </div>
+        <div class="card-body">
+          <div class="expense-list">
+            <div
+              *ngFor="let expense of financialData?.expenseBreakdown"
+              class="expense-item">
+              <div class="expense-info">
+                <div class="expense-name">{{ expense.name }}</div>
+                <div class="expense-amount">{{ formatCurrency(expense.amount) }}</div>
+              </div>
+              <div class="expense-bar">
+                <div
+                  class="expense-progress"
+                  [style.width]="getExpenseBarWidth(expense.amount)"
+                  [style.background-color]="expense.color">
+                </div>
+              </div>
+              <div class="expense-percentage">{{ getExpensePercentage(expense.amount) }}%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profitability by Crop -->
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Profitability by Crop</h5>
+        </div>
+        <div class="card-body">
+          <div class="profitability-chart">
+            <div class="chart-container shimmer" *ngIf="isLoading"></div>
+            <div class="chart-container" *ngIf="!isLoading">
+              <canvas #donutChart></canvas>
+            </div>
+            <div class="profitability-legend" *ngIf="(financialData?.cropProfitability?.length || 0) > 0; else noCrops">
+              <div
+                *ngFor="let crop of financialData?.cropProfitability"
+                class="legend-item">
+                <div
+                  class="legend-color"
+                  [style.background-color]="crop.color">
+                </div>
+                <div class="legend-text">
+                  <span class="crop-name">{{ crop.crop }}</span>
+                  <span class="crop-profit">{{ formatCurrency(crop.profit) }}</span>
+                  <span class="crop-pct">{{ getCropPercentage(crop.profit) }}%</span>
+                </div>
+              </div>
+            </div>
+            <ng-template #noCrops>
+              <div class="text-muted small">No crop profitability data available.</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Insights Section -->
+  <div class="row g-4 mt-4">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title mb-0 py-2">Key Ratios</h5>
+          <p class="card-subtitle mb-0">Quick financial health indicators</p>
+        </div>
+        <div class="card-body">
+          <div class="row gy-3">
+            <div class="col-6">
+              <div class="ratio-tile">
+                <div class="ratio-label">Profit Margin</div>
+                <div class="ratio-value">
+                  {{ (((financialData?.metrics?.netProfit || 0) / ((financialData?.metrics?.totalRevenue || 0) || 1)) * 100) | number:'1.0-1' }}%
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="ratio-tile">
+                <div class="ratio-label">Expense Ratio</div>
+                <div class="ratio-value">
+                  {{ (((financialData?.metrics?.totalExpenses || 0) / ((financialData?.metrics?.totalRevenue || 0) || 1)) * 100) | number:'1.0-1' }}%
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="ratio-tile">
+                <div class="ratio-label">Revenue/Month</div>
+                <div class="ratio-value">
+                  {{ formatCurrency(((financialData?.metrics?.totalRevenue || 0) / (financialData?.trendData?.length || 1))) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="ratio-tile">
+                <div class="ratio-label">Expenses/Month</div>
+                <div class="ratio-value">
+                  {{ formatCurrency(((financialData?.metrics?.totalExpenses || 0) / (financialData?.trendData?.length || 1))) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="ratio-tile" title="Revenue to Expense ratio">
+                <div class="ratio-label">Rev/Exp Ratio</div>
+                <div class="ratio-value">
+                  {{ getRevenueToExpenseRatio() === (1/0) ? '∞' : getRevenueToExpenseRatio() }}
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="ratio-tile" title="Top crop share of profit">
+                <div class="ratio-label">Top Crop Share</div>
+                <div class="ratio-value">{{ getTopCropContributionPercent() }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title mb-0 py-2">Top Insights</h5>
+          <p class="card-subtitle mb-0">Highlights from your data</p>
+        </div>
+        <div class="card-body">
+          <div class="row g-3 insights-tiles">
+            <div class="col-sm-6">
+              <div class="ratio-tile" title="Months with profit > expenses">
+                <div class="ratio-label">Positive Months</div>
+                <div class="ratio-value">{{ getRevenueOutpacedCount() }}/{{ financialData?.trendData?.length || 0 }}</div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="ratio-tile" title="Best performing month">
+                <div class="ratio-label">Best Month</div>
+                <div class="ratio-value">
+                  {{ getBestMonth()?.month || 'N/A' }} · {{ formatCurrency(getBestMonth()?.profit || 0) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="ratio-tile" title="Worst performing month">
+                <div class="ratio-label">Worst Month</div>
+                <div class="ratio-value">
+                  {{ getWorstMonth()?.month || 'N/A' }} · {{ formatCurrency(getWorstMonth()?.profit || 0) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="ratio-tile" title="Average monthly profit">
+                <div class="ratio-label">Avg Profit</div>
+                <div class="ratio-value">{{ formatCurrency(getAverageProfit()) }}</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="ratio-tile" title="Consecutive positive months ending this period">
+                <div class="ratio-label">Positive Streak</div>
+                <div class="ratio-value">{{ getPositiveStreak() }} months</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="ratio-tile" title="Largest spending category">
+                <div class="ratio-label">Top Cost Center</div>
+                <div class="ratio-value">{{ getBiggestCostCenter() }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Export Modal -->
+<div *ngIf="showExportModal" class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Export Financial Data</h5>
+        <button type="button" class="btn-close" (click)="closeExportModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Export Format</label>
+          <select class="form-select" [(ngModel)]="exportFormat">
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Time Period</label>
+          <select class="form-select" [(ngModel)]="selectedPeriod">
+            <option *ngFor="let period of periodOptions" [value]="period">
+              {{ period }}
+            </option>
+          </select>
+        </div>
+        <p class="text-muted">This will export financial data for {{ selectedPeriod }}.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeExportModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="exportData()">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showExportModal" class="modal-backdrop fade show"></div>
+

@@ -1,0 +1,313 @@
+<!-- <app-header></app-header> -->
+<div class="container">
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <div class="welcome-section mb-4">
+        <h2 class="fw-bold text-dark mb-2">Notifications</h2>
+        <p class="text-muted fs-5 mb-0">Review current alerts or browse your notification history.</p>
+      </div>
+    </div>
+    <!-- Main Notifications Area -->
+    <div class="notifications-main">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button
+          class="tab-btn"
+          [class.active]="activeTab === 'current'"
+          (click)="setActiveTab('current')">
+          Current Notifications
+        </button>
+        <button
+          class="tab-btn"
+          [class.active]="activeTab === 'archive'"
+          (click)="setActiveTab('archive')">
+          Notification Archive
+        </button>
+      </div>
+
+      <!-- Alert Summary -->
+      <div class="alert-summary" *ngIf="activeTab === 'current' && criticalCount > 0">
+        <p>You have {{ criticalCount }} critical alert{{ criticalCount > 1 ? 's' : '' }}. Let's take a look.</p>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="search-filters">
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Search notifications by keyword, category, or timestamp..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearchChange()"
+            class="search-input">
+          <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="filters">
+          <button
+            class="filter-btn"
+            [class.active]="activeFilter === 'all'"
+            (click)="setActiveFilter('all')">
+            All
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="activeFilter === 'critical'"
+            (click)="setActiveFilter('critical')">
+            Critical
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="activeFilter === 'warning'"
+            (click)="setActiveFilter('warning')">
+            Warning
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="activeFilter === 'normal'"
+            (click)="setActiveFilter('normal')">
+            Normal
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="activeFilter === 'info'"
+            (click)="setActiveFilter('info')">
+            Info
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="activeFilter === 'system'"
+            (click)="setActiveFilter('system')">
+            System
+          </button>
+
+          <div class="bulk-actions" *ngIf="showBulkActions">
+            <button class="bulk-btn" (click)="bulkMarkAsRead()">Mark as Read</button>
+            <button class="bulk-btn" (click)="bulkArchive()">Archive</button>
+            <button class="bulk-btn danger" (click)="bulkDelete()">Delete</button>
+            <button class="bulk-btn" (click)="clearSelection()">Clear</button>
+          </div>
+
+          <div class="mark-all-read">
+            <input
+              type="checkbox"
+              id="markAllRead"
+              [(ngModel)]="markAllAsRead"
+              (change)="toggleMarkAllAsRead()">
+            <label for="markAllRead">Mark All as Read</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications List -->
+      <div class="notifications-list">
+        <div class="list-header" *ngIf="filteredNotifications.length > 0">
+          <div class="select-all">
+            <input
+              type="checkbox"
+              id="selectAll"
+              [checked]="selectedNotifications.length === filteredNotifications.length"
+              (change)="selectAllNotifications()">
+            <label for="selectAll">Select All</label>
+          </div>
+          <div class="notification-count">
+            {{ filteredNotifications.length }} notification{{ filteredNotifications.length !== 1 ? 's' : '' }}
+          </div>
+        </div>
+
+        <div
+          *ngFor="let notification of filteredNotifications"
+          class="notification-item"
+          [ngClass]="[getNotificationTypeClass(notification.type), { 'selected': selectedNotifications.includes(notification.id) }]">
+
+          <div class="notification-checkbox">
+            <input
+              type="checkbox"
+              [id]="'notification-' + notification.id"
+              [checked]="selectedNotifications.includes(notification.id)"
+              (change)="toggleNotificationSelection(notification.id)">
+            <label [for]="'notification-' + notification.id"></label>
+          </div>
+
+          <div class="notification-icon" [style.color]="notification.iconColor">
+            {{ notification.icon }}
+          </div>
+
+          <div class="notification-content">
+            <div class="notification-header">
+              <h4 class="notification-title">{{ notification.title }}</h4>
+              <div class="notification-meta">
+                <span class="notification-category">{{ notification.category }}</span>
+                <span class="notification-priority" [ngClass]="'priority-' + notification.priority">
+                  {{ notification.priority }}
+                </span>
+                <span class="notification-time">{{ getTimeAgo(notification.timestamp) }}</span>
+              </div>
+            </div>
+            <p class="notification-description">{{ notification.description }}</p>
+            <div class="notification-source">Source: {{ notification.source }}</div>
+
+            <div class="notification-actions" *ngIf="notification.actions">
+              <button
+                *ngFor="let action of notification.actions"
+                class="action-btn"
+                [ngClass]="action.type"
+                (click)="action.action()">
+                <span *ngIf="action.icon" class="action-icon">{{ action.icon }}</span>
+                {{ action.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredNotifications.length === 0" class="no-notifications">
+          <div class="no-notifications-icon">📭</div>
+          <p>No notifications found matching your criteria.</p>
+          <button class="btn-primary" (click)="clearSelection()">Clear Filters</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar">
+      <!-- Statistics -->
+      <div class="sidebar-card">
+        <h3>📊 Notification Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value unread">{{ stats.unread }}</div>
+            <div class="stat-label">Unread</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value critical">{{ stats.critical }}</div>
+            <div class="stat-label">Critical</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ stats.today }}</div>
+            <div class="stat-label">Today</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ stats.thisWeek }}</div>
+            <div class="stat-label">This Week</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ stats.thisMonth }}</div>
+            <div class="stat-label">This Month</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Report -->
+      <div class="sidebar-card">
+        <h3>📈 Generate Report</h3>
+        <p>Analyze alert trends and system performance over a selected period.</p>
+
+        <div class="form-group">
+          <label for="reportPeriod">Select Period</label>
+          <select
+            id="reportPeriod"
+            [(ngModel)]="reportPeriod"
+            class="form-select">
+            <option value="last7days">Last 7 Days</option>
+            <option value="last30days">Last 30 Days</option>
+            <option value="last3months">Last 3 Months</option>
+            <option value="lastyear">Last Year</option>
+          </select>
+        </div>
+
+        <button
+          class="btn-primary"
+          (click)="generateReport()"
+          [disabled]="isGeneratingReport">
+          <span *ngIf="isGeneratingReport">⏳ Generating...</span>
+          <span *ngIf="!isGeneratingReport">📊 Generate Summary</span>
+        </button>
+
+        <div *ngIf="reportGenerated" class="report-success">
+          ✅ Report generated successfully!
+        </div>
+      </div>
+
+      <!-- Notification Preferences -->
+      <div class="sidebar-card">
+        <h3>⚙️ Notification Preferences</h3>
+        <h4>Alert Types</h4>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="criticalAlerts"
+            [(ngModel)]="preferences.criticalAlerts">
+          <label for="criticalAlerts">Critical Alerts</label>
+        </div>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="warningAlerts"
+            [(ngModel)]="preferences.warningAlerts">
+          <label for="warningAlerts">Warning Alerts</label>
+        </div>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="normalAlerts"
+            [(ngModel)]="preferences.normalAlerts">
+          <label for="normalAlerts">Normal Alerts</label>
+        </div>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="infoAlerts"
+            [(ngModel)]="preferences.infoAlerts">
+          <label for="infoAlerts">Info Alerts</label>
+        </div>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="systemUpdates"
+            [(ngModel)]="preferences.systemUpdates">
+          <label for="systemUpdates">System Updates</label>
+        </div>
+
+        <h4>Delivery Methods</h4>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="emailNotifications"
+            [(ngModel)]="preferences.emailNotifications">
+          <label for="emailNotifications">Email Notifications</label>
+        </div>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="pushNotifications"
+            [(ngModel)]="preferences.pushNotifications">
+          <label for="pushNotifications">Push Notifications</label>
+        </div>
+
+        <div class="preference-item">
+          <input
+            type="checkbox"
+            id="soundEnabled"
+            [(ngModel)]="preferences.soundEnabled">
+          <label for="soundEnabled">Sound Alerts</label>
+        </div>
+
+        <button class="btn-primary" (click)="savePreferences()">
+          💾 Save Preferences
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <app-footer></app-footer> -->

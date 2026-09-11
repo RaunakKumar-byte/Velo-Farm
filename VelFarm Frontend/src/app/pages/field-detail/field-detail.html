@@ -1,0 +1,101 @@
+<div class="container py-3" style="min-height: 86vh; overflow:hidden;">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+      <button class="btn btn-outline-secondary me-3" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+      <h4 class="m-0">🌾 Field Details</h4>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" (click)="editField()">
+        <i class="bi bi-pencil-square me-1"></i> Edit
+      </button>
+      <button class="btn btn-danger" (click)="deleteField()">
+        <i class="bi bi-trash me-1"></i> Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Loading field details...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Field Details -->
+  <div *ngIf="!isLoading && field && !errorMessage" class="row">
+    <div class="col-lg-8">
+      <div class="card themed-card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="bi bi-geo-alt me-2"></i>
+            {{ field.name }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Crop Type:</label>
+                <p class="mb-0">{{ field.crop }}</p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Location:</label>
+                <p class="mb-0">{{ field.location }}</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Area:</label>
+                <p class="mb-0">{{ field.area }} acres</p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Created At:</label>
+                <p class="mb-0">{{ field.createdAt | date:'d MMM yyyy, HH:mm' }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3" *ngIf="field.notes">
+            <label class="form-label fw-bold">Notes:</label>
+            <p class="mb-0">{{ field.notes }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crops in this Field -->
+    <div class="col-lg-4">
+      <div class="card themed-card">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="bi bi-seedling me-2"></i>
+            Crops in this Field
+          </h6>
+        </div>
+        <div class="card-body">
+          <div *ngIf="crops.length === 0" class="text-center text-muted">
+            <i class="bi bi-emoji-frown fs-4 d-block mb-2"></i>
+            <p class="mb-0">No crops found</p>
+          </div>
+          <div *ngFor="let crop of crops" class="crop-item mb-3 p-3 border rounded cursor-pointer" (click)="viewCrop(crop._id)">
+            <h6 class="mb-1">{{ crop.name }}</h6>
+            <p class="mb-1 text-muted small">{{ crop.season }}</p>
+            <p class="mb-0 text-muted small">{{ crop.area }} acres</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !field && !errorMessage" class="text-center text-muted my-5">
+    <i class="bi bi-emoji-frown fs-1 d-block mb-2"></i>
+    <p>No field details found</p>
+  </div>
+</div>

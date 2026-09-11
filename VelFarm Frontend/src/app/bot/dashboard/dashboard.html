@@ -1,0 +1,238 @@
+<div class="container dashboard-container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4 dashboard-title">
+        <i class="bi bi-speedometer2 text-success"></i>
+        Smart Farm Dashboard
+      </h2>
+    </div>
+  </div>
+
+  <!-- Status Cards Row -->
+  <div class="row mb-4 g-3">
+    <!-- Bot Status -->
+    <div class="col-6 col-md-3">
+      <div class="card status-card bg-success text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-title">Bot Position</h6>
+              <h4>{{botStatus.x}}, {{botStatus.y}}</h4>
+              <p class="card-text">
+                <i class="bi bi-activity"></i>
+                 {{botStatus.isMoving ? 'Moving...' : 'Idle'}}
+              </p>
+            </div>
+            <i class="bi bi-robot fs-1 opacity-75 float-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Battery -->
+    <div class="col-6 col-md-3">
+      <div class="card status-card battery-card" [ngClass]="getBatteryCardClass(botStatus.battery)">
+        <div class="card-body text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-title">Battery</h6>
+              <h4>{{botStatus.battery}}%</h4>
+              <div class="progress mt-2 battery-progress">
+                <div class="progress-bar bg-light" [style.width.%]="botStatus.battery"></div>
+              </div>
+            </div>
+            <i [class]="getBatteryIcon(botStatus.battery) + ' fs-1 opacity-75 float-icon'"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fertilizer -->
+    <div class="col-6 col-md-3">
+      <div class="card status-card bg-info text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-title">Fertilizer</h6>
+              <h4>{{botStatus.fertilizer_level}}%</h4>
+              <div class="progress mt-2 fertilizer-progress">
+                <div class="progress-bar bg-light" [style.width.%]="botStatus.fertilizer_level"></div>
+              </div>
+            </div>
+            <i class="bi bi-droplet fs-1 opacity-75 float-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plant Health -->
+    <div class="col-6 col-md-3">
+      <div class="card status-card bg-gradient-success text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-title">Plant Health</h6>
+              <h4>{{analytics.avgPlantHealth}}%</h4>
+              <p class="card-text">
+                <i class="bi bi-check-circle"></i>
+                {{analytics.healthyPlants}} healthy
+              </p>
+            </div>
+            <i class="bi bi-flower1 fs-1 opacity-75 float-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Analytics Row -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-graph-up text-success"></i>
+              Farm Analytics
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-md-3">
+                <div class="border-end">
+                  <h3 class="text-primary">{{analytics.totalActions}}</h3>
+                  <p class="text-muted">Total Actions</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="border-end">
+                  <h3 class="text-info">{{analytics.movements}}</h3>
+                  <p class="text-muted">Movements</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="border-end">
+                  <h3 class="text-success">{{analytics.fertilizations}}</h3>
+                  <p class="text-muted">Fertilizations</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <h3 class="text-warning">{{analytics.efficiency}}%</h3>
+                <p class="text-muted">Efficiency</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-lightning text-warning"></i>
+              Quick Actions
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary btn-sm"
+                      (click)="emergencyStop()"
+                       [disabled]="!botStatus.isMoving">
+                <i class="bi bi-stop-circle"></i>
+                Emergency Stop
+              </button>
+              <button class="btn btn-warning btn-sm"
+                      (click)="refillBattery()"
+                      [disabled]="botStatus.battery > 90">
+                <i class="bi bi-battery-charging"></i>
+                Refill Battery
+              </button>
+              <button class="btn btn-info btn-sm"
+                      (click)="refillFertilizer()"
+                      [disabled]="botStatus.fertilizer_level > 90">
+                <i class="bi bi-droplet-fill"></i>
+                Refill Fertilizer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Field Preview and Recent Activity -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-grid-3x3-gap text-success"></i>
+              Field Preview
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="field-grid">
+              <div class="grid-container">
+                <div *ngFor="let plant of plants"
+                     class="grid-cell"
+                     [ngClass]="getPlantCellClass(plant)"
+                     [title]="getPlantTooltip(plant)">
+                  <i *ngIf="isBotPosition(plant.x, plant.y)"
+                     class="bi bi-robot bot-icon"></i>
+                  <i *ngIf="!isBotPosition(plant.x, plant.y)"
+                     [class]="getPlantIcon(plant.growth_stage)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-clock-history text-info"></i>
+              Recent Activity
+            </h5>
+            <span class="badge bg-secondary">{{recentLogs.length}} entries</span>
+          </div>
+          <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+            <div *ngIf="recentLogs.length === 0" class="text-muted text-center py-3">
+              No recent activity
+            </div>
+            <div *ngFor="let log of recentLogs" class="d-flex align-items-center mb-2">
+              <i [class]="getActionIcon(log.action)"
+                 [ngClass]="getActionColor(log.action)"></i>
+              <div class="ms-3 flex-grow-1">
+                <div class="fw-bold">{{log.details}}</div>
+                <small class="text-muted">
+                  {{formatTimestamp(log.timestamp)}}
+                  <span *ngIf="log.x !== null && log.y !== null">
+                    at ({{log.x}}, {{log.y}})
+                  </span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="row mt-3" *ngIf="hasAlerts()">
+      <div class="col-12">
+        <div class="alert alert-warning" *ngIf="botStatus.battery < 20">
+          <i class="bi bi-exclamation-triangle"></i>
+          <strong>Low Battery Warning:</strong> Bot battery is at {{botStatus.battery}}%. Consider recharging.
+        </div>
+        <div class="alert alert-info" *ngIf="botStatus.fertilizer_level < 20">
+          <i class="bi bi-info-circle"></i>
+          <strong>Low Fertilizer:</strong> Fertilizer level is at {{botStatus.fertilizer_level}}%. Refill recommended.
+        </div>
+        <div class="alert alert-danger" *ngIf="analytics.plantsNeedingCare > 0">
+          <i class="bi bi-exclamation-triangle"></i>
+          <strong>Plants Need Care:</strong> {{analytics.plantsNeedingCare}} plants have health below 50%.
+        </div>
+      </div>
+    </div>
+</div>

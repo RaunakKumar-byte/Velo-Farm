@@ -1,0 +1,229 @@
+
+ <div class="container">
+ <div class="row">
+      <div class="col-12">
+        <h2 class="mb-4">
+          <i class="bi bi-grid-3x3-gap text-success"></i>
+          Field Overview
+        </h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Main Field Grid -->
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-map text-success"></i>
+              5×5 Smart Farm Grid
+            </h5>
+            <div class="d-flex align-items-center">
+              <span class="me-3">
+                <i class="bi bi-robot text-primary"></i>
+                Bot: ({{botStatus.x}}, {{botStatus.y}})
+              </span>
+              <span class="badge"
+                    [ngClass]="botStatus.isMoving ? 'bg-warning' : 'bg-success'">
+                {{botStatus.isMoving ? 'Moving' : 'Idle'}}
+              </span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field-grid-large">
+              <div class="grid-container">
+                <div *ngFor="let plant of plants; let i = index"
+                     class="grid-cell"
+                     [ngClass]="getPlantCellClass(plant)"
+                     [title]="getPlantTooltip(plant)"
+                     (click)="selectPlant(plant)">
+
+                  <!-- Bot Icon -->
+                  <i *ngIf="isBotPosition(plant.x, plant.y)"
+                     class="bi bi-robot bot-icon"></i>
+
+                  <!-- Plant Icon -->
+                  <div *ngIf="!isBotPosition(plant.x, plant.y)"
+                       class="plant-info">
+                    <i [class]="getPlantIcon(plant.growth_stage) + ' plant-icon'"></i>
+                    <div class="health-bar">
+                      <div class="health-fill"
+                           [style.width.%]="plant.health"
+                           [ngClass]="'bg-' + farmingApi.getPlantHealthColor(plant.health)">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Grid Coordinates -->
+                  <div class="coordinates">{{plant.x}},{{plant.y}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Field Statistics and Legend -->
+      <div class="col-md-4">
+        <!-- Field Stats -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-bar-chart text-info"></i>
+              Field Statistics
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-6 mb-3">
+                <div class="stat-item">
+                  <h4 class="text-success">{{getHealthyPlantsCount()}}</h4>
+                  <small class="text-muted">Healthy Plants<br>(>80% health)</small>
+                </div>
+              </div>
+              <div class="col-6 mb-3">
+                <div class="stat-item">
+                  <h4 class="text-warning">{{getWarningPlantsCount()}}</h4>
+                  <small class="text-muted">Moderate Health<br>(60-80% health)</small>
+                </div>
+              </div>
+              <div class="col-6 mb-3">
+                <div class="stat-item">
+                  <h4 class="text-danger">{{getCriticalPlantsCount()}}</h4>
+                  <small class="text-muted">Critical Plants<br>(<60% health)</small>
+                </div>
+              </div>
+              <div class="col-6 mb-3">
+                <div class="stat-item">
+                  <h4 class="text-primary">{{getAverageHealth()}}%</h4>
+                  <small class="text-muted">Average<br>Field Health</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Health Legend -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-palette text-warning"></i>
+              Health Legend
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="legend-item mb-2">
+              <div class="legend-color bg-success"></div>
+              <span>Excellent Health (80-100%)</span>
+            </div>
+            <div class="legend-item mb-2">
+              <div class="legend-color bg-warning"></div>
+              <span>Good Health (60-79%)</span>
+            </div>
+            <div class="legend-item mb-2">
+              <div class="legend-color" style="background-color: #fd7e14;"></div>
+              <span>Fair Health (40-59%)</span>
+            </div>
+            <div class="legend-item mb-2">
+              <div class="legend-color bg-danger"></div>
+              <span>Poor Health (0-39%)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color bg-primary"></div>
+              <span>Bot Position</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth Stages -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-graph-up text-success"></i>
+              Growth Stages
+            </h5>
+          </div>
+          <div class="card-body">
+            <div *ngFor="let stage of getGrowthStageStats()" class="d-flex justify-content-between mb-2">
+              <span>
+                <i [class]="getPlantIcon(stage.name)"></i>
+                {{stage.name | titlecase}}
+              </span>
+              <span class="badge bg-secondary">{{stage.count}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Plant Details Modal -->
+    <div class="row mt-4" *ngIf="selectedPlant">
+      <div class="col-12">
+        <div class="card border-primary">
+          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-info-circle"></i>
+              Plant Details - Position ({{selectedPlant.x}}, {{selectedPlant.y}})
+            </h5>
+            <button class="btn btn-outline-light btn-sm" (click)="selectedPlant = null">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="text-center">
+                  <i [class]="getPlantIcon(selectedPlant.growth_stage) + ' display-1 text-success'"></i>
+                  <h4 class="mt-2">{{selectedPlant.growth_stage | titlecase}}</h4>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h6>Health Status</h6>
+                    <div class="progress mb-3" style="height: 20px;">
+                      <div class="progress-bar"
+                           [ngClass]="'bg-' + farmingApi.getPlantHealthColor(selectedPlant.health)"
+                           [style.width.%]="selectedPlant.health">
+                        {{selectedPlant.health}}%
+                      </div>
+                    </div>
+
+                    <h6>Fertilization History</h6>
+                    <p class="text-muted">
+                      Total fertilizations: <strong>{{selectedPlant.fertilizer_count}}</strong><br>
+                      Last fertilized:
+                      <strong>
+                        {{selectedPlant.last_fertilized ? formatDate(selectedPlant.last_fertilized) : 'Never'}}
+                      </strong>
+                    </p>
+                  </div>
+                  <div class="col-md-6">
+                    <h6>Care Recommendations</h6>
+                    <ul class="list-unstyled">
+                      <li *ngIf="selectedPlant.health < 50" class="text-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Immediate attention required
+                      </li>
+                      <li *ngIf="selectedPlant.health >= 50 && selectedPlant.health < 80" class="text-warning">
+                        <i class="bi bi-info-circle"></i>
+                        Consider fertilization
+                      </li>
+                      <li *ngIf="selectedPlant.health >= 80" class="text-success">
+                        <i class="bi bi-check-circle"></i>
+                        Plant is healthy
+                      </li>
+                      <li *ngIf="getDaysSinceLastFertilized(selectedPlant) > 5" class="text-info">
+                        <i class="bi bi-droplet"></i>
+                        Fertilization recommended
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

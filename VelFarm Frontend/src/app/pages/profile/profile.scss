@@ -1,0 +1,180 @@
+
+body {
+  background: linear-gradient(45deg, #f3ec78, #af4261);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.profile-header {
+  max-width: 450px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #28a745, #218838);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  box-shadow: 0 0 20px #28a745;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+.profile-section {
+  margin-top: 25px;
+  .card {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border: 1px solid #fff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      h5 {
+        margin-bottom: 0;
+      }
+      .edit-button {
+        background: none;
+        border: none;
+        color: #28a745;
+        font-size: 1.2rem;
+        cursor: pointer;
+        &:hover {
+          color: #218838;
+        }
+      }
+    }
+
+    .card-body {
+      padding-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #2e2e2e;
+      font-style: italic;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 12px;
+      padding: 10px 14px;
+      border: 1px solid #ced4da;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #28a745;
+      box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+      transform: scale(1.01);
+    }
+
+    .read-only-field {
+      padding: 10px 14px;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      background-color: #f8f9fa;
+      color: #495057;
+      min-height: 45px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.form-label {
+  font-weight: 500;
+  color: #2e2e2e;
+  font-style: italic;
+}
+
+.form-control,
+.form-select {
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+    transform: scale(1.05);
+}
+
+.btn-success {
+  background-image: linear-gradient(to right, #1D976C 0%, #93F9B9  51%, #1D976C  100%);
+  border: none;
+  padding: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+}
+.btn-success:hover {
+  background-position: right center;
+  color: #fff;
+  text-decoration: none;
+  transform: scale(1.1);
+}
+
+.card-option {
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  transition: all 0.3s ease;
+  flex: 1; /* Added for consistent sizing in flex containers */
+}
+.card-option input {
+  margin-right: 8px;
+}
+.card-option:hover {
+  border-color: #28a745;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.card-option input:checked + label {
+  font-weight: 600;
+  color: #28a745;
+}

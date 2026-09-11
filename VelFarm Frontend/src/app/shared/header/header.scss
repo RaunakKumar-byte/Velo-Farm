@@ -1,0 +1,86 @@
+  .hover-bg:hover {
+    background-color: #f1fdf4;
+    transition: 0.3s ease;
+  }
+  .offcanvas {
+    background: #ffffff;
+  }
+/* Prevent offcanvas from closing when clicking links */
+.offcanvas-start {
+    touch-action: none;
+}
+
+/* Enable scrolling when offcanvas is open */
+body.offcanvas-active {
+    overflow: visible !important;
+}
+
+/* Allow smooth scrolling after offcanvas closes */
+body {
+    transition: overflow 0.3s ease-in-out;
+}
+
+/* Prevent vertical scrolling when offcanvas is open */
+body.offcanvas-active {
+    overflow-y: auto;
+}
+
+/* Ensure content is touch-friendly */
+html {
+    touch-action: pan-y;
+    overflow-y: auto;
+}
+
+/* Custom Dropdown Style */
+.custom-dropdown {
+  min-width: 220px;
+  background: #f8f9fa; /* light background */
+}
+
+.custom-dropdown .dropdown-item {
+  transition: all 0.2s ease-in-out;
+  padding: 10px 15px;
+  font-size: 15px;
+}
+
+.custom-dropdown .dropdown-item:hover,
+.custom-dropdown .hover-item:hover {
+  background: #198754; /* Bootstrap success color */
+  color: #fff !important;
+  transform: translateX(5px); /* slight slide effect */
+}
+
+/* Responsive adjustments */
+.hide-on-medium {
+  @media (max-width: 1100px) {
+    display: none !important;
+  }
+}
+
+.navbar-nav {
+  @media (max-width: 992px) {
+    .nav-item {
+      padding: 0.5rem 0;
+    }
+  }
+}
+
+.loggedin-dash {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 992px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
+li a{
+  font-size: 0.9rem;
+}
+.btn-outline-success:hover {
+  background-color: #87c9aa !important; /* halka green */
+  color: #198754 !important; /* green text */
+  border-color: #198754 !important;
+}

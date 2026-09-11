@@ -1,0 +1,224 @@
+<div class="container">
+
+
+<!-- Loading Spinner -->
+<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+  <div class="spinner-border text-success" role="status">
+    <span class="visually-hidden">Loading weather data...</span>
+  </div>
+</div>
+
+<!-- Error Message -->
+<div *ngIf="errorMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <i class="bi bi-exclamation-triangle-fill me-2"></i>
+  {{ errorMessage }}
+  <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
+</div>
+
+<!-- Main Weather Content -->
+<div *ngIf="!isLoading && weatherData" class="weather-container">
+  <!-- Header -->
+  <div class="weather-header mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="weather-title">
+        <i class="bi bi-cloud-sun-fill me-2"></i>
+        Weather Dashboard
+      </h1>
+      <div class="d-flex align-items-center gap-3">
+        <select class="form-select location-select" [ngModel]="selectedLocation?.id" (ngModelChange)="onLocationChange($event)">
+          <option *ngFor="let location of farmLocations" [value]="location.id">{{ location.name }}</option>
+        </select>
+        <button class="btn btn-outline-primary" (click)="refreshWeather()">
+          <i class="bi bi-arrow-clockwise me-1"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+    <p class="weather-date">{{ formatDate(getCurrentDate()) }}</p>
+  </div>
+
+  <!-- Current Weather -->
+  <div class="current-weather-section mb-5">
+    <div class="row g-4">
+      <div class="col-12 col-lg-8">
+        <div class="current-weather-card">
+          <div class="weather-main">
+            <div class="weather-icon">
+              <i [class]="getWeatherIcon(currentWeather.condition)"></i>
+            </div>
+            <div class="weather-info">
+              <h2 class="temperature" [ngClass]="getTemperatureColor(currentWeather.temperature)">
+                {{ currentWeather.temperature }}°F
+              </h2>
+              <h4 class="condition">{{ currentWeather.condition }}</h4>
+              <p class="description">{{ currentWeather.description }}</p>
+            </div>
+          </div>
+          <div class="weather-details">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <i class="bi bi-droplet-fill text-primary"></i>
+                <div class="detail-content">
+                  <span class="detail-label">Humidity</span>
+                  <span class="detail-value">{{ currentWeather.humidity }}%</span>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-wind text-info"></i>
+                <div class="detail-content">
+                  <span class="detail-label">Wind Speed</span>
+                  <span class="detail-value">{{ currentWeather.windSpeed }} mph</span>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-eye text-secondary"></i>
+                <div class="detail-content">
+                  <span class="detail-label">Visibility</span>
+                  <span class="detail-value">{{ currentWeather.visibility }} mi</span>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-thermometer-half text-warning"></i>
+                <div class="detail-content">
+                  <span class="detail-label">Feels Like</span>
+                  <span class="detail-value">{{ currentWeather.feelsLike }}°F</span>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-sun text-warning"></i>
+                <div class="detail-content">
+                  <span class="detail-label">UV Index</span>
+                  <span class="detail-value" [ngClass]="getUVIndexLevel(currentWeather.uvIndex).color">
+                    {{ currentWeather.uvIndex }}
+                  </span>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-speedometer2 text-info"></i>
+                <div class="detail-content">
+                  <span class="detail-label">Pressure</span>
+                  <span class="detail-value">{{ currentWeather.pressure }} hPa</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-12 col-lg-4">
+        <div class="weather-alerts-card">
+          <h5 class="card-title">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            Weather Alerts
+          </h5>
+          <div *ngIf="getActiveAlerts().length === 0" class="no-alerts">
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <p>No active weather alerts</p>
+          </div>
+          <div *ngFor="let alert of getActiveAlerts()" class="alert-item">
+            <div class="alert-icon">
+              <i [class]="getAlertIcon(alert.type)"></i>
+            </div>
+            <div class="alert-content">
+              <h6 class="alert-title">{{ alert.title }}</h6>
+              <p class="alert-description">{{ alert.description }}</p>
+              <div class="alert-meta">
+                <span class="alert-severity" [ngClass]="getSeverityBadgeClass(alert.severity)">
+                  {{ alert.severity | titlecase }}
+                </span>
+                <small class="alert-time">{{ formatTime(alert.startTime) }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hourly Forecast -->
+  <div class="hourly-forecast-section mb-5">
+    <h3 class="section-title mb-4">
+      <i class="bi bi-clock me-2"></i>
+      24-Hour Forecast
+    </h3>
+    <div class="hourly-forecast-container">
+      <div *ngFor="let hour of hourlyForecast" class="hourly-item">
+        <div class="hour-time">{{ formatHour(hour.time) }}</div>
+        <div class="hour-icon">
+          <i [class]="hour.icon"></i>
+        </div>
+        <div class="hour-temp" [ngClass]="getTemperatureColor(hour.temperature)">
+          {{ hour.temperature }}°
+        </div>
+        <div class="hour-details">
+          <div class="hour-humidity">{{ hour.humidity }}%</div>
+          <div class="hour-wind">{{ hour.windSpeed }} mph</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7-Day Forecast -->
+  <div class="forecast-section mb-5">
+    <h3 class="section-title mb-4">
+      <i class="bi bi-calendar-week me-2"></i>
+      7-Day Forecast
+    </h3>
+    <div class="forecast-container">
+      <div *ngFor="let day of forecast" class="forecast-day">
+        <div class="day-name">{{ day.day }}</div>
+        <div class="day-icon">
+          <i [class]="getWeatherIcon(day.condition)"></i>
+        </div>
+        <div class="day-temp">
+          <span class="high-temp" [ngClass]="getTemperatureColor(day.maxTemp)">
+            {{ day.maxTemp }}°
+          </span>
+          <span class="low-temp text-muted">
+            {{ day.minTemp }}°
+          </span>
+        </div>
+        <div class="day-details">
+          <div class="day-humidity">
+            <i class="bi bi-droplet-fill text-primary me-1"></i>
+            {{ day.humidity }}%
+          </div>
+          <div class="day-wind">
+            <i class="bi bi-wind text-info me-1"></i>
+            {{ day.windSpeed }} mph
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weather Recommendations -->
+  <div class="recommendations-section mb-5" *ngIf="weatherRecommendations.length > 0">
+    <h3 class="section-title mb-4">
+      <i class="bi bi-lightbulb me-2"></i>
+      Weather Recommendations
+    </h3>
+    <div class="recommendations-container">
+      <div *ngFor="let recommendation of weatherRecommendations" class="recommendation-item">
+        <i class="bi bi-check-circle-fill text-success me-2"></i>
+        <span>{{ recommendation }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weather Map Placeholder -->
+  <div class="weather-map-section mb-5">
+    <h3 class="section-title mb-4">
+      <i class="bi bi-geo-alt me-2"></i>
+      Weather Map
+    </h3>
+    <div class="weather-map-container">
+      <div class="map-placeholder">
+        <i class="bi bi-map text-muted"></i>
+        <p class="text-muted">Interactive weather map would be displayed here</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

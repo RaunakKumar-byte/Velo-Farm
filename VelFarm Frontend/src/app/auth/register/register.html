@@ -1,0 +1,336 @@
+<!-- <app-header></app-header> -->
+<div class="container my-5">
+  <div class="row align-items-center">
+
+<!-- Image for Right Form Left Side -->
+<div class="col-md-6 d-none d-md-block position-relative" style="min-height: 100vh;">
+  <div class="pulse-border-wrapper" style="position: fixed; top: 50%; transform: translateY(-50%); right: 50%; margin-right: 15px;">
+    <img
+      src="https://img.freepik.com/free-photo/drone-spraying-fertilizer-vegetable-green-plants-agriculture-technology-farm-automation_35913-2318.jpg"
+      alt="Farm Drone"
+      class="img-fluid rounded shadow">
+  </div>
+</div>
+
+
+    <!-- Right Form -->
+    <div class="col-12 col-md-6">
+      <div class="register-header card p-4 my-2 mx-auto" style="min-height: 110vh;">
+
+        <!-- Back Button -->
+        <div class="d-flex align-items-center mb-3">
+          <a href="javascript:void(0)" class="text-dark fs-5">
+            <i class="bi bi-arrow-left"></i>
+          </a>
+        </div>
+
+        <!-- Logo + Title -->
+        <div class="text-center mb-3">
+          <div class="logo-circle mx-auto mb-3">
+            <i class="fa-solid fa-leaf"></i>
+          </div>
+          <h4 class="fw-bold">Create Your Account</h4>
+          <p class="text-success small">
+            Join our community and start managing your farm with smart technology.
+          </p>
+        </div>
+
+        <!-- Stepper -->
+        <div class="stepper d-flex justify-content-between align-items-center text-center">
+          <div class="step" [class.active]="currentStep === 1" (click)="goToStep(1)">1<br><span>User</span></div>
+          <div class="step" [class.active]="currentStep === 2" (click)="goToStep(2)">2<br><span>Farm</span></div>
+          <div class="step" [class.active]="currentStep === 3" (click)="goToStep(3)">3<br><span>Crop</span></div>
+          <div class="step" [class.active]="currentStep === 4" (click)="goToStep(4)">4<br><span>Equip.</span></div>
+          <div class="step" [class.active]="currentStep === 5" (click)="goToStep(5)">5<br><span>Pesticide</span></div>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <!-- 1 -->
+          <div *ngIf="currentStep === 1">
+            <div class="register-container d-flex flex-column align-items-center justify-content-center">
+              <div class="card register-card">
+                <div class="card-body">
+                  <div class="mb-2">
+                    <a (click)="previousStep()" class="text-decoration-none text-success">
+                      <i class="bi bi-arrow-left"></i>
+                    </a>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" placeholder="Enter your full name"
+                      formControlName="fullName" required>
+                    <div *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched" class="text-danger small">
+                      Full Name is required.
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="you@example.com" formControlName="email"
+                      required>
+                    <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger small">
+                      Valid Email is required.
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="Enter a strong password"
+                      formControlName="password" required>
+                    <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger small">
+                      Password is required.
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Phone / WhatsApp Number</label>
+                    <input type="tel" class="form-control" placeholder="e.g., +1 234 567 890" formControlName="phone"
+                      required>
+                    <div *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched" class="text-danger small">
+                      Phone Number is required.
+                    </div>
+                  </div>
+
+
+                  <div class="mb-4">
+                    <label class="form-label">Language Preference</label>
+                    <select class="form-select" formControlName="language" required>
+                      <option selected disabled value="">Select a language</option>
+                      <option>English</option>
+                      <option>हिंदी</option>
+                      <option>தமிழ்</option>
+                      <option>తెలుగు</option>
+                    </select>
+                    <div *ngIf="registerForm.get('language')?.invalid && registerForm.get('language')?.touched" class="text-danger small">
+                      Language Preference is required.
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between">
+                    <button type="button" (click)="skipStep()" class="btn btn-outline-secondary rounded-pill px-4">Skip</button>
+                    <button type="button" (click)="nextStep()" class="btn btn-success rounded-pill px-4">Next</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 2 -->
+          <div *ngIf="currentStep === 2">
+            <div class="farm-info-container d-flex flex-column align-items-center justify-content-start">
+              <div class="card farm-card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-4">
+                    <a (click)="previousStep()" class="text-dark fs-5 me-3">
+                      <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h5 class="fw-bold mb-0">Farm Information</h5>
+                  </div>
+
+                  <!-- Farm Name -->
+                  <div class="mb-3">
+                    <label class="form-label">Farm Name</label>
+                    <input type="text" class="form-control" placeholder="Enter farm name" formControlName="farmName" required>
+                    <div *ngIf="registerForm.get('farmName')?.invalid && registerForm.get('farmName')?.touched" class="text-danger small">
+                      Farm Name is required.
+                    </div>
+                  </div>
+
+                  <!-- Farm Location -->
+                  <div class="mb-3">
+                    <label class="form-label">Farm Location</label>
+                    <input type="text" class="form-control" placeholder="Village, District, State"
+                      formControlName="farmLocation" required>
+                    <div *ngIf="registerForm.get('farmLocation')?.invalid && registerForm.get('farmLocation')?.touched" class="text-danger small">
+                      Farm Location is required.
+                    </div>
+                  </div>
+
+                  <!-- Farm Size -->
+                  <div class="mb-3">
+                    <label class="form-label">Farm Size (in acres)</label>
+                    <input type="number" class="form-control" placeholder="Enter farm size" formControlName="farmSize" required>
+                    <div *ngIf="registerForm.get('farmSize')?.invalid && registerForm.get('farmSize')?.touched" class="text-danger small">
+                      Farm Size is required.
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-center gap-2">
+                    <button type="button" (click)="previousStep()"
+                      class="btn btn-light border rounded-pill px-4">Previous</button>
+                    <button type="button" (click)="skipStep()" class="btn btn-outline-secondary rounded-pill px-4">Skip</button>
+                    <button type="button" (click)="nextStep()" class="btn btn-success rounded-pill px-4">Next</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 3 -->
+          <div *ngIf="currentStep === 3">
+            <div class="crop-info-container d-flex flex-column align-items-center justify-content-start">
+              <div class="card crop-card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-4">
+                    <a (click)="previousStep()" class="text-dark fs-5 me-3">
+                      <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h5 class="fw-bold mb-0">Crop Information</h5>
+                  </div>
+
+                  <!-- Primary Crops -->
+                  <div class="mb-3">
+                    <label class="form-label">Primary Crops</label>
+                    <input type="text" class="form-control" placeholder="e.g., Wheat, Rice"
+                      formControlName="primaryCrops" required>
+                    <div *ngIf="registerForm.get('primaryCrops')?.invalid && registerForm.get('primaryCrops')?.touched" class="text-danger small">
+                      Primary Crops is required.
+                    </div>
+                  </div>
+
+                  <!-- Secondary Crops -->
+                  <div class="mb-3">
+                    <label class="form-label">Secondary Crops/Intercropping</label>
+                    <input type="text" class="form-control" placeholder="e.g., Maize, Beans"
+                      formControlName="secondaryCrops">
+                  </div>
+
+                  <div class="d-flex justify-content-center gap-2">
+                    <button type="button" (click)="previousStep()"
+                      class="btn btn-light border rounded-pill px-4">Previous</button>
+                    <button type="button" (click)="skipStep()" class="btn btn-outline-secondary rounded-pill px-4">Skip</button>
+                    <button type="button" (click)="nextStep()" class="btn btn-success rounded-pill px-4">Next</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 4 -->
+          <div *ngIf="currentStep === 4">
+            <div class="equipment-info-container d-flex flex-column align-items-center justify-content-start">
+              <div class="card equipment-card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-4">
+                    <a (click)="previousStep()" class="text-dark fs-5 me-3">
+                      <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h5 class="fw-bold mb-0">Equipment & Resources</h5>
+                  </div>
+
+                  <!-- Sprayer Type -->
+                  <div class="mb-3">
+                    <label class="form-label">Sprayer Type</label>
+                    <select class="form-select" formControlName="sprayerType" required>
+                      <option selected disabled value="">Select Sprayer Type</option>
+                      <option>Knapsack Sprayer</option>
+                      <option>Boom Sprayer</option>
+                      <option>Airblast Sprayer</option>
+                      <option>Drone Sprayer</option>
+                    </select>
+                    <div *ngIf="registerForm.get('sprayerType')?.invalid && registerForm.get('sprayerType')?.touched" class="text-danger small">
+                      Sprayer Type is required.
+                    </div>
+                  </div>
+
+                  <!-- Number of IoT Devices -->
+                  <div class="mb-3">
+                    <label class="form-label">Number of IoT Devices Available</label>
+                    <input type="number" class="form-control" placeholder="e.g., 5" formControlName="iotDevices" required>
+                    <div *ngIf="registerForm.get('iotDevices')?.invalid && registerForm.get('iotDevices')?.touched" class="text-danger small">
+                      Number of IoT Devices is required.
+                    </div>
+                  </div>
+
+                  <!-- Own Tractor/Machinery -->
+                  <div class="mb-4">
+                    <label class="form-label d-block">Do you own a tractor or other machinery?</label>
+                    <div class="d-flex gap-3">
+                      <div class="form-check card-option">
+                        <input class="form-check-input" type="radio" name="machinery" id="yes" value="yes"
+                          formControlName="machinery" required>
+                        <label class="form-check-label" for="yes">Yes</label>
+                      </div>
+                      <div class="form-check card-option">
+                        <input class="form-check-input" type="radio" name="machinery" id="no" value="no"
+                          formControlName="machinery" required>
+                        <label class="form-check-label" for="no">No</label>
+                      </div>
+                    </div>
+                    <div *ngIf="registerForm.get('machinery')?.invalid && registerForm.get('machinery')?.touched" class="text-danger small">
+                      This field is required.
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-center gap-2">
+                    <button type="button" (click)="previousStep()"
+                      class="btn btn-light border rounded-pill px-4">Previous</button>
+                    <button type="button" (click)="skipStep()" class="btn btn-outline-secondary rounded-pill px-4">Skip</button>
+                    <button type="button" (click)="nextStep()" class="btn btn-success rounded-pill px-4">Next</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 5 -->
+          <div *ngIf="currentStep === 5">
+            <div class="pesticide-info-container d-flex flex-column align-items-center justify-content-start">
+              <div class="card pesticide-card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-4">
+                    <a (click)="previousStep()" class="text-dark fs-5 me-3">
+                      <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h5 class="fw-bold mb-0">Pesticide & Fertilizer</h5>
+                  </div>
+
+                  <!-- Commonly Used Pesticides -->
+                  <div class="mb-3">
+                    <label class="form-label">Commonly Used Pesticides</label>
+                    <input type="text" class="form-control" placeholder="e.g., Glyphosate, Malathion"
+                      formControlName="pesticides" required>
+                    <div *ngIf="registerForm.get('pesticides')?.invalid && registerForm.get('pesticides')?.touched" class="text-danger small">
+                      Pesticides field is required.
+                    </div>
+                  </div>
+
+                  <!-- Fertilizer Usage Preference -->
+                  <div class="mb-3">
+                    <label class="form-label">Fertilizer Usage Preference</label>
+                    <select class="form-select" formControlName="fertilizerPreference" required>
+                      <option selected disabled value="">Select Preference</option>
+                      <option>Organic</option>
+                      <option>Chemical</option>
+                      <option>Both</option>
+                    </select>
+                    <div *ngIf="registerForm.get('fertilizerPreference')?.invalid && registerForm.get('fertilizerPreference')?.touched" class="text-danger small">
+                      Fertilizer Usage Preference is required.
+                    </div>
+                  </div>
+
+                  <!-- Average Monthly Expenditure -->
+                  <div class="mb-4">
+                    <label class="form-label">Average Monthly Expenditure</label>
+                    <input type="text" class="form-control" placeholder="e.g., $50 - $100"
+                      formControlName="monthlyExpenditure" required>
+                    <div *ngIf="registerForm.get('monthlyExpenditure')?.invalid && registerForm.get('monthlyExpenditure')?.touched" class="text-danger small">
+                      Monthly Expenditure is required.
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between">
+                    <button type="button" (click)="previousStep()"
+                      class="btn btn-light border rounded-pill px-4">Previous</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+
+      </div>
+      </div>
+    </div>
+    </div>
+
+      <!-- <app-footer></app-footer> -->

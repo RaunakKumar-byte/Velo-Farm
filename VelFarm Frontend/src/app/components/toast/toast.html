@@ -1,0 +1,5 @@
+<div *ngIf="toast" class="toast-container" [@toastAnimation]>
+  <div class="toast" [ngClass]="getToastClass()">
+    {{ toast.message }}
+  </div>
+</div>

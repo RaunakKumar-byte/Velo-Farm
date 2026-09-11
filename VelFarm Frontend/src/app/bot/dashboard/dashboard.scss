@@ -1,0 +1,94 @@
+.dashboard-container {
+  padding-bottom: 2rem;
+}
+
+.dashboard-title {
+  font-weight: bold;
+  color: #1e5631;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.status-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.status-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+.bg-gradient-success {
+  background: linear-gradient(135deg, #28a745, #6fb98f);
+}
+
+.float-icon {
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.battery-progress .progress-bar {
+  transition: width 0.6s ease;
+}
+.fertilizer-progress .progress-bar {
+  transition: width 0.6s ease;
+}
+
+.field-grid .grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+  gap: 10px;
+  margin: auto;
+}
+.field-grid .grid-cell {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+.field-grid .grid-cell:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.field-grid .bot-icon {
+  font-size: 2rem;
+  color: #fff;
+  animation: bounce 1s infinite;
+}
+
+.plant-success { background:#d4edda; border:2px solid #28a745; }
+.plant-warning { background:#fff3cd; border:2px solid #ffc107; }
+.plant-orange  { background:#ffe8cc; border:2px solid #fd7e14; }
+.plant-danger  { background:#f8d7da; border:2px solid #dc3545; }
+.bot-present   { background:#007bff !important; color:white !important; animation:pulse 2s infinite; }
+
+@keyframes pulse {
+  0%,100% { box-shadow:0 0 0 0 rgba(0,123,255,0.6); }
+  50% { box-shadow:0 0 0 10px rgba(0,123,255,0); }
+}
+@keyframes bounce {
+  0%,20%,50%,80%,100% { transform:translateY(0); }
+  40% { transform:translateY(-5px); }
+  60% { transform:translateY(-3px); }
+}
+
+.alert {
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(10px);}
+  to   { opacity:1; transform:translateY(0);}
+}
+
+@media (max-width: 768px) {
+  .status-card h4 { font-size: 1.2rem; }
+  .status-card .card-title { font-size: 0.85rem; }
+}

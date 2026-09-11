@@ -1,0 +1,141 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1; // pushes footer down
+}
+
+/* Footer Styles */
+.app-footer {
+  background: linear-gradient(135deg, var(--green), var(--green-ink));
+  color: #ffffff;
+  width: 100%;
+  box-shadow: 0 -2px 8px rgba(31, 138, 58, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1rem 0;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+
+    @media (min-width: 992px) {
+      flex-direction: row;
+      gap: 0;
+    }
+  }
+
+  /* Brand */
+  .footer-brand {
+    text-align: center;
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.7;
+      margin-bottom: 0px;
+    }
+  }
+
+  /* Links */
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+
+    a.footer-link {
+      color: #e6ffed;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.8rem;
+      position: relative;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: #ffffff;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background-color: #ffffff;
+        transition: width 0.3s ease;
+      }
+
+      &:hover::after {
+        width: 100%;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  /* Copy */
+  .footer-copy {
+    font-size: 0.75rem;
+    opacity: 0.85;
+
+    @media (min-width: 992px) {
+      margin-top: 0;
+      text-align: right;
+    }
+  }
+}
+
+/* Dark theme adjustments - keep footer green */
+body.dark-theme {
+  .app-footer {
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    color: #ffffff;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.35);
+
+    .footer-brand .brand-title {
+      color: #ffffff;
+    }
+
+    .footer-links a.footer-link {
+      color: #d6ffe0;
+
+      &:hover {
+        color: #ffffff;
+      }
+
+      &::after {
+        background-color: #ffffff;
+      }
+    }
+
+    .footer-copy {
+      opacity: 0.9;
+    }
+  }
+}

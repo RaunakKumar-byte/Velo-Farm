@@ -1,0 +1,346 @@
+// Adding a crazy background to the whole page
+body {
+  background: linear-gradient(45deg, #f3ec78, #af4261);
+  font-family: 'Comic Sans MS', cursive, sans-serif; // The craziest font
+}
+.pulse-border-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.pulse-border-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #28a745;
+  border-radius: 1rem; /* same as img border radius */
+  box-shadow: 0 0 20px #28a745;
+  animation: pulse-border 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-border {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+    box-shadow: 0 0 20px #28a745;
+  }
+  70% {
+    transform: scale(1.3);
+    opacity: 0;
+    box-shadow: 0 0 40px #28a74533;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+    box-shadow: 0 0 20px #28a74500;
+  }
+}
+
+.register-header {
+  max-width: 450px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8); // Make it semi-transparent
+  backdrop-filter: blur(10px); // Frosted glass effect
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+
+/* Green circle with icon */
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #28a745, #218838);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  box-shadow: 0 0 20px #28a745;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+
+/* Stepper */
+.stepper {
+  margin-top: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #adb5bd;
+}
+.stepper .step {
+  flex: 1;
+  transition: transform 0.3s ease;
+}
+.stepper .step:hover {
+    transform: scale(1.2);
+}
+.stepper .active {
+  color: #000;
+  font-weight: 600;
+  transform: scale(1.3);
+  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #28a745, 0 0 40px #28a745;
+}
+.stepper span {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+
+//1
+.register-container {
+    margin-top: 25px;
+}
+
+
+.register-card {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border: 1px solid #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+
+.register-card h4 {
+  font-weight: 600;
+}
+
+
+.form-label {
+  font-weight: 500;
+  color: #2e2e2e;
+  font-style: italic;
+}
+
+
+.form-control,
+.form-select {
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+    transform: scale(1.05);
+}
+
+.btn-success {
+  background-image: linear-gradient(to right, #1D976C 0%, #93F9B9  51%, #1D976C  100%);
+  border: none;
+  padding: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+}
+.btn-success:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+  transform: scale(1.1);
+}
+
+
+// 2
+.farm-info-container {
+    margin-top: 25PX;
+}
+
+/* Card */
+.farm-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border: 1px solid #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+
+/* Labels */
+.form-label {
+  font-weight: 500;
+  color: #2e2e2e;
+}
+
+/* Inputs & Selects */
+.form-control,
+.form-select {
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+}
+
+
+// 3
+.crop-info-container {
+    margin-top: 25px;
+}
+
+/* Card */
+.crop-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border: 1px solid #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Labels */
+.form-label {
+  font-weight: 500;
+  color: #2e2e2e;
+}
+
+/* Inputs */
+.form-control {
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+}
+
+/* Farming practice radio styled like cards */
+.card-option {
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+.card-option input {
+  margin-right: 8px;
+}
+.card-option:hover {
+  border-color: #28a745;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.card-option input:checked + label {
+  font-weight: 600;
+  color: #28a745;
+}
+
+
+// 4
+.equipment-info-container {
+    margin-top: 25px;
+}
+
+/* Card */
+.equipment-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border: 1px solid #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Labels */
+.form-label {
+  font-weight: 500;
+  color: #2e2e2e;
+}
+
+/* Inputs & Selects */
+.form-control,
+.form-select {
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+}
+
+/* Radio buttons styled like cards */
+.card-option {
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  flex: 1;
+}
+.card-option input {
+  margin-right: 8px;
+}
+.card-option:hover {
+  border-color: #28a745;
+}
+.card-option input:checked + label {
+  font-weight: 600;
+  color: #28a745;
+}
+
+// 5
+.pesticide-info-container {
+    margin-top: 25px;
+}
+
+/* Card */
+.pesticide-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border: 1px solid #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Labels */
+.form-label {
+  font-weight: 500;
+  color: #2e2e2e;
+}
+
+/* Inputs & Selects */
+.form-control,
+.form-select {
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+}
+
+.equipment-card , .farm-card , .pesticide-card , .crop-card , .register-card {
+    padding: 0px;
+}

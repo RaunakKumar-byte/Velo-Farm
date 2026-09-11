@@ -1,0 +1,154 @@
+<div class="container py-3" style="min-height: 86vh; overflow:hidden;">
+  <!-- Header + filters -->
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h4 class="m-0">📝 Jobs</h4>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      <select class="form-select form-select-sm" [(ngModel)]="selectedFieldId" (ngModelChange)="loadJobs()">
+        <option value="">All Fields</option>
+        <option *ngFor="let f of fields" [value]="f._id">{{ f.name }}</option>
+      </select>
+      <select class="form-select form-select-sm" [(ngModel)]="selectedStatus" (ngModelChange)="loadJobs()">
+        <option value="">All Status</option>
+        <option value="scheduled">Scheduled</option>
+        <option value="in_progress">In Progress</option>
+        <option value="completed">Completed</option>
+      </select>
+      <button class="btn btn-outline-secondary btn-sm" (click)="page = Math.max(1, page-1); loadJobs()" [disabled]="page===1">Prev</button>
+      <span class="small">Page {{ page }}</span>
+      <button class="btn btn-outline-secondary btn-sm" (click)="page = page+1; loadJobs()" [disabled]="jobs.length < pageSize">Next</button>
+      <button class="btn btn-primary mt-2 mt-md-0" (click)="openCreateJob()">
+        <i class="bi bi-plus-circle me-1"></i> Add Job
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Loading jobs...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Job Cards -->
+  <div class="row g-5" *ngIf="!isLoading && jobs.length > 0">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center" *ngFor="let j of jobs">
+      <div class="card themed-card cursor-pointer" (click)="viewJobDetail(j)">
+        <div class="content d-flex flex-column h-100">
+          <!-- Job Type -->
+          <p class="heading">{{ j.type }}</p>
+
+          <!-- Job Details -->
+<p class="para mb-1"><strong>Status:</strong> {{ j.status }}</p>
+<p class="para mb-1"><strong>Scheduled At:</strong> {{ j.scheduledAt | date:'d MMM yyyy, HH:mm' }}</p>
+<p class="para mb-1"><strong>Field:</strong> {{ j.fieldName || j.fieldId }}</p>
+<p class="para mb-2"><strong>Notes:</strong> {{ j.notes }}</p>
+<p class="para mb-2"><strong>Created:</strong> {{ j.createdAt | date:'d MMMM' }}</p>
+
+          <!-- Action Buttons -->
+          <div class="mt-auto d-flex gap-2 flex-wrap">
+            <!-- <button class="btn btn-sm btn-outline-primary flex-grow-1" (click)="openEditJob(j)">
+              <i class="bi bi-pencil-square"></i> Edit
+            </button> -->
+            <button class="animated-button edit-crop" (click)="openEditJob(j); $event.stopPropagation()">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+              <span class="text">Edit</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+            </button>
+
+
+            <!-- <button class="btn btn-sm btn-outline-danger flex-grow-1" (click)="removeJob(j)">
+              <i class="bi bi-trash"></i> Edit
+            </button> -->
+
+            <button class="animated-button edit-crop" (click)="removeJob(j); $event.stopPropagation()">
+              <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+              <span class="text">Remove</span>
+              <span class="circle"></span>
+              <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z">
+                </path>
+              </svg>
+            </button>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" (click)="$event.stopPropagation()">
+                Status
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" (click)="setStatus(j, 'scheduled'); $event.stopPropagation()">Scheduled</a></li>
+                <li><a class="dropdown-item" (click)="setStatus(j, 'in_progress'); $event.stopPropagation()">In Progress</a></li>
+                <li><a class="dropdown-item" (click)="setStatus(j, 'completed'); $event.stopPropagation()">Completed</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && jobs.length === 0" class="text-center text-muted my-5">
+    <i class="bi bi-emoji-frown fs-1 d-block mb-2"></i>
+    <p>No jobs found</p>
+  </div>
+
+  <!-- Job Modal -->
+  <div class="modal fade" id="jobModal" tabindex="-1" aria-labelledby="jobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Modal Body -->
+        <div class="model">
+          <div class="container">
+            <!-- Modal Heading -->
+            <div class="heading">
+              <i class="bi bi-clipboard me-2"></i>
+              {{ isEditing ? 'Edit Job' : 'Create Job' }}
+            </div>
+
+            <!-- Job Form -->
+            <form class="form">
+              <select class="input mb-2" [(ngModel)]="form.fieldId" name="fieldId" required>
+                <option value="" disabled selected>Select Field</option>
+                <option *ngFor="let f of fields" [value]="f._id">{{ f.name }} ({{ f.location }})</option>
+              </select>
+
+              <select class="input mb-2" [(ngModel)]="form.type" name="type" required>
+                <option value="" disabled selected>Select Job Type</option>
+                <option>Spraying</option>
+                <option>Irrigation</option>
+                <option>Harvesting</option>
+                <option>Planting</option>
+                <option>Maintenance</option>
+                <option>Other</option>
+              </select>
+
+              <input type="datetime-local" class="input mb-2" [(ngModel)]="form.scheduledAt" name="scheduledAt" required>
+              <textarea class="input mb-2" [(ngModel)]="form.notes" name="notes" placeholder="Notes"></textarea>
+
+              <input class="login-button" type="button" value="Save" (click)="saveJob()" data-bs-dismiss="modal">
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

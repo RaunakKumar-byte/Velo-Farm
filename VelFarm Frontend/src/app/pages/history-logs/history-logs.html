@@ -1,0 +1,378 @@
+
+
+<div class="history-logs-container container">
+  <!-- Header Section -->
+  <div class="header-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title mb-1">History & Logs</h1>
+        <p class="page-subtitle text-muted">Review past data, scans, and predictions for your farm.</p>
+      </div>
+      <div class="profile-section">
+        <img src="https://media.assettype.com/deccanherald%2Fimport%2Fsites%2Fdh%2Ffiles%2Farticle_images%2F2020%2F05%2F19%2Ffile7aixqijlqk1pb9lyked-707387126-1589739546.jpg?w=undefined&auto=format%2Ccompress&fit=max" alt="Profile" class="profile-avatar">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Main Content Area -->
+    <div class="col-lg-8">
+      <!-- Search Bar -->
+      <div class="search-section mb-4">
+        <form [formGroup]="searchForm" class="search-form">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control border-start-0"
+              placeholder="Search logs by date, scan ID, or keyword"
+              formControlName="searchTerm">
+          </div>
+        </form>
+      </div>
+
+      <!-- View Options -->
+      <div class="view-options mb-4">
+        <ul class="nav nav-tabs border-0">
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [class.active]="currentView === 'timeline'"
+              (click)="switchView('timeline')">
+              Timeline View
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [class.active]="currentView === 'tabular'"
+              (click)="switchView('tabular')">
+              Tabular View
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [class.active]="currentView === 'comparison'"
+              (click)="switchView('comparison')">
+              Comparison View
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Filter by Event Type -->
+      <div class="filter-section mb-4">
+        <h6 class="filter-title mb-3">Filter by Event Type</h6>
+        <div class="event-type-filters">
+          <div class="form-check form-check-inline" *ngFor="let eventType of eventTypes">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [id]="'event-' + eventType"
+              [checked]="isEventTypeSelected(eventType)"
+              (change)="toggleEventType(eventType)">
+            <label
+              class="form-check-label d-flex align-items-center"
+              [for]="'event-' + eventType">
+              <i class="bi me-2" [ngClass]="[getEventTypeIcon(eventType), getEventTypeColor(eventType)]"></i>
+              {{ formatEventTypeName(eventType) }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline View -->
+      <div *ngIf="currentView === 'timeline'" class="timeline-view">
+        <div class="timeline-container">
+          <div *ngFor="let log of filteredLogs; let i = index" class="timeline-item">
+            <div class="timeline-marker">
+              <i class="bi" [ngClass]="[getLogIcon(log.type), getLogColor(log.type)]"></i>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <h6 class="mb-0 me-3">{{ log.title }}</h6>
+                    <span *ngIf="log.scanId" class="badge bg-light text-dark">{{ log.scanId }}</span>
+                  </div>
+                  <small class="text-muted">{{ formatDate(log.timestamp) }}</small>
+                </div>
+                <div class="card-body">
+                  <p class="card-text mb-2">{{ log.message }}</p>
+                  <div *ngIf="log.note" class="alert alert-info mb-2">
+                    <small><strong>Note:</strong> {{ log.note }}</small>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="action-buttons">
+                      <button
+                        *ngIf="log.type === 'scan'"
+                        class="btn btn-sm btn-outline-primary me-2"
+                        (click)="replayHeatmap(log)">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Replay Heatmap
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-secondary"
+                        (click)="addNote(log)">
+                        <i class="bi bi-journal-plus me-1"></i>
+                        Add Note
+                      </button>
+                    </div>
+                    <div class="log-meta">
+                      <span class="badge bg-secondary me-2">{{ log.severity.toUpperCase() }}</span>
+                      <span *ngIf="log.zone" class="badge bg-info">Zone {{ log.zone }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="filteredLogs.length === 0" class="text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted mt-3">No logs found matching your criteria</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabular View -->
+      <div *ngIf="currentView === 'tabular'" class="tabular-view">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Severity</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of filteredLogs">
+                <td>
+                  <i class="bi me-2" [ngClass]="[getLogIcon(log.type), getLogColor(log.type)]"></i>
+                  {{ log.type.replace('_', ' ').toUpperCase() }}
+                </td>
+                <td>
+                  <strong>{{ log.title }}</strong>
+                  <div *ngIf="log.scanId" class="small text-muted">{{ log.scanId }}</div>
+                </td>
+                <td>
+                  <div class="log-message">{{ log.message }}</div>
+                  <div *ngIf="log.note" class="small text-info mt-1">
+                    <strong>Note:</strong> {{ log.note }}
+                  </div>
+                </td>
+                <td>{{ formatDate(log.timestamp) }}</td>
+                <td>
+                  <span class="badge" [ngClass]="'bg-' + (log.severity === 'critical' ? 'danger' : log.severity === 'high' ? 'warning' : 'secondary')">
+                    {{ log.severity.toUpperCase() }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    *ngIf="log.type === 'scan'"
+                    class="btn btn-sm btn-outline-primary me-1"
+                    (click)="replayHeatmap(log)">
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="addNote(log)">
+                    <i class="bi bi-journal-plus"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Comparison View -->
+      <div *ngIf="currentView === 'comparison'" class="comparison-view">
+        <div class="comparison-container">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Data Set 1</h6>
+                </div>
+                <div class="card-body">
+                  <select
+                    class="form-select"
+                    formControlName="dataset1"
+                    (change)="compareDataSets()">
+                    <option *ngFor="let dataset of dataSets" [value]="dataset.id">
+                      {{ dataset.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Data Set 2</h6>
+                </div>
+                <div class="card-body">
+                  <select
+                    class="form-select"
+                    formControlName="dataset2"
+                    (change)="compareDataSets()">
+                    <option *ngFor="let dataset of dataSets" [value]="dataset.id">
+                      {{ dataset.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="comparisonResult" class="comparison-results mt-4">
+            <div class="card">
+              <div class="card-header">
+                <h6 class="mb-0">Comparison Results</h6>
+              </div>
+              <div class="card-body">
+                <p class="text-muted mb-3">
+                  Comparing {{ comparisonResult.dataset1.name }} with {{ comparisonResult.dataset2.name }}.
+                </p>
+
+                <div class="chart-container mb-4">
+                  <canvas #comparisonChart width="400" height="200"></canvas>
+                </div>
+
+                <div class="insights">
+                  <h6>Key Insights:</h6>
+                  <ul class="list-unstyled">
+                    <li *ngFor="let insight of comparisonResult.insights" class="mb-2">
+                      <i class="bi bi-lightbulb text-warning me-2"></i>
+                      {{ insight }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="col-lg-4">
+      <div class="sidebar">
+        <!-- Action Buttons -->
+        <div class="action-buttons mb-4">
+          <button
+            class="btn btn-outline-primary w-100 mb-2"
+            (click)="filterEvents()">
+            <i class="bi bi-funnel me-2"></i>
+            Filter Events
+          </button>
+          <button
+            class="btn btn-outline-success w-100"
+            (click)="openExportModal()">
+            <i class="bi bi-download me-2"></i>
+            Export Logs
+          </button>
+        </div>
+
+        <!-- Compare Data Sets -->
+        <div class="compare-section">
+          <h6 class="section-title mb-3">Compare Data Sets</h6>
+
+          <div class="mb-3">
+            <label class="form-label">Data Set 1</label>
+            <select
+              class="form-select"
+              formControlName="dataset1">
+              <option *ngFor="let dataset of dataSets" [value]="dataset.id">
+                {{ dataset.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Data Set 2</label>
+            <select
+              class="form-select"
+              formControlName="dataset2">
+              <option *ngFor="let dataset of dataSets" [value]="dataset.id">
+                {{ dataset.name }}
+              </option>
+            </select>
+          </div>
+
+          <button
+            class="btn btn-success w-100"
+            (click)="compareDataSets()">
+            <i class="bi bi-arrow-right me-2"></i>
+            Compare
+          </button>
+        </div>
+
+        <!-- Comparison Results -->
+        <div *ngIf="comparisonResult" class="comparison-results mt-4">
+          <h6 class="section-title mb-3">Comparison Results</h6>
+          <div class="card">
+            <div class="card-body">
+              <p class="text-muted mb-3">
+                Comparing {{ comparisonResult.dataset1.name }} with {{ comparisonResult.dataset2.name }}.
+              </p>
+
+              <div class="chart-placeholder mb-3">
+                <div class="chart-placeholder-content">
+                  <i class="bi bi-graph-up fs-1 text-muted"></i>
+                  <p class="text-muted mt-2">Comparison Chart</p>
+                </div>
+              </div>
+
+              <div class="insights">
+                <h6>Key Insights:</h6>
+                <ul class="list-unstyled">
+                  <li *ngFor="let insight of comparisonResult.insights" class="mb-2">
+                    <i class="bi bi-lightbulb text-warning me-2"></i>
+                    {{ insight }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Export Modal -->
+<div *ngIf="showExportModal" class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Export Logs</h5>
+        <button type="button" class="btn-close" (click)="closeExportModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Export Format</label>
+          <select class="form-select" [(ngModel)]="exportFormat">
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </div>
+        <p class="text-muted">This will export {{ filteredLogs.length }} log entries.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeExportModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="exportLogs()">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showExportModal" class="modal-backdrop fade show"></div>

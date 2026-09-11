@@ -1,0 +1,156 @@
+.analytics-container {
+  padding: 30px; /* ⬆️ Thoda zyada spacing for desktop */
+  background: #fff;
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
+}
+
+.analytics-title {
+  font-size: 24px; /* ⬆️ Title bigger */
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.analytics-card {
+  background: #f9fdf8;
+  border-radius: 20px; /* ⬆️ Softer corners */
+  padding: 28px; /* ⬆️ More breathing space */
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.08); /* ⬆️ Deeper shadow */
+  margin-bottom: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.analytics-card:hover {
+  transform: translateY(-5px); /* ⬆️ Hover lift effect */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.analytics-card h6 {
+  font-size: 20px; /* ⬆️ Bigger heading */
+  margin-bottom: 8px;
+}
+
+.analytics-card p {
+  font-size: 16px; /* ⬆️ Normal text slightly bigger */
+}
+
+.analytics-percentage {
+  font-size: 36px; /* ⬆️ Main number more prominent */
+  font-weight: 700;
+  color: #1aab55;
+  display: block;
+  margin: 5px 0;
+}
+
+.analytics-subtext {
+  color: #888;
+  font-size: 15px; /* ⬆️ Slightly bigger */
+}
+
+.analytics-graph {
+  height: 80px; /* compact sparkline container */
+  background: linear-gradient(
+    180deg,
+    rgba(51, 214, 132, 0.2) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 14px;
+  margin-top: 15px;
+}
+
+.analytics-change-up {
+  color: #1aab55;
+  font-size: 16px; /* ⬆️ More readable */
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.analytics-change-down {
+  color: #e63946;
+  font-size: 16px; /* ⬆️ More readable */
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+@media (min-width: 992px) {
+  .analytics-row {
+    display: flex;
+    gap: 24px; /* ⬆️ Wider spacing between cards */
+  }
+  .analytics-card {
+    flex: 1;
+  }
+}
+
+/* Playful table styles and subtle animations */
+.table-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.fancy-table thead th {
+  background: #f3fbf7;
+  color: #0f5132;
+  font-weight: 600;
+  border-bottom: 1px solid #d9f4e6;
+}
+
+.fancy-table tbody tr {
+  transition: background 0.2s ease, transform 0.12s ease;
+}
+
+.fancy-table tbody tr:hover {
+  background: #f8fffb;
+  transform: scale(1.002);
+}
+
+.appear {
+  animation: rowIn 360ms ease both;
+}
+
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero band */
+.hero-band {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+}
+.hero-bg {
+  height: 120px;
+  background: linear-gradient(135deg, #e8f9ef 0%, #ffffff 60%);
+}
+.hero-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+}
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #d6f5e5;
+}
+.hello { font-weight: 700; font-size: 18px; }
+.hello-sub { color: #5f6b66; }
+
+/* Glass cards + gradient KPIs */
+.glass {
+  backdrop-filter: blur(6px);
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(26,171,85,0.08);
+}
+.kpi-title { font-size: 14px; color: #2f6b49; }
+.kpi-value { font-size: 22px; font-weight: 700; color: #0f5132; }
+.kpi-icon { font-size: 28px; color: #1aab55; opacity: 0.9; }
+
+.gradient-green { background: linear-gradient(135deg, #e8f9ef, #ffffff); }
+.gradient-blue { background: linear-gradient(135deg, #e6f1ff, #ffffff); }
+.gradient-purple { background: linear-gradient(135deg, #f1e6ff, #ffffff); }

@@ -1,0 +1,191 @@
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="text-center my-3">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="mt-2">Saving changes...</p>
+      </div>
+
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Profile Form -->
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <div class="row g-4">
+
+          <!-- 1️⃣ User Details -->
+          <div class="col-12 card p-4 shadow-sm" formGroupName="userDetails">
+            <h4 class="d-flex justify-content-between align-items-center">
+              User Details
+              <button type="button" class="btn btn-link" (click)="toggleUserDetailsEdit()">
+                {{ isUserDetailsEditing ? 'Cancel' : 'Edit' }}
+              </button>
+              <button *ngIf="isUserDetailsEditing" type="button" class="btn btn-sm btn-success"
+                (click)="onSectionSave('user')">
+                Save
+              </button>
+            </h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>Full Name</label>
+                <input type="text" class="form-control" formControlName="fullName" [readonly]="!isUserDetailsEditing">
+                <div class="text-danger small">{{ getFieldError('userDetails', 'fullName') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Email</label>
+                <input type="email" class="form-control" formControlName="email" [readonly]="!isUserDetailsEditing">
+                <div class="text-danger small">{{ getFieldError('userDetails', 'email') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Phone</label>
+                <input type="tel" class="form-control" formControlName="phone" [readonly]="!isUserDetailsEditing">
+                <div class="text-danger small">{{ getFieldError('userDetails', 'phone') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Farming Experience</label>
+                <input type="text" class="form-control" formControlName="farmingExperience"
+                  [readonly]="!isUserDetailsEditing">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2️⃣ Farm Details -->
+          <div class="col-12 card p-4 shadow-sm" formGroupName="farmInfo">
+            <h4 class="d-flex justify-content-between align-items-center">
+              Farm Details
+              <button type="button" class="btn btn-link" (click)="toggleFarmInfoEdit()">
+                {{ isFarmInfoEditing ? 'Cancel' : 'Edit' }}
+              </button>
+              <button *ngIf="isFarmInfoEditing" type="button" class="btn btn-sm btn-success"
+                (click)="onSectionSave('farm')">
+                Save
+              </button>
+            </h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>Farm Name</label>
+                <input type="text" class="form-control" formControlName="farmName" [readonly]="!isFarmInfoEditing">
+                <div class="text-danger small">{{ getFieldError('farmInfo', 'farmName') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Location</label>
+                <input type="text" class="form-control" formControlName="farmLocation" [readonly]="!isFarmInfoEditing">
+                <div class="text-danger small">{{ getFieldError('farmInfo', 'farmLocation') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Farm Size (acres)</label>
+                <input type="number" class="form-control" formControlName="farmSize" [readonly]="!isFarmInfoEditing">
+                <div class="text-danger small">{{ getFieldError('farmInfo', 'farmSize') }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3️⃣ Crop Info -->
+          <div class="col-12 card p-4 shadow-sm" formGroupName="cropInfo">
+            <h4 class="d-flex justify-content-between align-items-center">
+              Crop Information
+              <button type="button" class="btn btn-link" (click)="toggleCropInfoEdit()">
+                {{ isCropInfoEditing ? 'Cancel' : 'Edit' }}
+              </button>
+              <button *ngIf="isCropInfoEditing" type="button" class="btn btn-sm btn-success"
+                (click)="onSectionSave('crop')">
+                Save
+              </button>
+            </h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>Primary Crops</label>
+                <input type="text" class="form-control" formControlName="primaryCrops" [readonly]="!isCropInfoEditing">
+                <div class="text-danger small">{{ getFieldError('cropInfo', 'primaryCrops') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Secondary Crops</label>
+                <input type="text" class="form-control" formControlName="secondaryCrops"
+                  [readonly]="!isCropInfoEditing">
+              </div>
+            </div>
+          </div>
+
+          <!-- 4️⃣ Equipment Info -->
+          <div class="col-12 card p-4 shadow-sm" formGroupName="equipmentInfo">
+            <h4 class="d-flex justify-content-between align-items-center">
+              Equipment Information
+              <button type="button" class="btn btn-link" (click)="toggleEquipmentInfoEdit()">
+                {{ isEquipmentInfoEditing ? 'Cancel' : 'Edit' }}
+              </button>
+              <button *ngIf="isEquipmentInfoEditing" type="button" class="btn btn-sm btn-success"
+                (click)="onSectionSave('equipment')">
+                Save
+              </button>
+            </h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>Sprayer Type</label>
+                <input type="text" class="form-control" formControlName="sprayerType"
+                  [readonly]="!isEquipmentInfoEditing">
+                <div class="text-danger small">{{ getFieldError('equipmentInfo', 'sprayerType') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>IoT Devices</label>
+                <input type="text" class="form-control" formControlName="iotDevices"
+                  [readonly]="!isEquipmentInfoEditing">
+                <div class="text-danger small">{{ getFieldError('equipmentInfo', 'iotDevices') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Machinery</label>
+                <input type="text" class="form-control" formControlName="machinery"
+                  [readonly]="!isEquipmentInfoEditing">
+                <div class="text-danger small">{{ getFieldError('equipmentInfo', 'machinery') }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5️⃣ Pesticide & Fertilizer -->
+          <div class="col-12 card p-4 shadow-sm" formGroupName="pesticideFertilizer">
+            <h4 class="d-flex justify-content-between align-items-center">
+              Pesticide & Fertilizer
+              <button type="button" class="btn btn-link" (click)="togglePesticideFertilizerEdit()">
+                {{ isPesticideFertilizerEditing ? 'Cancel' : 'Edit' }}
+              </button>
+              <button *ngIf="isPesticideFertilizerEditing" type="button" class="btn btn-sm btn-success"
+                (click)="onSectionSave('pesticideFertilizer')">
+                Save
+              </button>
+            </h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>Pesticides</label>
+                <input type="text" class="form-control" formControlName="pesticides"
+                  [readonly]="!isPesticideFertilizerEditing">
+                <div class="text-danger small">{{ getFieldError('pesticideFertilizer', 'pesticides') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Fertilizer Preference</label>
+                <input type="text" class="form-control" formControlName="fertilizerPreference"
+                  [readonly]="!isPesticideFertilizerEditing">
+                <div class="text-danger small">{{ getFieldError('pesticideFertilizer', 'fertilizerPreference') }}</div>
+              </div>
+              <div class="col-md-6">
+                <label>Monthly Expenditure</label>
+                <input type="text" class="form-control" formControlName="monthlyExpenditure"
+                  [readonly]="!isPesticideFertilizerEditing">
+                <div class="text-danger small">{{ getFieldError('pesticideFertilizer', 'monthlyExpenditure') }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center mt-4 d-flex justify-content-between">
+          <button type="button" class="btn btn-secondary rounded-pill px-4" (click)="onBack()">Back</button>
+          <button type="submit" class="btn btn-success rounded-pill px-5">Confirm & Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,142 @@
+<div class="container py-3" style="min-height: 86vh; overflow:hidden;">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+      <button class="btn btn-outline-secondary me-3" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+      <h4 class="m-0">📝 Job Details</h4>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" (click)="editJob()">
+        <i class="bi bi-pencil-square me-1"></i> Edit
+      </button>
+      <button class="btn btn-danger" (click)="deleteJob()">
+        <i class="bi bi-trash me-1"></i> Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Loading job details...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Job Details -->
+  <div *ngIf="!isLoading && job && !errorMessage" class="row">
+    <div class="col-lg-8">
+      <div class="card themed-card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="bi bi-clipboard me-2"></i>
+            {{ job.type }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Status:</label>
+                <span class="badge" [ngClass]="getStatusBadgeClass(job.status)">
+                  {{ job.status | titlecase }}
+                </span>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Scheduled At:</label>
+                <p class="mb-0">{{ job.scheduledAt | date:'d MMM yyyy, HH:mm' }}</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Job Type:</label>
+                <p class="mb-0">{{ job.type }}</p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Created At:</label>
+                <p class="mb-0">{{ job.createdAt | date:'d MMM yyyy, HH:mm' }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3" *ngIf="job.notes">
+            <label class="form-label fw-bold">Notes:</label>
+            <p class="mb-0">{{ job.notes }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Update Actions -->
+      <div class="card themed-card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="bi bi-gear me-2"></i>
+            Update Status
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="d-flex gap-2 flex-wrap">
+            <button 
+              class="btn btn-outline-success" 
+              (click)="updateStatus('completed')"
+              [disabled]="job.status === 'completed'">
+              <i class="bi bi-check-circle me-1"></i> Mark Complete
+            </button>
+            <button 
+              class="btn btn-outline-warning" 
+              (click)="updateStatus('in_progress')"
+              [disabled]="job.status === 'in_progress' || job.status === 'in-progress'">
+              <i class="bi bi-play-circle me-1"></i> Start Job
+            </button>
+            <button 
+              class="btn btn-outline-danger" 
+              (click)="updateStatus('cancelled')"
+              [disabled]="job.status === 'cancelled'">
+              <i class="bi bi-x-circle me-1"></i> Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Field Information -->
+    <div class="col-lg-4" *ngIf="field">
+      <div class="card themed-card">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="bi bi-geo-alt me-2"></i>
+            Field Information
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-2">
+            <label class="form-label fw-bold">Field Name:</label>
+            <p class="mb-0">{{ field.name }}</p>
+          </div>
+          <div class="mb-2">
+            <label class="form-label fw-bold">Location:</label>
+            <p class="mb-0">{{ field.location }}</p>
+          </div>
+          <div class="mb-2">
+            <label class="form-label fw-bold">Field Area:</label>
+            <p class="mb-0">{{ field.area }} acres</p>
+          </div>
+          <div class="mb-2">
+            <label class="form-label fw-bold">Crop Type:</label>
+            <p class="mb-0">{{ field.crop }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !job && !errorMessage" class="text-center text-muted my-5">
+    <i class="bi bi-emoji-frown fs-1 d-block mb-2"></i>
+    <p>No job details found</p>
+  </div>
+</div>

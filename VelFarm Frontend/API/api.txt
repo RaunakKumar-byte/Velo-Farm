@@ -1,0 +1,91 @@
+BASE\_URL = [https://khetloom-backend.vercel.app](https://khetloom-backend.vercel.app)
+
+---
+
+**Health:**
+
+* GET [https://khetloom-backend.vercel.app/api/health](https://khetloom-backend.vercel.app/api/health) → ok, env, time
+
+**Auth:**
+
+* POST [https://khetloom-backend.vercel.app/api/register](https://khetloom-backend.vercel.app/api/register) → creates user; returns token and user
+* POST [https://khetloom-backend.vercel.app/api/login](https://khetloom-backend.vercel.app/api/login) → returns token and user
+
+**Profile (requires Authorization: Bearer <token>):**
+
+* GET [https://khetloom-backend.vercel.app/api/profile](https://khetloom-backend.vercel.app/api/profile) → current user
+* PUT [https://khetloom-backend.vercel.app/api/profile](https://khetloom-backend.vercel.app/api/profile) → update current user
+
+**Users (requires token):**
+
+* GET [https://khetloom-backend.vercel.app/api/users](https://khetloom-backend.vercel.app/api/users) → list users
+* GET [https://khetloom-backend.vercel.app/api/users/\:id](https://khetloom-backend.vercel.app/api/users/:id) → single user by id
+
+**Public dashboards (no auth):**
+
+* GET [https://khetloom-backend.vercel.app/api/public/stats](https://khetloom-backend.vercel.app/api/public/stats) → { totalUsers, avgFarmSize, avgMonthlyExpenditure }
+* GET [https://khetloom-backend.vercel.app/api/public/recent-users?limit=10](https://khetloom-backend.vercel.app/api/public/recent-users?limit=10) → latest users (limited fields)
+* GET [https://khetloom-backend.vercel.app/api/summary](https://khetloom-backend.vercel.app/api/summary) → { totalUsers, newThisWeek, avgFarmSize }
+* GET [https://khetloom-backend.vercel.app/api/app-data](https://khetloom-backend.vercel.app/api/app-data) → full analytics + users
+* GET [https://khetloom-backend.vercel.app/api/public/config](https://khetloom-backend.vercel.app/api/public/config) → { environment, version, time }
+
+**Devices:**
+
+* POST [https://khetloom-backend.vercel.app/api/devices](https://khetloom-backend.vercel.app/api/devices)
+* GET [https://khetloom-backend.vercel.app/api/devices](https://khetloom-backend.vercel.app/api/devices)
+* GET [https://khetloom-backend.vercel.app/api/devices/\:id](https://khetloom-backend.vercel.app/api/devices/:id)
+* PUT [https://khetloom-backend.vercel.app/api/devices/\:id](https://khetloom-backend.vercel.app/api/devices/:id)
+* DELETE [https://khetloom-backend.vercel.app/api/devices/\:id](https://khetloom-backend.vercel.app/api/devices/:id)
+
+**Fields:**
+
+* POST [https://khetloom-backend.vercel.app/api/fields](https://khetloom-backend.vercel.app/api/fields)
+* GET [https://khetloom-backend.vercel.app/api/fields](https://khetloom-backend.vercel.app/api/fields)
+* PUT [https://khetloom-backend.vercel.app/api/fields/\:id](https://khetloom-backend.vercel.app/api/fields/:id)
+* DELETE [https://khetloom-backend.vercel.app/api/fields/\:id](https://khetloom-backend.vercel.app/api/fields/:id)
+
+**Crops:**
+
+* POST [https://khetloom-backend.vercel.app/api/crops](https://khetloom-backend.vercel.app/api/crops)
+* GET [https://khetloom-backend.vercel.app/api/crops](https://khetloom-backend.vercel.app/api/crops)
+* PUT [https://khetloom-backend.vercel.app/api/crops/\:id](https://khetloom-backend.vercel.app/api/crops/:id)
+* DELETE [https://khetloom-backend.vercel.app/api/crops/\:id](https://khetloom-backend.vercel.app/api/crops/:id)
+
+**Jobs:**
+
+* POST [https://khetloom-backend.vercel.app/api/jobs](https://khetloom-backend.vercel.app/api/jobs)
+* GET [https://khetloom-backend.vercel.app/api/jobs](https://khetloom-backend.vercel.app/api/jobs)
+* PUT [https://khetloom-backend.vercel.app/api/jobs/\:id](https://khetloom-backend.vercel.app/api/jobs/:id)
+* DELETE [https://khetloom-backend.vercel.app/api/jobs/\:id](https://khetloom-backend.vercel.app/api/jobs/:id)
+
+**Finance:**
+
+* POST [https://khetloom-backend.vercel.app/api/finance](https://khetloom-backend.vercel.app/api/finance)
+* GET [https://khetloom-backend.vercel.app/api/finance](https://khetloom-backend.vercel.app/api/finance)
+* GET [https://khetloom-backend.vercel.app/api/finance/summary](https://khetloom-backend.vercel.app/api/finance/summary)
+
+**Health Reports:**
+
+* POST [https://khetloom-backend.vercel.app/api/health-reports](https://khetloom-backend.vercel.app/api/health-reports)
+* GET [https://khetloom-backend.vercel.app/api/health-reports](https://khetloom-backend.vercel.app/api/health-reports)
+
+**Weather Cache:**
+
+* GET [https://khetloom-backend.vercel.app/api/weather?location=City](https://khetloom-backend.vercel.app/api/weather?location=City)
+* POST [https://khetloom-backend.vercel.app/api/weather](https://khetloom-backend.vercel.app/api/weather) body: { location, data, ttlMinutes? }
+
+**Notifications:**
+
+* POST [https://khetloom-backend.vercel.app/api/notifications](https://khetloom-backend.vercel.app/api/notifications)
+* GET [https://khetloom-backend.vercel.app/api/notifications](https://khetloom-backend.vercel.app/api/notifications)
+* PUT [https://khetloom-backend.vercel.app/api/notifications/\:id/read](https://khetloom-backend.vercel.app/api/notifications/:id/read)
+
+**Activities:**
+
+* POST [https://khetloom-backend.vercel.app/api/activities](https://khetloom-backend.vercel.app/api/activities)
+* GET [https://khetloom-backend.vercel.app/api/activities/recent](https://khetloom-backend.vercel.app/api/activities/recent)
+
+**App Logs:**
+
+* POST [https://khetloom-backend.vercel.app/api/logs](https://khetloom-backend.vercel.app/api/logs) (no auth; for client error reporting)
+* GET [https://khetloom-backend.vercel.app/api/logs/recent](https://khetloom-backend.vercel.app/api/logs/recent) (auth)

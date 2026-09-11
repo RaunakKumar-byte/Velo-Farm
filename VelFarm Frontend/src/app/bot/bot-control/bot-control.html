@@ -1,0 +1,259 @@
+ <div class="container">
+ <div class="row">
+      <div class="col-12">
+        <h2 class="mb-4">
+          <i class="bi bi-controller text-primary"></i>
+          Bot Control Center
+        </h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Bot Status Panel -->
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-robot"></i>
+              Bot Status
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-12 mb-3">
+                <div class="position-display">
+                  <h3 class="text-primary mb-1">Position</h3>
+                  <div class="position-coords">
+                    <span class="badge bg-primary fs-6">X: {{botStatus.x}}</span>
+                    <span class="badge bg-primary fs-6 ms-2">Y: {{botStatus.y}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 mb-3">
+                <div class="status-item">
+                  <i [class]="getBatteryIcon(botStatus.battery) + ' fs-1 ' + getBatteryColor(botStatus.battery)"></i>
+                  <div class="mt-2">
+                    <strong>{{botStatus.battery}}%</strong>
+                    <div class="progress mt-1" style="height: 6px;">
+                      <div class="progress-bar"
+                           [ngClass]="'bg-' + getBatteryColor(botStatus.battery).split('-')[1]"
+                           [style.width.%]="botStatus.battery"></div>
+                    </div>
+                    <small class="text-muted">Battery</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 mb-3">
+                <div class="status-item">
+                  <i class="bi bi-droplet fs-1 text-info"></i>
+                  <div class="mt-2">
+                    <strong>{{botStatus.fertilizer_level}}%</strong>
+                    <div class="progress mt-1" style="height: 6px;">
+                      <div class="progress-bar bg-info"
+                           [style.width.%]="botStatus.fertilizer_level"></div>
+                    </div>
+                    <small class="text-muted">Fertilizer</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="alert"
+                     [ngClass]="botStatus.isMoving ? 'alert-warning' : 'alert-success'">
+                  <i [class]="botStatus.isMoving ? 'bi bi-arrow-right' : 'bi bi-stop-circle'"></i>
+                  {{botStatus.isMoving ? 'Moving...' : 'Idle'}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">
+              <i class="bi bi-lightning"></i>
+              Quick Actions
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <button class="btn btn-success"
+                      (click)="quickDropFertilizer()"
+                      [disabled]="isCommandPending || botStatus.fertilizer_level <= 0">
+                <i class="bi bi-droplet-fill"></i>
+                Drop Fertilizer Here
+              </button>
+
+              <button class="btn btn-danger"
+                      (click)="emergencyStop()"
+                      [disabled]="!botStatus.isMoving">
+                <i class="bi bi-stop-circle"></i>
+                Emergency Stop
+              </button>
+
+              <button class="btn btn-info"
+                      (click)="refillResources()"
+                      [disabled]="isCommandPending">
+                <i class="bi bi-arrow-clockwise"></i>
+                Refill Resources
+              </button>
+
+              <button class="btn btn-secondary"
+                      (click)="returnToHome()"
+                      [disabled]="isCommandPending || (botStatus.x === 0 && botStatus.y === 0)">
+                <i class="bi bi-house"></i>
+                Return to Home (0,0)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Movement Control Panel -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-arrows-move"></i>
+              Movement Control
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Grid Selector -->
+            <div class="mb-4">
+              <h6>Select Destination:</h6>
+              <div class="grid-selector">
+                <div class="grid-container">
+                  <div *ngFor="let pos of gridPositions"
+                       class="grid-cell"
+                       [ngClass]="getGridCellClass(pos.x, pos.y)"
+                       (click)="selectPosition(pos.x, pos.y)"
+                       [title]="'Move to (' + pos.x + ', ' + pos.y + ')'">
+                    <span class="position-text">{{pos.x}},{{pos.y}}</span>
+                    <i *ngIf="isBotPosition(pos.x, pos.y)"
+                       class="bi bi-robot position-icon"></i>
+                    <i *ngIf="isTargetPosition(pos.x, pos.y)"
+                       class="bi bi-crosshair position-icon"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manual Input -->
+            <div class="mb-3">
+              <h6>Or Enter Coordinates:</h6>
+              <div class="row">
+                <div class="col-6">
+                  <label class="form-label">X (0-4):</label>
+                  <input type="number"
+                         class="form-control"
+                         [(ngModel)]="targetX"
+                         min="0" max="4"
+                         [disabled]="isCommandPending">
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Y (0-4):</label>
+                  <input type="number"
+                         class="form-control"
+                         [(ngModel)]="targetY"
+                         min="0" max="4"
+                         [disabled]="isCommandPending">
+                </div>
+              </div>
+            </div>
+
+            <!-- Move Button -->
+            <div class="d-grid">
+              <button class="btn btn-primary btn-lg"
+                      (click)="moveBot()"
+                      [disabled]="!isValidPosition(targetX, targetY) || isCommandPending || isCurrentPosition()">
+                <i class="bi bi-send"></i>
+                Move to ({{targetX}}, {{targetY}})
+              </button>
+            </div>
+
+            <!-- Distance and Time Estimate -->
+            <div class="mt-3 text-center" *ngIf="isValidPosition(targetX, targetY) && !isCurrentPosition()">
+              <small class="text-muted">
+                Distance: {{getDistance()}} cells |
+                Est. Time: {{getEstimatedTime()}}s
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Command Queue -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-list-task"></i>
+              Command Queue
+            </h5>
+            <span class="badge bg-light text-dark">{{commands.length}} pending</span>
+          </div>
+          <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+            <div *ngIf="commands.length === 0" class="text-center text-muted py-4">
+              <i class="bi bi-inbox fs-1"></i>
+              <p class="mt-2">No pending commands</p>
+            </div>
+
+            <div *ngFor="let command of commands; let i = index"
+                 class="command-item mb-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <i [class]="getCommandIcon(command.type)"></i>
+                  <strong>{{command.type | titlecase}}</strong>
+                  <span *ngIf="command.x !== null && command.y !== null">
+                    to ({{command.x}}, {{command.y}})
+                  </span>
+                </div>
+                <div class="text-end">
+                  <span class="badge"
+                        [ngClass]="getCommandStatusClass(command.status)">
+                    {{command.status}}
+                  </span>
+                  <div class="text-muted small">
+                    {{formatTime(command.created_at)}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer" *ngIf="commands.length > 0">
+            <button class="btn btn-outline-danger btn-sm w-100"
+                    (click)="clearQueue()">
+              <i class="bi bi-trash"></i>
+              Clear Queue
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Messages -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="alert alert-info" *ngIf="statusMessage">
+          <i class="bi bi-info-circle"></i>
+          {{statusMessage}}
+        </div>
+
+        <div class="alert alert-warning" *ngIf="botStatus.battery < 20">
+          <i class="bi bi-exclamation-triangle"></i>
+          <strong>Low Battery Warning:</strong> Bot battery is at {{botStatus.battery}}%.
+          Consider recharging before long operations.
+        </div>
+
+        <div class="alert alert-warning" *ngIf="botStatus.fertilizer_level < 20">
+          <i class="bi bi-droplet"></i>
+          <strong>Low Fertilizer:</strong> Fertilizer level is at {{botStatus.fertilizer_level}}%.
+          Refill recommended.
+        </div>
+      </div>
+    </div>
+</div>

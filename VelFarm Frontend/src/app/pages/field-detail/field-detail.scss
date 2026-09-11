@@ -1,0 +1,53 @@
+// Field Detail specific styles
+.themed-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px 12px 0 0 !important;
+  border: none;
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.form-label {
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+p {
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.crop-item {
+  background: #f8f9fa;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

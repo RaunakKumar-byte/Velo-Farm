@@ -1,0 +1,75 @@
+<!-- Field Layout (enhanced UI) -->
+<div class="field-layout-page">
+
+  <div class="container">
+    <h3 class="mb-4 text-center">Field Layout</h3>
+
+    <!-- Map -->
+    <div class="row mb-4 map-row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-map-marker-alt me-2"></i>
+              Field Map
+            </h5>
+            <div class="map-header-extra">
+              <span class="map-chip"><i class="fas fa-signal"></i> Live</span>
+            </div>
+          </div>
+          <div class="card-body p-0">
+           <app-google-map></app-google-map>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Field Grid -->
+    <div class="field-grid">
+      <div class="row" *ngFor="let row of gridRows; let rowIndex = index">
+        <div
+          class="col-sm-6 col-md-4 col-lg-3 col-xl-2"
+          *ngFor="let cell of row; let colIndex = index"
+        >
+          <div class="plant-cell">
+            <div
+              *ngIf="cell; else emptyCell"
+              class="card plant-card"
+              [ngClass]="{
+                'plant-healthy': cell.status === 'healthy',
+                'plant-defected': cell.status === 'defected'
+              }"
+              tabindex="0"
+              aria-label="Plant {{ cell.plantId }} status {{ cell.status }}"
+            >
+              <div class="card-body text-center p-2">
+                <div class="plant-id">{{ cell.plantId }}</div>
+                <small class="d-block mt-1 coord">({{ cell.x }}, {{ cell.y }})</small>
+              </div>
+            </div>
+            <ng-template #emptyCell>
+              <div class="card plant-card empty-cell" role="region" aria-label="Empty cell">
+                <div class="card-body text-center p-2">
+                  <small>Empty</small>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extra: Legend & Quick Actions (new section — non-intrusive) -->
+      <div class="legend-actions mt-4">
+        <div class="legend">
+          <div class="legend-item healthy"><i class="fas fa-leaf"></i> Healthy</div>
+          <div class="legend-item defected"><i class="fas fa-exclamation-triangle"></i> Defected</div>
+          <div class="legend-item empty"><i class="fas fa-circle-notch"></i> Empty</div>
+        </div>
+        <div class="quick-actions">
+          <button class="btn btn-sm btn-outline-success">Focus Healthy</button>
+          <button class="btn btn-sm btn-outline-danger">Focus Defected</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

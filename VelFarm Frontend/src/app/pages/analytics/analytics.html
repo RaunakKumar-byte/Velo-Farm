@@ -1,0 +1,364 @@
+<div class="container mt-4 analytics-container">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h2 class="mb-0 analytics-title">📊 Your Farm Analytics</h2>
+      <button class="btn btn-primary" (click)="refreshData()" [disabled]="isLoading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading your analytics...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !errorMessage && user">
+    <!-- Hero band -->
+    <div class="hero-band mb-4">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="row w-100">
+          <div class="col-md-7 d-flex align-items-center gap-3 mb-2 mb-md-0">
+            <img *ngIf="user?.profileImage" [src]="user.profileImage" class="avatar" alt="Profile"/>
+            <div>
+              <div class="hello">Welcome back, {{ user?.fullName || 'Farmer' }} 👋</div>
+              <div class="hello-sub">
+                Field: {{ (getSelectedField()?.name) || (user?.farmName || '—') }}
+                • Location: {{ (getSelectedField()?.location) || (user?.farmLocation || '—') }}
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="d-flex align-items-center justify-content-md-end">
+              <label class="me-2 fw-semibold">Field:</label>
+              <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFieldId" (ngModelChange)="setSelectedField($event)">
+                <option value="all">All Fields</option>
+                <option *ngFor="let f of fields; trackBy: trackById" [value]="f?._id">{{ f?.name }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Top KPIs -->
+    <div class="row analytics-row mb-4">
+      <div class="col-md-4 mb-3">
+        <div class="analytics-card">
+          <h6>Monthly Spend</h6>
+          <span class="analytics-percentage">₹ {{ monthlyExpenditureSeries[monthlyExpenditureSeries.length-1] || 0 | number:'1.0-0' }}</span>
+          <div class="analytics-graph">
+            <svg width="100%" height="60" viewBox="0 0 280 60" preserveAspectRatio="none">
+              <path [attr.d]="getSparklinePath(monthlyExpenditureSeries)" stroke="#1aab55" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <p class="analytics-subtext">Last 12 months trend</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="analytics-card">
+          <h6>Jobs Summary</h6>
+          <span class="analytics-percentage">
+            {{ (getSelectedFieldJobSummary().completed) }}/{{ (getSelectedFieldJobSummary().total) }}
+          </span>
+          <p class="analytics-subtext">
+            {{ getSelectedField() ? 'For selected field' : 'All fields' }} • last 12 months
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="analytics-card">
+          <h6>Assets</h6>
+          <div class="d-flex justify-content-between">
+            <div><strong>Devices</strong><div>{{ devicesCount }}</div></div>
+            <div><strong>Fields</strong><div>{{ fieldsCount }}</div></div>
+            <div><strong>Sprayer</strong><div>{{ user?.sprayerType || 'N/A' }}</div></div>
+          </div>
+          <p class="analytics-subtext mt-2">From your profile and devices</p>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Profile Snapshot -->
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-header"><h5 class="mb-0">Profile</h5></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6"><strong>Name</strong><div>{{ user?.fullName }}</div></div>
+              <div class="col-6"><strong>{{ getSelectedField() ? 'Field' : 'Farm' }}</strong><div>{{ getSelectedField()?.name || user?.farmName || 'N/A' }}</div></div>
+              <div class="col-6 mt-2"><strong>Language</strong><div>{{ user?.language || user?.preferences?.language || 'N/A' }}</div></div>
+              <div class="col-6 mt-2"><strong>Experience</strong><div>{{ user?.farmingExperience || 'N/A' }}</div></div>
+              <div class="col-6 mt-2"><strong>Location</strong><div>{{ getSelectedField()?.location || user?.farmLocation || 'N/A' }}</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-header"><h5 class="mb-0">Latest Health Report</h5></div>
+          <div class="card-body">
+            <ng-container *ngIf="latestHealthReport; else noHealth">
+              <div class="d-flex justify-content-between">
+                <div><strong>Date</strong><div>{{ latestHealthReport?.createdAt | date:'mediumDate' }}</div></div>
+                <div><strong>Status</strong><div>{{ latestHealthReport?.status || 'N/A' }}</div></div>
+                <div><strong>Notes</strong><div>{{ latestHealthReport?.notes || '—' }}</div></div>
+              </div>
+            </ng-container>
+            <ng-template #noHealth>
+              <span class="text-muted">No reports yet.</span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Tables -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card table-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Fields</h5>
+            <small class="text-muted">{{ fields?.length || 0 }} total</small>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle mb-0 fancy-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Crop</th>
+                  <th>Location</th>
+                  <th class="text-end">Area</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let f of fields; trackBy: trackById" class="appear">
+                  <td><strong>{{ f?.name }}</strong></td>
+                  <td>{{ f?.crop || '—' }}</td>
+                  <td>{{ f?.location || '—' }}</td>
+                  <td class="text-end">{{ f?.area || 0 }}</td>
+                  <td class="text-truncate" style="max-width:320px">{{ f?.notes || '—' }}</td>
+                </tr>
+                <tr *ngIf="!fields?.length">
+                  <td colspan="5" class="text-center text-muted py-3">No fields yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coming Soon / Preview widgets -->
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <div class="glass card p-0">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Notifications</h5>
+            <span class="badge" [ngClass]="getDatasetBadgeClass('notifications')">
+              {{ getDatasetModeLabel('notifications') }}
+            </span>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let n of notificationsPreview; trackBy: trackById">
+              <span class="badge me-2" [ngClass]="{
+                'bg-success': (n?.level||'').toLowerCase()==='info',
+                'bg-warning text-dark': (n?.level||'').toLowerCase()==='warning',
+                'bg-danger': (n?.level||'').toLowerCase()==='error'
+              }">{{ (n?.level||'').toUpperCase() || 'INFO' }}</span>
+              {{ n?.title || n?.message || 'Notification' }}
+              <small class="text-muted float-end">{{ n?.createdAt | date:'short' }}</small>
+            </li>
+            <li *ngIf="!notificationsPreview?.length" class="list-group-item text-muted">No notifications</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="glass card p-0">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Activities</h5>
+            <span class="badge" [ngClass]="getDatasetBadgeClass('activities')">
+              {{ getDatasetModeLabel('activities') }}
+            </span>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let a of activitiesPreview; trackBy: trackById">
+              {{ a?.action || a?.message || 'Activity' }}
+              <small class="text-muted float-end">{{ a?.createdAt | date:'short' }}</small>
+            </li>
+            <li *ngIf="!activitiesPreview?.length" class="list-group-item text-muted">No activities</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-4 mb-3">
+        <div class="glass card p-3 gradient-green">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="kpi-title">Finance (12m)</div>
+              <div class="kpi-value">₹ {{ (financeSummary?.totalSpend || 0) | number:'1.0-0' }}</div>
+            </div>
+            <i class="fas fa-wallet kpi-icon"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="glass card p-3 gradient-blue">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="kpi-title">Weather</div>
+              <div class="kpi-value">{{ weatherPreview?.condition || 'Sunny' }} • {{ weatherPreview?.tempC || 30 }}°C</div>
+              <small class="text-muted">{{ weatherPreview?.location || user?.farmLocation || '—' }}</small>
+            </div>
+            <i class="fas fa-cloud-sun kpi-icon"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="glass card p-3 gradient-purple">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="kpi-title">Public Stats</div>
+              <div class="kpi-value">Users {{ publicStats?.totalUsers || 1 }}</div>
+              <small class="text-muted">Avg Farm Size {{ publicStats?.avgFarmSize || (user?.farmSize || 0) }}</small>
+            </div>
+            <i class="fas fa-chart-line kpi-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-3">
+        <div class="card table-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Devices</h5>
+            <small class="text-muted">{{ devices?.length || 0 }} total</small>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle mb-0 fancy-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let d of devices; trackBy: trackById" class="appear">
+                  <td><strong>{{ d?.name }}</strong></td>
+                  <td>{{ d?.type || '—' }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-success': (d?.status||'').toLowerCase()==='active',
+                      'bg-warning text-dark': (d?.status||'').toLowerCase()==='maintenance',
+                      'bg-secondary': (d?.status||'').toLowerCase()==='inactive'
+                    }">{{ d?.status || '—' }}</span>
+                  </td>
+                  <td>{{ d?.location || '—' }}</td>
+                </tr>
+                <tr *ngIf="!devices?.length">
+                  <td colspan="4" class="text-center text-muted py-3">No devices yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 mb-3">
+        <div class="card table-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Crops</h5>
+            <small class="text-muted">{{ getCropsForSelected()?.length || 0 }} total</small>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle mb-0 fancy-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Season</th>
+                  <th class="text-end">Area</th>
+                  <th class="text-end">Expected Yield</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let c of getCropsForSelected(); trackBy: trackById" class="appear">
+                  <td><strong>{{ c?.name }}</strong></td>
+                  <td>{{ c?.season || '—' }}</td>
+                  <td class="text-end">{{ c?.area || 0 }}</td>
+                  <td class="text-end">{{ c?.expectedYield || 0 }}</td>
+                </tr>
+                <tr *ngIf="!(getCropsForSelected()?.length)">
+                  <td colspan="4" class="text-center text-muted py-3">No crops yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card table-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Jobs</h5>
+            <small class="text-muted">{{ getJobsForSelected()?.length || 0 }} total</small>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle mb-0 fancy-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Scheduled</th>
+                  <th>Completed</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let j of getJobsForSelected(); trackBy: trackById" class="appear">
+                  <td><strong>{{ j?.type }}</strong></td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-success': (j?.status||'').toLowerCase()==='completed',
+                      'bg-info text-dark': (j?.status||'').toLowerCase()==='in_progress',
+                      'bg-warning text-dark': (j?.status||'').toLowerCase()==='scheduled'
+                    }">{{ j?.status }}</span>
+                  </td>
+                  <td>{{ (j?.scheduledAt || j?.scheduledFor) | date:'short' }}</td>
+                  <td>{{ j?.completedAt | date:'short' }}</td>
+                  <td class="text-truncate" style="max-width:360px">{{ j?.notes || '—' }}</td>
+                </tr>
+                <tr *ngIf="!(getJobsForSelected()?.length)">
+                  <td colspan="5" class="text-center text-muted py-3">No jobs yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- end tables -->
+
+  </div>
+</div>

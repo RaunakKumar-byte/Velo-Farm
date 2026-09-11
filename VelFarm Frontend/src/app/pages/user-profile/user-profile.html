@@ -1,0 +1,950 @@
+<!-- <app-header></app-header> -->
+<div class="main-content" style="min-height: 100vh;">
+
+<nav class="sidebar d-md-block p-3">
+  <div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center ">
+      <h3 class="sidebar-title">🌿 Profile & Settings</h3>
+      <button class="navbar-toggler d-md-none toggle-btn"
+              type="button"
+              (click)="toggleSidebar()"
+              aria-controls="sidebarMenu"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <i class="fa-solid fa-caret-down fa-beat fa-lg"></i>
+      </button>
+    </div>
+
+    <!-- Collapsible Sidebar -->
+    <div class="collapse navbar-collapse d-md-block" id="sidebarMenu">
+      <ul class="navbar-nav flex-column gap-2">
+        <li class="nav-item">
+          <button class="nav-link btn btn-link"
+            [class.active]="activeSection === 'farm-details'"
+            (click)="setActiveSection('farm-details', $event)">
+            <i class="fas fa-tractor"></i> Farm Details
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-link"
+            [class.active]="activeSection === 'edit-details'"
+            (click)="setActiveSection('edit-details', $event)">
+            <i class="fas fa-edit"></i> Edit Details
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-link"
+            [class.active]="activeSection === 'subscription'"
+            (click)="setActiveSection('subscription', $event)">
+            <i class="fas fa-star"></i> Subscription
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-link"
+            [class.active]="activeSection === 'preferences'"
+            (click)="setActiveSection('preferences', $event)">
+            <i class="fas fa-sliders-h"></i> Preferences
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-link"
+            [class.active]="activeSection === 'integrations'"
+            (click)="setActiveSection('integrations', $event)">
+            <i class="fas fa-puzzle-piece"></i> Integrations
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-link"
+            [class.active]="activeSection === 'security'"
+            (click)="setActiveSection('security', $event)">
+            <i class="fas fa-shield-alt"></i> Security
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-link"
+            [class.active]="activeSection === 'system'"
+            (click)="setActiveSection('system', $event)">
+            <i class="fas fa-cog"></i> System
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+  <!-- Main Content Area -->
+  <div class="content-area">
+    <!-- Welcome Message -->
+    <div class="welcome-message">
+      <p>Welcome back, {{ userProfile.name }}. Manage your farm and account details here.</p>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="card profile-card p-3">
+      <div class="profile-info">
+        <div class="profile-image-container">
+          <img [src]="userProfile.profileImage" alt="Profile" class="profile-avatar">
+          <button class="image-upload-btn" (click)="fileInput.click()" title="Change Profile Image">
+            <i class="fas fa-camera"></i>
+          </button>
+          <input #fileInput type="file" accept="image/*" (change)="onImageSelected($event)" style="display: none;">
+        </div>
+        <div class="profile-details">
+          <h2>{{ userProfile.name }}</h2>
+          <p><strong>Farm ID:</strong> {{ userProfile.farmId }}</p>
+          <p><strong>Contact:</strong> {{ userProfile.contact }}</p>
+          <p><strong>Email:</strong> {{ userProfile.email }}</p>
+          <div class="profile-status">
+            <span class="status-indicator" [class.online]="true"></span>
+            <span>Online</span>
+        </div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-outline-primary btn-sm" (click)="changePassword()">
+          <i class="fas fa-key"></i> Change Password
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="updateEmail()">
+          <i class="fas fa-envelope"></i> Update Email
+        </button>
+      </div>
+    </div>
+
+    <!-- Auto-save indicator -->
+    <div class="auto-save-indicator" *ngIf="isSaving || hasUnsavedChanges">
+      <div class="save-status" [class.saving]="isSaving" [class.unsaved]="hasUnsavedChanges">
+        <i class="fas fa-spinner fa-spin" *ngIf="isSaving"></i>
+        <i class="fas fa-exclamation-triangle" *ngIf="hasUnsavedChanges && !isSaving"></i>
+        <span *ngIf="isSaving">Saving...</span>
+        <span *ngIf="hasUnsavedChanges && !isSaving">Unsaved changes</span>
+      </div>
+      <div class="last-saved" *ngIf="lastSaved">
+        Last saved: {{ lastSaved | date:'short' }}
+      </div>
+    </div>
+
+    <!-- Farm Details Section -->
+    <div *ngIf="activeSection === 'farm-details'" class="section-content">
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-tractor"></i> Farm Overview</h4>
+          <button class="btn btn-outline-primary btn-sm" (click)="setActiveSection('edit-details')">
+            <i class="fas fa-edit"></i> Edit Details
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <label><i class="fas fa-home"></i> Farm Name:</label>
+              <span>{{ farmDetails.farmName || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-map-marker-alt"></i> Location:</label>
+              <span>{{ farmDetails.location || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-expand-arrows-alt"></i> Size:</label>
+              <span>{{ farmDetails.size || 0 }} acres</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-seedling"></i> Primary Crops:</label>
+              <span>{{ farmDetails.primaryCrop || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-leaf"></i> Secondary Crops:</label>
+              <span>{{ farmDetails.secondaryCrop || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-mountain"></i> Soil Type:</label>
+              <span>{{ farmDetails.soilType || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-tint"></i> Irrigation:</label>
+              <span>{{ farmDetails.irrigationType || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-calendar-alt"></i> Last Harvest:</label>
+              <span>{{ farmDetails.lastHarvest || 'Not recorded' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-calendar-plus"></i> Next Planting:</label>
+              <span>{{ farmDetails.nextPlanting || 'Not scheduled' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Equipment Overview -->
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-tools"></i> Equipment & Machinery</h4>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <label><i class="fas fa-spray-can"></i> Sprayer Type:</label>
+              <span>{{ equipmentInfo.sprayerType || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-microchip"></i> IoT Devices:</label>
+              <span>{{ equipmentInfo.iotDevices || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-cogs"></i> Machinery:</label>
+              <span>{{ equipmentInfo.machinery || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-calendar-check"></i> Maintenance Schedule:</label>
+              <span>{{ equipmentInfo.maintenanceSchedule || 'Not set' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-wrench"></i> Last Service:</label>
+              <span>{{ equipmentInfo.lastService || 'Not recorded' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-clock"></i> Next Service:</label>
+              <span>{{ equipmentInfo.nextService || 'Not scheduled' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pesticide & Fertilizer Overview -->
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-flask"></i> Pesticides & Fertilizers</h4>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <label><i class="fas fa-bug"></i> Pesticides Used:</label>
+              <span>{{ pesticideInfo.pesticides || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-seedling"></i> Fertilizer Type:</label>
+              <span>{{ pesticideInfo.fertilizerType || 'Not specified' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-dollar-sign"></i> Monthly Expenditure:</label>
+              <span>{{ formatCurrency(pesticideInfo.monthlyExpenditure) }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-calendar-alt"></i> Last Application:</label>
+              <span>{{ pesticideInfo.lastApplication || 'Not recorded' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-calendar-plus"></i> Next Application:</label>
+              <span>{{ pesticideInfo.nextApplication || 'Not scheduled' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-spray-can"></i> Application Method:</label>
+              <span>{{ pesticideInfo.applicationMethod || 'Not specified' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Details Section -->
+    <div *ngIf="activeSection === 'edit-details'" class="section-content">
+      <!-- Personal Info -->
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-user"></i> Personal Information</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="personalInfoForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-user"></i> Full Name *</label>
+                <input type="text" formControlName="fullName" class="form-control" 
+                       [class.is-invalid]="isFieldInvalid('fullName', personalInfoForm)">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('fullName', personalInfoForm)">
+                  {{ getFieldError('fullName', personalInfoForm) }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email Address *</label>
+                <input type="email" formControlName="email" class="form-control"
+                       [class.is-invalid]="isFieldInvalid('email', personalInfoForm)">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('email', personalInfoForm)">
+                  {{ getFieldError('email', personalInfoForm) }}
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-lock"></i> New Password</label>
+                <input type="password" formControlName="password" class="form-control" 
+                       placeholder="Enter new password (optional)"
+                       [class.is-invalid]="isFieldInvalid('password', personalInfoForm)">
+                <div class="password-strength" *ngIf="personalInfoForm.get('password')?.value">
+                  <div class="strength-bar">
+                    <div class="strength-fill" 
+                         [style.width.%]="getPasswordStrength(personalInfoForm.get('password')?.value).score * 20"
+                         [style.background-color]="getPasswordStrength(personalInfoForm.get('password')?.value).color">
+                    </div>
+                  </div>
+                  <small [style.color]="getPasswordStrength(personalInfoForm.get('password')?.value).color">
+                    {{ getPasswordStrength(personalInfoForm.get('password')?.value).text }}
+                  </small>
+                </div>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('password', personalInfoForm)">
+                  {{ getFieldError('password', personalInfoForm) }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-phone"></i> Phone Number *</label>
+                <input type="tel" formControlName="phoneNumber" class="form-control"
+                       [class.is-invalid]="isFieldInvalid('phoneNumber', personalInfoForm)">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('phoneNumber', personalInfoForm)">
+                  {{ getFieldError('phoneNumber', personalInfoForm) }}
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-comments"></i> Communication Preferences</label>
+                <select formControlName="communicationPreference" class="form-control">
+                  <option value="Email Only">Email Only</option>
+                  <option value="SMS Only">SMS Only</option>
+                  <option value="Both">Both Email & SMS</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-globe"></i> Language</label>
+                <select formControlName="language" class="form-control">
+                  <option value="English">English</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="French">French</option>
+                  <option value="Hindi">Hindi</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Farm Info -->
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-home"></i> Farm Information</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="farmInfoForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-home"></i> Farm Name *</label>
+                <input type="text" formControlName="farmName" class="form-control"
+                       [class.is-invalid]="isFieldInvalid('farmName', farmInfoForm)">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('farmName', farmInfoForm)">
+                  {{ getFieldError('farmName', farmInfoForm) }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Farm Location *</label>
+                <input type="text" formControlName="farmLocation" class="form-control"
+                       [class.is-invalid]="isFieldInvalid('farmLocation', farmInfoForm)">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('farmLocation', farmInfoForm)">
+                  {{ getFieldError('farmLocation', farmInfoForm) }}
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-expand-arrows-alt"></i> Farm Size (acres) *</label>
+                <input type="number" formControlName="farmSize" class="form-control" min="0.1" step="0.1"
+                       [class.is-invalid]="isFieldInvalid('farmSize', farmInfoForm)">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('farmSize', farmInfoForm)">
+                  {{ getFieldError('farmSize', farmInfoForm) }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-mountain"></i> Soil Type</label>
+                <select formControlName="soilType" class="form-control">
+                  <option value="Loam">Loam</option>
+                  <option value="Clay">Clay</option>
+                  <option value="Sandy">Sandy</option>
+                  <option value="Silt">Silt</option>
+                  <option value="Peat">Peat</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-tint"></i> Irrigation Type</label>
+                <select formControlName="irrigationType" class="form-control">
+                  <option value="Drip">Drip Irrigation</option>
+                  <option value="Sprinkler">Sprinkler System</option>
+                  <option value="Flood">Flood Irrigation</option>
+                  <option value="Manual">Manual Watering</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-calendar-alt"></i> Last Harvest</label>
+                <input type="date" formControlName="lastHarvest" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-calendar-plus"></i> Next Planting</label>
+                <input type="date" formControlName="nextPlanting" class="form-control">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Crop Info -->
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-seedling"></i> Crop Information</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="farmInfoForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-seedling"></i> Primary Crops</label>
+                <input type="text" formControlName="primaryCrops" class="form-control" 
+                       placeholder="e.g., Corn, Soybeans, Wheat">
+                <small class="form-text text-muted">Separate multiple crops with commas</small>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-leaf"></i> Secondary Crops</label>
+                <input type="text" formControlName="secondaryCrops" class="form-control"
+                       placeholder="e.g., Sunflower, Barley">
+                <small class="form-text text-muted">Separate multiple crops with commas</small>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Equipment Info -->
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-tools"></i> Equipment & Machinery</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="equipmentForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-spray-can"></i> Sprayer Type</label>
+                <select formControlName="sprayerType" class="form-control">
+                  <option value="">Select sprayer type</option>
+                  <option value="Boom Sprayer">Boom Sprayer</option>
+                  <option value="Air Blast Sprayer">Air Blast Sprayer</option>
+                  <option value="Backpack Sprayer">Backpack Sprayer</option>
+                  <option value="Tractor Mounted">Tractor Mounted</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-microchip"></i> IoT Devices</label>
+                <input type="text" formControlName="iotDevices" class="form-control"
+                       placeholder="e.g., Soil Sensors, Weather Station, Drones">
+                <small class="form-text text-muted">Separate multiple devices with commas</small>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-cogs"></i> Machinery</label>
+                <input type="text" formControlName="machinery" class="form-control"
+                       placeholder="e.g., Tractor, Combine Harvester, Seeder">
+                <small class="form-text text-muted">Separate multiple machines with commas</small>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-calendar-check"></i> Maintenance Schedule</label>
+                <select formControlName="maintenanceSchedule" class="form-control">
+                  <option value="">Select schedule</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Quarterly">Quarterly</option>
+                  <option value="As Needed">As Needed</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-wrench"></i> Last Service</label>
+                <input type="date" formControlName="lastService" class="form-control">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-clock"></i> Next Service</label>
+                <input type="date" formControlName="nextService" class="form-control">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Pesticide & Fertilizer -->
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-flask"></i> Pesticides & Fertilizers</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="pesticideForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-bug"></i> Pesticides Used</label>
+                <input type="text" formControlName="pesticides" class="form-control"
+                       placeholder="e.g., Glyphosate, Atrazine, 2,4-D">
+                <small class="form-text text-muted">Separate multiple pesticides with commas</small>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-seedling"></i> Fertilizer Preference</label>
+                <select formControlName="fertilizerType" class="form-control">
+                  <option value="">Select fertilizer type</option>
+                  <option value="Conventional">Conventional</option>
+                  <option value="Organic">Organic</option>
+                  <option value="Mixed">Mixed (Conventional + Organic)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-dollar-sign"></i> Monthly Expenditure ($)</label>
+                <input type="number" formControlName="monthlyExpenditure" class="form-control" min="0" step="0.01"
+                       [class.is-invalid]="isFieldInvalid('monthlyExpenditure', pesticideForm)">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('monthlyExpenditure', pesticideForm)">
+                  {{ getFieldError('monthlyExpenditure', pesticideForm) }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-spray-can"></i> Application Method</label>
+                <select formControlName="applicationMethod" class="form-control">
+                  <option value="Spray">Spray</option>
+                  <option value="Granular">Granular</option>
+                  <option value="Liquid">Liquid</option>
+                  <option value="Foliar">Foliar</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-calendar-alt"></i> Last Application</label>
+                <input type="date" formControlName="lastApplication" class="form-control">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-calendar-plus"></i> Next Application</label>
+                <input type="date" formControlName="nextApplication" class="form-control">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscription Section -->
+    <div *ngIf="activeSection === 'subscription'" class="section-content">
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-star"></i> Subscription Management</h4>
+          <div class="subscription-status">
+            <span class="status-badge" [class.active]="subscription.status === 'Active'"
+                  [class.cancelled]="subscription.status === 'Cancelled'">
+              {{ subscription.status }}
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="subscription-info">
+            <div class="current-plan">
+              <h5><i class="fas fa-crown"></i> Current Plan</h5>
+            <div class="plan-details">
+                <div class="plan-info">
+              <span class="plan-name">{{ subscription.plan }}</span>
+                  <span class="plan-price">{{ formatCurrency(subscription.price) }}/{{ subscription.billingCycle.toLowerCase() }}</span>
+                </div>
+                <div class="plan-actions">
+                  <button class="btn btn-outline-primary btn-sm" (click)="changePlan()">
+                    <i class="fas fa-exchange-alt"></i> Change Plan
+                  </button>
+                  <button class="btn btn-outline-success btn-sm" (click)="upgradePlan()" 
+                          *ngIf="subscription.plan !== 'Premium Plan'">
+                    <i class="fas fa-arrow-up"></i> Upgrade
+                  </button>
+                </div>
+              </div>
+              <div class="renewal-info">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Renews on: {{ subscription.renewsOn }}</span>
+              </div>
+            </div>
+            
+            <div class="premium-features">
+              <h6><i class="fas fa-gem"></i> Plan Features</h6>
+              <ul class="features-list">
+                <li *ngFor="let feature of subscription.features">
+                  <i class="fas fa-check-circle"></i> {{ feature }}
+                </li>
+              </ul>
+              <button class="btn btn-link feature-link" (click)="changePlan()">
+                <i class="fas fa-external-link-alt"></i> Explore all features
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-credit-card"></i> Payment Details</h4>
+          <button class="btn btn-outline-primary btn-sm" (click)="updatePayment()">
+            <i class="fas fa-edit"></i> Update
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="payment-info">
+            <div class="card-details">
+              <div class="card-icon">
+              <i class="fas fa-credit-card"></i>
+              </div>
+              <div class="card-info">
+                <span class="card-type">{{ paymentDetails.cardType }}</span>
+                <span class="card-number">ending in {{ paymentDetails.lastFour }}</span>
+              <span class="expiry">Expires {{ paymentDetails.expires }}</span>
+            </div>
+            </div>
+            <div class="billing-address" *ngIf="paymentDetails.billingAddress">
+              <h6>Billing Address</h6>
+              <p>{{ paymentDetails.billingAddress }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-file-invoice"></i> Billing Information</h4>
+        </div>
+        <div class="card-body">
+          <div class="billing-actions">
+            <button class="btn btn-outline-primary" (click)="viewBillingHistory()">
+              <i class="fas fa-history"></i> View Billing History
+            </button>
+            <button class="btn btn-outline-success" (click)="exportData()">
+              <i class="fas fa-download"></i> Download Invoices
+            </button>
+          </div>
+          <div class="billing-summary">
+            <div class="summary-item">
+              <span class="label">Next Billing Date:</span>
+              <span class="value">{{ subscription.renewsOn }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Amount Due:</span>
+              <span class="value">{{ formatCurrency(subscription.price) }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Payment Method:</span>
+              <span class="value">{{ paymentDetails.paymentMethod }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" *ngIf="subscription.status === 'Active'">
+        <div class="card-header">
+          <h4><i class="fas fa-exclamation-triangle"></i> Subscription Actions</h4>
+        </div>
+        <div class="card-body">
+          <div class="subscription-actions">
+            <button class="btn btn-outline-warning" (click)="cancelSubscription()">
+              <i class="fas fa-pause"></i> Pause Subscription
+            </button>
+            <button class="btn btn-outline-danger" (click)="cancelSubscription()">
+              <i class="fas fa-times"></i> Cancel Subscription
+            </button>
+          </div>
+          <div class="warning-text">
+            <i class="fas fa-info-circle"></i>
+            <span>You can reactivate your subscription anytime. Your data will be preserved for 30 days after cancellation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preferences Section -->
+    <div *ngIf="activeSection === 'preferences'" class="section-content">
+      <div class="card">
+        <div class="card-header">
+          <h4>Preferences</h4>
+        </div>
+        <div class="card-body">
+          <div class="preference-item">
+            <label>Language</label>
+            <select class="form-control" [(ngModel)]="preferences.language">
+              <option value="English">English</option>
+              <option value="Spanish">Spanish</option>
+              <option value="French">French</option>
+            </select>
+          </div>
+          <div class="preference-item">
+            <label>Theme</label>
+            <div class="theme-toggle">
+              <button class="btn" [class.btn-success]="preferences.theme === 'light'"
+                [class.btn-outline-secondary]="preferences.theme !== 'light'"
+                (click)="toggleTheme('light')">Light</button>
+              <button class="btn" [class.btn-success]="preferences.theme === 'dark'"
+                [class.btn-outline-secondary]="preferences.theme !== 'dark'" (click)="toggleTheme('dark')">Dark</button>
+            </div>
+          </div>
+          <div class="preference-item">
+            <label>Notification Methods</label>
+            <div class="notification-options">
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="preferences.notifications.email"
+                  (change)="toggleNotification('email')">
+                Email
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="preferences.notifications.sms" (change)="toggleNotification('sms')">
+                SMS
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="preferences.notifications.inApp"
+                  (change)="toggleNotification('inApp')">
+                In-app
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Integrations Section -->
+    <div *ngIf="activeSection === 'integrations'" class="section-content">
+      <div class="card">
+        <div class="card-header">
+          <h4>Integrations</h4>
+          <button class="btn btn-primary btn-sm">Add New</button>
+        </div>
+        <div class="card-body">
+          <div class="integration-list">
+            <div class="integration-item" *ngFor="let integration of integrations">
+              <div class="integration-info">
+                <h6>{{ integration.name }}</h6>
+                <span class="status" [class.connected]="integration.status === 'Connected'"
+                  [class.not-connected]="integration.status === 'Not Connected'">
+                  {{ integration.status }}
+                </span>
+              </div>
+              <button class="btn btn-outline-primary btn-sm" (click)="handleIntegrationAction(integration)">
+                {{ integration.action }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Section -->
+    <div *ngIf="activeSection === 'security'" class="section-content">
+      <div class="card">
+        <div class="card-header">
+          <h4>Security</h4>
+        </div>
+        <div class="card-body">
+          <button class="btn btn-outline-primary" (click)="changePassword()">Change Password</button>
+          <div class="security-item">
+            <h6>Two-Factor Authentication</h6>
+            <p>Add an extra layer of security to your account.</p>
+            <div class="toggle-switch">
+              <input type="checkbox" [checked]="security.twoFactorEnabled" (change)="toggleTwoFactor()" id="twoFactor">
+              <label for="twoFactor" class="toggle-label"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Section -->
+    <div *ngIf="activeSection === 'system'" class="section-content">
+      <div class="card">
+        <div class="card-header">
+          <h4>System Preferences</h4>
+        </div>
+        <div class="card-body">
+          <div class="preference-item">
+            <label>Measurement Units</label>
+            <select class="form-control" [(ngModel)]="preferences.measurementUnits">
+              <option value="Imperial (acres, lbs)">Imperial (acres, lbs)</option>
+              <option value="Metric (hectares, kg)">Metric (hectares, kg)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-outline-secondary" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+      <button class="btn btn-success" (click)="saveChanges()" [disabled]="isSaving">
+        <i class="fas fa-save" *ngIf="!isSaving"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isSaving"></i>
+        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<!-- Password Change Modal -->
+<div class="modal fade" [class.show]="showPasswordModal" [style.display]="showPasswordModal ? 'block' : 'none'" tabindex="-1" *ngIf="showPasswordModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-key"></i> Change Password</h5>
+        <button type="button" class="btn-close" (click)="closeModals()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onPasswordSubmit()">
+          <div class="mb-3">
+            <label for="currentPassword" class="form-label">Current Password</label>
+            <input type="password" class="form-control" id="currentPassword" 
+                   [(ngModel)]="passwordData.currentPassword" required>
+          </div>
+          <div class="mb-3">
+            <label for="newPassword" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="newPassword" 
+                   [(ngModel)]="passwordData.newPassword" required minlength="6">
+            <div class="password-strength" *ngIf="passwordData.newPassword">
+              <div class="strength-bar">
+                <div class="strength-fill" 
+                     [style.width.%]="getPasswordStrength(passwordData.newPassword).score * 20"
+                     [style.background-color]="getPasswordStrength(passwordData.newPassword).color">
+                </div>
+              </div>
+              <small [style.color]="getPasswordStrength(passwordData.newPassword).color">
+                {{ getPasswordStrength(passwordData.newPassword).text }}
+              </small>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+            <input type="password" class="form-control" id="confirmPassword" 
+                   [(ngModel)]="passwordData.confirmPassword" required>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Change Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Email Update Modal -->
+<div class="modal fade" [class.show]="showEmailModal" [style.display]="showEmailModal ? 'block' : 'none'" tabindex="-1" *ngIf="showEmailModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-envelope"></i> Update Email</h5>
+        <button type="button" class="btn-close" (click)="closeModals()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onEmailSubmit()">
+          <div class="mb-3">
+            <label for="newEmail" class="form-label">New Email Address</label>
+            <input type="email" class="form-control" id="newEmail" 
+                   [(ngModel)]="emailData.newEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="emailPassword" class="form-label">Current Password</label>
+            <input type="password" class="form-control" id="emailPassword" 
+                   [(ngModel)]="emailData.currentPassword" required>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update Email</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Update Modal -->
+<div class="modal fade" [class.show]="showPaymentModal" [style.display]="showPaymentModal ? 'block' : 'none'" tabindex="-1" *ngIf="showPaymentModal">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-credit-card"></i> Update Payment Method</h5>
+        <button type="button" class="btn-close" (click)="closeModals()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onPaymentSubmit()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="cardNumber" class="form-label">Card Number</label>
+              <input type="text" class="form-control" id="cardNumber" 
+                     [(ngModel)]="paymentData.cardNumber" required>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="expiryDate" class="form-label">Expiry Date</label>
+              <input type="text" class="form-control" id="expiryDate" 
+                     [(ngModel)]="paymentData.expiryDate" placeholder="MM/YY" required>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="cvv" class="form-label">CVV</label>
+              <input type="text" class="form-control" id="cvv" 
+                     [(ngModel)]="paymentData.cvv" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="nameOnCard" class="form-label">Name on Card</label>
+            <input type="text" class="form-control" id="nameOnCard" 
+                   [(ngModel)]="paymentData.nameOnCard" required>
+          </div>
+          <div class="mb-3">
+            <label for="billingAddress" class="form-label">Billing Address</label>
+            <textarea class="form-control" id="billingAddress" 
+                      [(ngModel)]="paymentData.billingAddress" rows="3"></textarea>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update Payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Crop Modal -->
+<div class="modal fade" [class.show]="showImageCropModal" [style.display]="showImageCropModal ? 'block' : 'none'" tabindex="-1" *ngIf="showImageCropModal">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-crop"></i> Crop Profile Image</h5>
+        <button type="button" class="btn-close" (click)="closeModals()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="image-crop-container">
+          <img [src]="imagePreview" alt="Crop Preview" class="crop-preview">
+          <div class="crop-controls">
+            <p>Adjust the image as needed. The image will be cropped to a square format.</p>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="cropImage()">Crop & Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showPasswordModal || showEmailModal || showPaymentModal || showImageCropModal" 
+     [style.display]="(showPasswordModal || showEmailModal || showPaymentModal || showImageCropModal) ? 'block' : 'none'"
+     (click)="closeModals()"></div>

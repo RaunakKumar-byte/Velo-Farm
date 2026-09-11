@@ -1,0 +1,181 @@
+/* Fade & Slide animations */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 0.2; }
+}
+
+/* Title animation */
+.animate-title {
+  opacity: 0;
+  animation: fadeInUp 1s ease forwards;
+}
+.animate-subtitle {
+  opacity: 0;
+  animation: fadeInUp 1s ease forwards 0.3s;
+}
+
+/* Feature Card */
+.feature-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,255,245,0.95));
+  border-radius: 22px;
+  padding: 45px 28px;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  height: 100%;
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(40,167,69,0.25);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeInUp 1s ease forwards;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.2s; }
+.feature-card:nth-child(2) { animation-delay: 0.4s; }
+.feature-card:nth-child(3) { animation-delay: 0.6s; }
+.feature-card:nth-child(4) { animation-delay: 0.8s; }
+.feature-card:nth-child(5) { animation-delay: 1s; }
+.feature-card:nth-child(6) { animation-delay: 1.2s; }
+
+.feature-card:hover {
+  transform: translateY(-12px) scale(1.05);
+  border-color: rgba(40,167,69,0.4);
+}
+
+/* Background glow */
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -40%;
+  width: 180%;
+  height: 180%;
+  background: radial-gradient(circle at center, rgba(40,167,69,0.12), transparent 70%);
+  transform: rotate(25deg);
+  z-index: 0;
+}
+
+/* Icon Circle */
+.icon-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #28a745, #3ddc84);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(40,167,69,0.3);
+  overflow: hidden;
+}
+
+.icon-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  animation: pulse 2.5s infinite;
+}
+
+.feature-icon {
+  font-size: 2rem;
+  color: #fff;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.2) rotate(6deg);
+}
+
+/* Text inside card */
+.feature-card h3 {
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  color: #222;
+  z-index: 2;
+  position: relative;
+}
+
+.feature-card p {
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+  z-index: 2;
+  position: relative;
+}
+
+/* CTA Box */
+.cta-box {
+  background: linear-gradient(135deg, #28a745, #3ddc84);
+  border-radius: 25px;
+  padding: 60px 30px;
+  color: #fff;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  animation: fadeInUp 1.2s ease forwards 1.5s;
+}
+
+.cta-box h2 { font-size: 2rem; }
+.cta-box p { font-size: 1.1rem; }
+
+.btn.hover-grow:hover {
+  transform: scale(1.08);
+  transition: all 0.3s ease;
+}
+/* Testimonials Section */
+.testimonial-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 35px 28px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeInUp 1s ease forwards;
+}
+
+.testimonial-card:nth-child(1) { animation-delay: 0.2s; }
+.testimonial-card:nth-child(2) { animation-delay: 0.4s; }
+.testimonial-card:nth-child(3) { animation-delay: 0.6s; }
+
+.testimonial-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(40,167,69,0.2);
+}
+
+/* Content */
+.testimonial-content p {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.6;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+/* Author Section */
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #28a745;
+  box-shadow: 0 5px 15px rgba(40,167,69,0.25);
+}
