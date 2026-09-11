@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { NewTask, SavedPath } from '../../models/bot.models';
 
@@ -16,18 +17,22 @@ export interface ApiResponse<T> {
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = `${environment.backendUrl}/api`;
 
   constructor(private http: HttpClient) {}
 
   // Bot Status
   getBotStatus(): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/bot/status`);
+    return this.http.get<any>(`${this.apiUrl}/bot/status`).pipe(
+      map(bot => ({ success: true, bot }))
+    );
   }
 
   // Plants
   getPlants(): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/plants`);
+    return this.http.get<any[]>(`${this.apiUrl}/plants`).pipe(
+      map(plants => ({ success: true, plants }))
+    );
   }
 
   // Tasks

@@ -4,7 +4,12 @@ const commandSchema = new mongoose.Schema({
   type: { 
     type: String, 
     required: true,
-    enum: ['move', 'drop', 'emergency_stop', 'refill']
+    enum: ['move', 'drop', 'water', 'wait', 'scan', 'emergency_stop', 'refill']
+  },
+  duration: {
+    type: Number,
+    default: null,
+    min: 0
   },
   x: { 
     type: Number, 

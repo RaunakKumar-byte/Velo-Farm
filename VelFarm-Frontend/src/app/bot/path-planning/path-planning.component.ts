@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription, interval } from 'rxjs';
 import { ApiService } from '../../services/services/api.service';
 import { SocketService } from '../../services/services/socket.service';
 import { Waypoint, SavedPath, Position } from '../../models/bot.models';
-import { BotService, Analytic, Plant, LogEntry } from '../../services/bot.services';
-import { BotStatus } from '../../services/bot.services';
 @Component({
   selector: 'app-path-planning',
   standalone: true,
@@ -22,6 +21,34 @@ import { BotStatus } from '../../services/bot.services';
               </h5>
             </div>
             <div class="card-body">
+              <!-- Live Execution Status -->
+              <div *ngIf="isExecuting || executionMessage" class="execution-banner mb-3"
+                   [class.executing]="isExecuting"
+                   [class.completed]="executionComplete">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <strong>
+                      <i class="fas fa-robot me-2"></i>
+                      {{ executionMessage || 'Ready to execute' }}
+                    </strong>
+                    <div *ngIf="isExecuting" class="small text-muted mt-1">
+                      Bot at ({{ botStatus.x }}, {{ botStatus.y }})
+                      <span *ngIf="botAction !== 'idle'"> · {{ botAction | titlecase }}</span>
+                    </div>
+                  </div>
+                  <span *ngIf="isExecuting" class="badge bg-warning text-dark">
+                    <i class="fas fa-spinner fa-spin me-1"></i> Live
+                  </span>
+                  <span *ngIf="executionComplete" class="badge bg-success">
+                    <i class="fas fa-check me-1"></i> Done
+                  </span>
+                </div>
+                <div *ngIf="isExecuting && waypoints.length > 0" class="progress mt-2" style="height: 6px;">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                       [style.width.%]="executionProgress"></div>
+                </div>
+              </div>
+
               <!-- Grid Controls -->
               <div class="row mb-4">
                 <div class="col-md-4">
@@ -51,14 +78,28 @@ import { BotStatus } from '../../services/bot.services';
                     <div *ngFor="let cell of row; let x = index"
                          class="grid-cell"
                          [class.bot-position]="isBotPosition(x, y)"
+                         [class.bot-moving]="isBotPosition(x, y) && botAction === 'moving'"
+                         [class.bot-action-cell]="isBotPosition(x, y) && isPerformingAction()"
                          [class.has-plant]="hasPlant(x, y)"
                          [class.waypoint]="isWaypoint(x, y)"
+                         [class.waypoint-active]="isActiveWaypoint(x, y)"
+                         [class.waypoint-done]="isCompletedWaypoint(x, y)"
                          [class.selected]="selectedCell?.x === x && selectedCell?.y === y"
                          (click)="selectCell(x, y)">
 
                       <!-- Bot Icon -->
                       <div *ngIf="isBotPosition(x, y)" class="position-icon bot">
-                        <i class="fas fa-robot text-warning"></i>
+                        <i class="fas fa-robot text-warning"
+                           [class.bot-animate]="botAction === 'moving'"></i>
+                        <span *ngIf="isPerformingAction()" class="action-badge"
+                              [class.water]="botAction === 'watering'"
+                              [class.fertilize]="botAction === 'fertilizing'"
+                              [class.scan]="botAction === 'scanning'">
+                          <i class="fas"
+                             [class.fa-tint]="botAction === 'watering'"
+                             [class.fa-leaf]="botAction === 'fertilizing'"
+                             [class.fa-search]="botAction === 'scanning'"></i>
+                        </span>
                       </div>
 
                       <!-- Plant Icon -->
@@ -122,7 +163,9 @@ import { BotStatus } from '../../services/bot.services';
 
               <div *ngFor="let waypoint of waypoints; let i = index"
                    class="waypoint-item mb-3 p-3 border rounded"
-                   [class.active]="selectedWaypoint === waypoint">
+                   [class.active]="selectedWaypoint === waypoint"
+                   [class.executing]="activeWaypointIndex === i && isExecuting"
+                   [class.completed]="isWaypointCompleted(waypoint)">
                 <div class="d-flex justify-content-between align-items-start">
                   <div class="flex-grow-1">
                     <div class="d-flex align-items-center mb-2">
@@ -261,10 +304,90 @@ import { BotStatus } from '../../services/bot.services';
       box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
     }
 
+    .execution-banner {
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: #e8f5e9;
+      border: 1px solid #c8e6c9;
+    }
+
+    .execution-banner.executing {
+      background: #fff8e1;
+      border-color: #ffecb3;
+    }
+
+    .execution-banner.completed {
+      background: #e8f5e9;
+      border-color: #a5d6a7;
+    }
+
     .grid-cell.bot-position {
       background: linear-gradient(45deg, #fff3cd, #ffffff);
       border-color: #ffc107;
       animation: pulse 2s infinite;
+    }
+
+    .grid-cell.bot-moving {
+      background: linear-gradient(45deg, #ffe082, #fff8e1);
+      border-color: #ff9800;
+      z-index: 5;
+    }
+
+    .grid-cell.bot-action-cell {
+      animation: actionPulse 1s infinite;
+    }
+
+    .grid-cell.waypoint-active {
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.5);
+      border-color: #ff9800;
+    }
+
+    .grid-cell.waypoint-done {
+      opacity: 0.75;
+      border-color: #28a745;
+    }
+
+    .bot-animate {
+      animation: botMove 0.7s ease-in-out infinite;
+    }
+
+    .action-badge {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: white;
+    }
+
+    .action-badge.water { background: #17a2b8; }
+    .action-badge.fertilize { background: #28a745; }
+    .action-badge.scan { background: #343a40; }
+
+    @keyframes botMove {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @keyframes actionPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(23, 162, 184, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(23, 162, 184, 0); }
+    }
+
+    .waypoint-item.executing {
+      background: #fff8e1;
+      border-color: #ff9800 !important;
+    }
+
+    .waypoint-item.completed {
+      background: #e8f5e9;
+      border-color: #28a745 !important;
+      opacity: 0.85;
     }
 
     .grid-cell.has-plant {
@@ -345,7 +468,7 @@ import { BotStatus } from '../../services/bot.services';
     }
   `]
 })
-export class PathPlanningComponent implements OnInit {
+export class PathPlanningComponent implements OnInit, OnDestroy {
   grid: any[][] = [];
   waypoints: Waypoint[] = [];
   selectedCell: { x: number, y: number } | null = null;
@@ -355,11 +478,20 @@ export class PathPlanningComponent implements OnInit {
   pathName = '';
 
   botStatus: Position = { x: 0, y: 0 };
+  botAction: string = 'idle';
   plants: any[] = [];
   savedPaths: SavedPath[] = [];
 
   isExecuting = false;
+  executionComplete = false;
+  executionMessage = '';
+  executionProgress = 0;
+  activeWaypointIndex = -1;
+  completedWaypointOrders = new Set<number>();
   estimatedTime = 0;
+
+  private subscriptions = new Subscription();
+  private statusPollSubscription?: Subscription;
 
   constructor(
     private apiService: ApiService,
@@ -372,6 +504,11 @@ export class PathPlanningComponent implements OnInit {
     this.loadPlants();
     this.loadSavedPaths();
     this.subscribeToUpdates();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+    this.stopStatusPolling();
   }
 
   initializeGrid() {
@@ -408,19 +545,111 @@ export class PathPlanningComponent implements OnInit {
   }
 
   subscribeToUpdates() {
-    this.socketService.onBotStatusUpdate().subscribe(status => {
-      this.botStatus = status;
-    });
+    this.subscriptions.add(
+      this.socketService.onBotStatusUpdate().subscribe(status => {
+        this.handleBotStatusUpdate(status);
+      })
+    );
 
-    this.socketService.onPlantsUpdate().subscribe(plants => {
-      this.plants = plants;
+    this.subscriptions.add(
+      this.socketService.onPlantsUpdate().subscribe(plants => {
+        this.plants = plants;
+      })
+    );
+
+    this.subscriptions.add(
+      this.socketService.onPathExecutionComplete().subscribe(() => {
+        this.finishExecution(true);
+      })
+    );
+  }
+
+  handleBotStatusUpdate(status: any) {
+    if (status?.x !== undefined) this.botStatus.x = status.x;
+    if (status?.y !== undefined) this.botStatus.y = status.y;
+    this.botAction = status?.status || (status?.isMoving ? 'moving' : 'idle');
+
+    if (this.isExecuting) {
+      this.updateExecutionUI();
+    }
+  }
+
+  startStatusPolling() {
+    this.stopStatusPolling();
+    this.statusPollSubscription = interval(1000).subscribe(() => {
+      this.apiService.getBotStatus().subscribe(response => {
+        if (response.success && response['bot']) {
+          this.handleBotStatusUpdate(response['bot']);
+        }
+      });
     });
   }
 
+  stopStatusPolling() {
+    this.statusPollSubscription?.unsubscribe();
+    this.statusPollSubscription = undefined;
+  }
+
+  updateExecutionUI() {
+    const actionLabels: Record<string, string> = {
+      moving: 'Moving',
+      watering: 'Watering plant',
+      fertilizing: 'Fertilizing plant',
+      scanning: 'Scanning area',
+      idle: 'At waypoint',
+      error: 'Error occurred'
+    };
+
+    const label = actionLabels[this.botAction] || 'Working';
+    this.executionMessage = `${label} at (${this.botStatus.x}, ${this.botStatus.y})...`;
+
+    const currentIndex = this.waypoints.findIndex(
+      wp => wp.x === this.botStatus.x && wp.y === this.botStatus.y
+    );
+
+    if (currentIndex >= 0) {
+      this.activeWaypointIndex = currentIndex;
+      for (let i = 0; i < currentIndex; i++) {
+        this.completedWaypointOrders.add(this.waypoints[i].order);
+      }
+    }
+
+    if (this.botAction === 'idle' && currentIndex >= 0) {
+      this.completedWaypointOrders.add(this.waypoints[currentIndex].order);
+    }
+
+    this.executionProgress = this.waypoints.length
+      ? (this.completedWaypointOrders.size / this.waypoints.length) * 100
+      : 0;
+  }
+
+  finishExecution(success: boolean) {
+    this.isExecuting = false;
+    this.executionComplete = success;
+    this.stopStatusPolling();
+    this.activeWaypointIndex = -1;
+    this.waypoints.forEach(wp => this.completedWaypointOrders.add(wp.order));
+    this.executionProgress = 100;
+    this.executionMessage = success
+      ? 'Path execution completed successfully!'
+      : 'Path execution failed.';
+    this.botAction = 'idle';
+
+    if (success) {
+      setTimeout(() => {
+        this.executionComplete = false;
+        this.executionMessage = '';
+        this.completedWaypointOrders.clear();
+        this.executionProgress = 0;
+      }, 4000);
+    }
+  }
+
   selectCell(x: number, y: number) {
+    if (this.isExecuting) return;
+
     this.selectedCell = { x, y };
 
-    // Add waypoint if not already present
     if (!this.isWaypoint(x, y)) {
       this.addWaypoint(x, y);
     }
@@ -441,6 +670,7 @@ export class PathPlanningComponent implements OnInit {
   }
 
   removeWaypoint(index: number) {
+    if (this.isExecuting) return;
     this.waypoints.splice(index, 1);
     this.reorderWaypoints();
     this.calculateEstimatedTime();
@@ -500,10 +730,18 @@ export class PathPlanningComponent implements OnInit {
   }
 
   clearPath() {
+    this.stopStatusPolling();
+    this.isExecuting = false;
+    this.executionComplete = false;
+    this.executionMessage = '';
+    this.executionProgress = 0;
+    this.activeWaypointIndex = -1;
+    this.completedWaypointOrders.clear();
     this.waypoints = [];
     this.selectedCell = null;
     this.selectedWaypoint = null;
     this.estimatedTime = 0;
+    this.botAction = 'idle';
   }
 
   savePath() {
@@ -514,12 +752,18 @@ export class PathPlanningComponent implements OnInit {
       waypoints: [...this.waypoints]
     };
 
-    this.apiService.savePath(newPath).subscribe(response => {
-      if (response.success) {
-        alert(`Path "${newPath.name}" saved successfully!`);
-        this.pathName = '';
-        this.loadSavedPaths(); // Refresh the list
-      } else {
+    this.apiService.savePath(newPath).subscribe({
+      next: (response) => {
+        if (response.success) {
+          alert(`Path "${newPath.name}" saved successfully!`);
+          this.pathName = '';
+          this.loadSavedPaths();
+        } else {
+          alert('Failed to save path to server. Saving locally.');
+          this.savePathToLocalStorage(newPath);
+        }
+      },
+      error: () => {
         alert('Failed to save path to server. Saving locally.');
         this.savePathToLocalStorage(newPath);
       }
@@ -541,30 +785,34 @@ export class PathPlanningComponent implements OnInit {
   }
 
   executePath() {
-    if (this.waypoints.length === 0) return;
+    if (this.waypoints.length === 0 || this.isExecuting) return;
 
     this.isExecuting = true;
+    this.executionComplete = false;
+    this.completedWaypointOrders.clear();
+    this.activeWaypointIndex = 0;
+    this.executionProgress = 0;
+    this.executionMessage = 'Starting path execution...';
 
     const pathData = {
       waypoints: this.waypoints,
       path_name: this.pathName || `Execution_${Date.now()}`
     };
 
+    this.startStatusPolling();
+
     this.apiService.createWaypointPath(pathData).subscribe({
       next: (response) => {
         if (response.success) {
-          alert('Path execution started! The bot will follow the waypoints.');
-          // Clear current path after successful execution
-          setTimeout(() => {
-            this.clearPath();
-            this.isExecuting = false;
-          }, 2000);
+          this.executionMessage = 'Bot is following the path...';
+        } else {
+          this.finishExecution(false);
         }
       },
       error: (error) => {
         console.error('Error executing path:', error);
+        this.finishExecution(false);
         alert('Failed to execute path. Please try again.');
-        this.isExecuting = false;
       }
     });
   }
@@ -605,11 +853,30 @@ export class PathPlanningComponent implements OnInit {
   }
 
   getWaypointOrder(x: number, y: number): number {
-    // Find the last waypoint at this position to show the highest order number
     const waypointsAtPosition = this.waypoints.filter(w => w.x === x && w.y === y);
     if (waypointsAtPosition.length > 0) {
       return waypointsAtPosition[waypointsAtPosition.length - 1].order;
     }
     return 0;
+  }
+
+  isPerformingAction(): boolean {
+    return ['watering', 'fertilizing', 'scanning'].includes(this.botAction);
+  }
+
+  isActiveWaypoint(x: number, y: number): boolean {
+    if (!this.isExecuting || this.activeWaypointIndex < 0) return false;
+    const wp = this.waypoints[this.activeWaypointIndex];
+    return wp?.x === x && wp?.y === y;
+  }
+
+  isCompletedWaypoint(x: number, y: number): boolean {
+    return this.waypoints.some(
+      wp => wp.x === x && wp.y === y && this.completedWaypointOrders.has(wp.order)
+    );
+  }
+
+  isWaypointCompleted(waypoint: Waypoint): boolean {
+    return this.completedWaypointOrders.has(waypoint.order);
   }
 }

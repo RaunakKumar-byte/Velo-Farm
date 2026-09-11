@@ -54,6 +54,14 @@ export class SocketService {
     });
   }
 
+  onPathExecutionComplete(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('path_execution_complete', (data) => {
+        observer.next(data);
+      });
+    });
+  }
+
   // Emit events
   emit(event: string, data: any): void {
     this.socket.emit(event, data);

@@ -6,12 +6,14 @@ const botRoutes = require('./botRoutes');
 const plantRoutes = require('./plantRoutes');
 const logRoutes = require('./logRoutes');
 const analyticsRoutes = require('./analyticsRoutes');
+const waypointRoutes = require('./waypointRoutes');
 
 // Mount routes
 router.use('/bot', botRoutes);
 router.use('/plants', plantRoutes);
 router.use('/logs', logRoutes);
 router.use('/analytics', analyticsRoutes);
+router.use('/waypoints', waypointRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
