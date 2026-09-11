@@ -50,15 +50,15 @@ export interface Analytic {
   providedIn: 'root'
 })
 export class BotService {
- private baseUrl = 'https://khetloom-bot-backend.vercel.app/api';
+ private baseUrl = 'http://localhost:3001/api';
 
   // Real-time data subjects
   private botStatusSubject = new BehaviorSubject<BotStatus>({
-    x: 0, 
-    y: 0, 
-    battery: 100, 
-    fertilizer_level: 100, 
-    status: 'idle', 
+    x: 0,
+    y: 0,
+    battery: 100,
+    fertilizer_level: 100,
+    status: 'idle',
     isMoving: false,
     lastUpdate: new Date().toISOString()
   });

@@ -167,7 +167,7 @@ export interface UsersResponse {
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly apiUrl = 'https://khetloom-backend.vercel.app/api';
+  private readonly apiUrl = 'http://localhost:5001/api';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -249,7 +249,7 @@ export class ApiService {
         observer.complete();
       });
     }
-    
+
     return this.http.put<AuthResponse>(`${this.apiUrl}/profile/subscription`, subscriptionData, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
@@ -266,7 +266,7 @@ export class ApiService {
         observer.complete();
       });
     }
-    
+
     return this.http.put<AuthResponse>(`${this.apiUrl}/profile/preferences`, preferencesData, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
@@ -283,7 +283,7 @@ export class ApiService {
         observer.complete();
       });
     }
-    
+
     return this.http.put<AuthResponse>(`${this.apiUrl}/profile/security`, securityData, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
@@ -300,7 +300,7 @@ export class ApiService {
         observer.complete();
       });
     }
-    
+
     return this.http.put<AuthResponse>(`${this.apiUrl}/profile/payment`, paymentData, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
@@ -317,7 +317,7 @@ export class ApiService {
         observer.complete();
       });
     }
-    
+
     return this.http.put<AuthResponse>(`${this.apiUrl}/profile/integrations`, integrationsData, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
@@ -334,7 +334,7 @@ export class ApiService {
         observer.complete();
       });
     }
-    
+
     return this.http.post<AuthResponse>(`${this.apiUrl}/profile/image`, { imageUrl }, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
