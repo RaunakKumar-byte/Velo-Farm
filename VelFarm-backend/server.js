@@ -10,7 +10,8 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
 const dataRoutes = require('./routes/dataRoutes');
-const apiRoutes = require('./routes/api'); 
+const apiRoutes = require('./routes/api');
+const diseaseDetectionRoutes = require('./routes/diseaseDetectionRoutes');
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ const PORT = process.env.PORT || 5001;
 
 // ✅ CORS at top level (only once)
 app.use(cors({ origin: '*', credentials: false }));
+
+// Disease detection needs larger payloads for base64 images
+app.use('/api/disease-detection', express.json({ limit: '10mb' }), diseaseDetectionRoutes);
 
 // ✅ Body parser once
 app.use(express.json({ limit: '1mb' }));

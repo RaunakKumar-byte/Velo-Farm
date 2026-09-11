@@ -218,8 +218,8 @@
 
               <!-- Analysis Button -->
               <div class="text-center mt-3">
-                <button class="btn btn-success btn-lg px-5 py-3 fw-bold analyze-btn" (click)="detectDisease()"
-                  [disabled]="!selectedFile || loading">
+                <button class="btn btn-success btn-lg px-5 py-3 fw-bold analyze-btn" (click)="retryAnalysis()"
+                  [disabled]="!canAnalyze()">
                   <span *ngIf="!loading">
                     <i class="fas fa-microscope me-2"></i>Start AI Analysis
                   </span>
@@ -259,7 +259,7 @@
     </div>
 
     <!-- Results Section -->
-    <div class="row" *ngIf="predictions && predictions.length > 0">
+    <div class="row" *ngIf="analysisResultType === 'disease' && predictions.length > 0">
       <div class="col-12">
         <div class="results-section">
           <h2 class="text-center mb-4 text-success fw-bold results-title">
@@ -295,10 +295,10 @@
 
                   <!-- Optional Action Buttons -->
                   <div class="d-grid gap-2 mt-3">
-                    <button class="btn btn-outline-success btn-sm">
+                    <button class="btn btn-outline-success btn-sm" (click)="showTreatment(pred)">
                       <i class="fas fa-medkit me-1"></i> Treatment
                     </button>
-                    <button class="btn btn-outline-info btn-sm">
+                    <button class="btn btn-outline-info btn-sm" (click)="showPrevention(pred)">
                       <i class="fas fa-shield-alt me-1"></i> Prevention
                     </button>
                   </div>
@@ -356,8 +356,36 @@
       </div>
     </div>
 
-    <!-- No Results Message -->
-    <div class="row" *ngIf="!loading && predictions.length === 0 && selectedFile">
+    <!-- Not a Plant Image -->
+    <div class="row" *ngIf="!loading && analysisResultType === 'not_plant' && imagePreview">
+      <div class="col-12">
+        <div class="no-results-section text-center py-5">
+          <div class="card border-warning shadow-sm">
+            <div class="card-body p-5">
+              <div class="no-results-icon mb-3">
+                <i class="fas fa-exclamation-triangle fa-4x text-warning"></i>
+              </div>
+              <h4 class="text-warning fw-bold mb-2">Not a Plant Image</h4>
+              <p class="text-muted mb-3">
+                This image does not appear to contain a plant leaf. Please upload a clear photo of a plant leaf for disease detection.
+              </p>
+              <div class="healthy-tips">
+                <h6 class="text-warning fw-bold mb-2">📸 Tips for a Valid Upload:</h6>
+                <ul class="list-unstyled text-start">
+                  <li><i class="fas fa-leaf text-success me-2"></i>Use a close-up photo of a plant leaf</li>
+                  <li><i class="fas fa-camera text-info me-2"></i>Take the photo in good natural lighting</li>
+                  <li><i class="fas fa-ban text-danger me-2"></i>Avoid objects, people, or non-plant images</li>
+                  <li><i class="fas fa-redo text-primary me-2"></i>Try one of the sample plant images below</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Healthy Plant Message -->
+    <div class="row" *ngIf="!loading && analysisResultType === 'healthy' && imagePreview">
       <div class="col-12">
         <div class="no-results-section text-center py-5">
           <div class="card border-success shadow-sm">
@@ -366,7 +394,10 @@
                 <i class="fas fa-check-circle fa-4x text-success"></i>
               </div>
               <h4 class="text-success fw-bold mb-2">Great News!</h4>
-              <p class="text-muted mb-3">No diseases detected in this plant leaf. The plant appears to be healthy!</p>
+              <p class="text-muted mb-3">
+                No diseases detected in this plant leaf. The plant appears to be healthy
+                <span *ngIf="getHealthyConfidence() > 0">({{ getHealthyConfidence() }}% confidence)</span>.
+              </p>
               <div class="healthy-tips">
                 <h6 class="text-success fw-bold mb-2">🌿 Keep Your Plants Healthy:</h6>
                 <ul class="list-unstyled text-start">

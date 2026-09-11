@@ -11,5 +11,6 @@ export const environment = {
   apiUrl: 'https://khetloom-backend.vercel.app/api',
   backendUrl: 'https://khetloom-backend.vercel.app',
   weatherApiKey: 'b6907d289e10d714a6e88b30761fae22',
-  weatherApiUrl: 'https://api.openweathermap.org/data/2.5'
+  weatherApiUrl: 'https://api.openweathermap.org/data/2.5',
+  diseaseDetectionApiUrl: 'https://khetloom-backend.vercel.app/api/disease-detection/analyze'
 };

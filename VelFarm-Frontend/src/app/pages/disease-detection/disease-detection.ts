@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
-import { Observable, interval, takeWhile } from 'rxjs';
-import { log } from '@tensorflow/tfjs';
+import { HttpClient } from '@angular/common/http';
+import { interval, takeWhile } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 // Interface for prediction results
 interface Prediction {
@@ -21,8 +21,10 @@ interface ImageInfo {
 
 interface AnalysisResponse {
   outputs: Array<{
-    image: ImageInfo;
-    predictions: Prediction[];
+    predictions: {
+      image: ImageInfo;
+      predictions: Prediction[];
+    };
   }>;
 }
 
@@ -39,6 +41,8 @@ interface DiseaseDetails {
   prevention: string;
 }
 
+type AnalysisResultType = 'disease' | 'healthy' | 'not_plant' | null;
+
 @Component({
   selector: 'app-disease-detection',
   standalone: false,
@@ -50,10 +54,14 @@ export class DiseaseDetectionComponent implements OnInit {
 
   // Core properties
   selectedFile: File | null = null;
+  activeSampleUrl: string | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   imageInfo: ImageInfo | null = null;
   predictions: Prediction[] = [];
+  analysisResultType: AnalysisResultType = null;
   loading = false;
+
+  private readonly minConfidence = 0.4;
 
   // UI state properties
   currentStep = 1;
@@ -66,9 +74,8 @@ export class DiseaseDetectionComponent implements OnInit {
   modalTitle = '';
   modalContent = '';
 
-  // API configuration
-  private readonly apiUrl = 'https://serverless.roboflow.com/infer/workflows/sih2025-ieer4/custom-workflow-2';
-  private readonly apiKey = 'jSQT6S0ootkfqKePFMzl';
+  // Proxied through Angular dev server / backend to avoid browser CORS blocks
+  private readonly apiUrl = environment.diseaseDetectionApiUrl;
 
   // Sample images data
   sampleImages: SampleImage[] = [
@@ -144,12 +151,13 @@ export class DiseaseDetectionComponent implements OnInit {
     this.updateWorkflowStep(1);
   }
 
-  
+
 // Unified File Handling Method
 onFileSelected(event: Event): void {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
     const file = input.files[0];
+    this.activeSampleUrl = null;
     this.selectedFile = file;
 
     // Preview
@@ -195,6 +203,7 @@ onFileSelected(event: Event): void {
       return;
     }
 
+    this.activeSampleUrl = null;
     this.selectedFile = file;
     this.simulateUploadProgress();
 
@@ -241,6 +250,7 @@ onFileSelected(event: Event): void {
   // Sample image handling
   useSampleImage(sample: SampleImage): void {
     this.selectedFile = null;
+    this.activeSampleUrl = sample.url;
     this.imagePreview = sample.url;
     this.updateWorkflowStep(2);
 
@@ -265,13 +275,11 @@ onFileSelected(event: Event): void {
 
       if (isSample && imageInput) {
         body = {
-          api_key: this.apiKey,
           inputs: { image: { type: 'url', value: imageInput } }
         };
       } else if (this.selectedFile) {
         const base64Image = await this.toBase64(this.selectedFile);
         body = {
-          api_key: this.apiKey,
           inputs: { image: { type: 'base64', value: base64Image } }
         };
       }
@@ -298,6 +306,7 @@ onFileSelected(event: Event): void {
     this.analysisProgress = 0;
     this.imageInfo = null;
     this.predictions = [];
+    this.analysisResultType = null;
     this.updateWorkflowStep(2);
 
     this.simulateAnalysisProgress();
@@ -316,19 +325,44 @@ onFileSelected(event: Event): void {
     });
   }
 
- private processAnalysisResults(response: any): void {
-  if (response.outputs && response.outputs.length > 0) {
-    const output = response.outputs[0];
-    const predsObj = output.predictions;
+  private processAnalysisResults(response: any): void {
+    if (!response.outputs?.length) {
+      this.imageInfo = null;
+      this.predictions = [];
+      this.analysisResultType = 'not_plant';
+      return;
+    }
 
-    this.imageInfo = predsObj.image || null; // image info
-    this.predictions = predsObj.predictions || []; // array of disease predictions
-    console.log(this.predictions);
-  } else {
-    this.imageInfo = null;
-    this.predictions = [];
+    const predsObj = response.outputs[0].predictions;
+    this.imageInfo = predsObj?.image || null;
+
+    const rawPredictions: Prediction[] = predsObj?.predictions || [];
+    const knownClasses = Object.keys(this.diseaseDatabase);
+    const validPredictions = rawPredictions.filter(
+      (prediction) =>
+        knownClasses.includes(prediction.class) &&
+        prediction.confidence >= this.minConfidence
+    );
+
+    if (validPredictions.length === 0) {
+      this.predictions = [];
+      this.analysisResultType = 'not_plant';
+      return;
+    }
+
+    const diseasePredictions = validPredictions.filter(
+      (prediction) => prediction.class !== 'Healthy'
+    );
+
+    if (diseasePredictions.length > 0) {
+      this.predictions = diseasePredictions;
+      this.analysisResultType = 'disease';
+      return;
+    }
+
+    this.predictions = validPredictions;
+    this.analysisResultType = 'healthy';
   }
-}
 
 
   private completeAnalysis(): void {
@@ -342,8 +376,9 @@ onFileSelected(event: Event): void {
   private handleAnalysisError(error: any): void {
     this.loading = false;
     this.analysisProgress = 0;
-    alert('Analysis failed. Please try again.');
-    this.updateWorkflowStep(1);
+    const message = error?.error?.message || error?.message || 'Analysis failed. Please try again.';
+    alert(message);
+    this.updateWorkflowStep(this.imagePreview ? 2 : 1);
   }
 
   // Utility methods
@@ -429,11 +464,26 @@ onFileSelected(event: Event): void {
   }
 
   // Reset methods
+  canAnalyze(): boolean {
+    return (!!this.selectedFile || !!this.activeSampleUrl) && !this.loading;
+  }
+
+  getHealthyConfidence(): number {
+    const healthyPrediction = this.predictions.find(
+      (prediction) => prediction.class === 'Healthy'
+    );
+    return healthyPrediction
+      ? Math.round(healthyPrediction.confidence * 100)
+      : 0;
+  }
+
   resetAnalysis(): void {
     this.selectedFile = null;
+    this.activeSampleUrl = null;
     this.imagePreview = null;
     this.imageInfo = null;
     this.predictions = [];
+    this.analysisResultType = null;
     this.loading = false;
     this.currentStep = 1;
     this.uploadProgress = 0;
@@ -452,7 +502,7 @@ onFileSelected(event: Event): void {
       analysis_time: this.analysisTime
     };
 
-    const blob = new Blob([JSON.stringify(results, null, 2)], 
+    const blob = new Blob([JSON.stringify(results, null, 2)],
                          { type: 'application/json' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -474,7 +524,9 @@ onFileSelected(event: Event): void {
   }
 
   retryAnalysis(): void {
-    if (this.selectedFile || this.imagePreview) {
+    if (this.activeSampleUrl) {
+      this.detectDisease(this.activeSampleUrl, true);
+    } else if (this.selectedFile) {
       this.detectDisease();
     }
   }

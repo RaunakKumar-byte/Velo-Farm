@@ -1,9 +1,14 @@
 {
+  "/api/disease-detection": {
+    "target": "http://localhost:5001",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api": {
-    "target": "http://localhost:3001",
+    "target": "http://localhost:5001",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   }
 }
-
